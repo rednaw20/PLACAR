@@ -36,7 +36,6 @@
 
         #cronometro {
             font-size: 1.2em;
-            /* Centralizar o cronômetro */
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
@@ -104,6 +103,17 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #f9f9f9;
+            margin-bottom: 20px;
+        }
+
+        .points-container {
+            display: flex;
+            flex-direction: column;
+            width: 500px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
 
         .control-group {
@@ -130,10 +140,15 @@
             background-color: #007bff;
             color: white;
             cursor: pointer;
+            border: none;
         }
 
         .control-group button.danger {
             background-color: #dc3545;
+        }
+
+        .control-group button.success {
+            background-color: #28a745;
         }
 
         .points-control {
@@ -144,12 +159,23 @@
         .points-control button {
             flex: 1;
         }
+
+        .timer-control {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .timer-control button {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
     <div class="scoreboard-container">
         <div class="top-bar">
-            <span></span> <span id="cronometro">00:00</span>
+            <span id="circuito-text">CIRCUITO ARENA BEACH - FASE DE GRUPO</span>
+            <span id="cronometro">00:00</span>
             <span id="feminino-text" class="feminino">FEMININO D</span>
         </div>
         <div class="team-row">
@@ -162,32 +188,9 @@
             <span id="team2-points" class="points">0</span>
             <span id="team2-sets" class="sets">0</span>
         </div>
-        <div id="circuito-text" class="bottom-bar">
-            CIRCUITO ARENA BEACH - FASE DE GRUPO
-        </div>
     </div>
 
-    <div class="controls-container">
-        <div class="control-group">
-            <label for="team1-name-input">Nome Dupla 1:</label>
-            <input type="text" id="team1-name-input" value="MIRELLA / VANESSA">
-            <button onclick="updateTeamName(1)">Atualizar Nome 1</button>
-        </div>
-        <div class="control-group">
-            <label for="team2-name-input">Nome Dupla 2:</label>
-            <input type="text" id="team2-name-input" value="ANNA / VALÉRIA">
-            <button onclick="updateTeamName(2)">Atualizar Nome 2</button>
-        </div>
-        <div class="control-group">
-            <label for="feminino-text-input">Texto Feminino:</label>
-            <input type="text" id="feminino-text-input" value="FEMININO D">
-            <button onclick="updateFemininoText()">Atualizar Texto Feminino</button>
-        </div>
-        <div class="control-group">
-            <label for="circuito-text-input">Texto Circuito:</label>
-            <input type="text" id="circuito-text-input" value="CIRCUITO ARENA BEACH - FASE DE GRUPO">
-            <button onclick="updateCircuitoText()">Atualizar Texto Circuito</button>
-        </div>
+    <div class="points-container">
         <div class="control-group">
             <label>Pontuação Dupla 1:</label>
             <div class="points-control">
@@ -220,14 +223,43 @@
                 <button onclick="updateSets(2, -1)">- Set</button>
             </div>
         </div>
-        <div class="control-group">
-            <button onclick="startGame()">Iniciar Partida</button>
-            <button onclick="endGame()" class="danger">Fim de Partida (Zerar)</button>
+        <div class="timer-control">
+            <button onclick="startCronometro()" class="success">Iniciar Cronômetro</button>
+            <button onclick="stopCronometro()" class="danger">Zerar Cronômetro</button>
         </div>
         <div class="control-group">
             <label>Controle de Saque:</label>
-            <button onclick="setServing(1)">Dupla 1 Sacando</button>
-            <button onclick="setServing(2)">Dupla 2 Sacando</button>
+            <div class="points-control">
+                <button onclick="setServing(1)">Dupla 1 Sacando</button>
+                <button onclick="setServing(2)">Dupla 2 Sacando</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls-container">
+        <div class="control-group">
+            <label for="team1-name-input">Nome Dupla 1:</label>
+            <input type="text" id="team1-name-input" value="MIRELLA / VANESSA">
+            <button onclick="updateTeamName(1)">Atualizar Nome 1</button>
+        </div>
+        <div class="control-group">
+            <label for="team2-name-input">Nome Dupla 2:</label>
+            <input type="text" id="team2-name-input" value="ANNA / VALÉRIA">
+            <button onclick="updateTeamName(2)">Atualizar Nome 2</button>
+        </div>
+        <div class="control-group">
+            <label for="feminino-text-input">Texto Superior:</label>
+            <input type="text" id="feminino-text-input" value="FEMININO D">
+            <button onclick="updateFemininoText()">Atualizar Texto</button>
+        </div>
+        <div class="control-group">
+            <label for="circuito-text-input">Texto Inferior:</label>
+            <input type="text" id="circuito-text-input" value="CIRCUITO ARENA BEACH - FASE DE GRUPO">
+            <button onclick="updateCircuitoText()">Atualizar Texto</button>
+        </div>
+        <div class="control-group">
+            <button onclick="startGame()" class="success">Iniciar Partida</button>
+            <button onclick="endGame()" class="danger">Zerar Placar</button>
         </div>
     </div>
 
@@ -259,7 +291,7 @@
         }
 
         function startCronometro() {
-            if (!cronometroAtivo && (team1Points > 0 || team2Points > 0 || team1Sets > 0 || team2Sets > 0)) {
+            if (!cronometroAtivo) {
                 cronometroAtivo = true;
                 cronometroInterval = setInterval(() => {
                     segundos++;
@@ -302,7 +334,7 @@
                 pointsElement.style.color = '';
                 if (teamNumber === 1) team1Points = newPoints;
                 else team2Points = newPoints;
-                startCronometro();
+                if (!cronometroAtivo) startCronometro();
             }, 150);
 
             if ((team1Points === 40 && team2Points < 40 && team1Points > team2Points) ||
@@ -337,18 +369,11 @@
             team2SetsElement.textContent = 0;
             team1Sets = 0;
             team2Sets = 0;
-            segundos = 0;
-            cronometroElement.textContent = '00:00';
-            cronometroAtivo = false;
+            stopCronometro();
         }
 
         function endGame() {
-            stopCronometro();
-            resetGamePoints();
-            team1SetsElement.textContent = 0;
-            team2SetsElement.textContent = 0;
-            team1Sets = 0;
-            team2Sets = 0;
+            startGame(); // Reutiliza a função startGame para zerar tudo
         }
 
         function setServing(teamNumber) {
