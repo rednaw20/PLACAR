@@ -134,19 +134,12 @@
 
         .serving-control {
             display: flex;
-            flex-direction: column; /* Organizar verticalmente */
             gap: 5px;
-            margin-bottom: 8px; /* Adicionar espaço abaixo */
-        }
-
-        .serving-control label {
-            display: block;
-            margin-bottom: 3px;
-            font-weight: bold;
-            font-size: 16px;
+            margin-bottom: 8px;
         }
 
         .serving-control button {
+            flex: 1;
             padding: 12px;
             font-size: 16px;
             background-color: #00c853; /* Cor verde mais vibrante para saque */
@@ -154,6 +147,7 @@
             border: none;
             border-radius: 3px;
             cursor: pointer;
+            text-align: center; /* Centralizar o texto */
         }
 
         .serving-control button:hover {
@@ -183,8 +177,8 @@
                 <h2>Configurações Gerais</h2>
                 <div class="control-group serving-control">
                     <label>Saque:</label>
-                    <button onclick="sendMessage({ type: 'serving', team: 1 })">Dupla 1 Sacando ►</button>
-                    <button onclick="sendMessage({ type: 'serving', team: 2 })">◄ Dupla 2 Sacando</button>
+                    <button onclick="sendMessage({ type: 'serving', team: 1 })">◄</button>
+                    <button onclick="sendMessage({ type: 'serving', team: 2 })">►</button>
                 </div>
                 <div class="control-group">
                     <label for="team1-name-input">Nome Dupla 1:</label>
@@ -202,7 +196,7 @@
                     <label for="circuito-text-input">Texto Inferior:</label>
                     <input type="text" id="circuito-text-input" value="CIRCUITO ARENA BEACH">
                 </div>
-                <button onclick="updateData()">Atualizar Dados</button>
+                <button onclick="updateData()">Salvar Alterações</button>
             </div>
 
             <div class="control-container">
@@ -297,6 +291,8 @@
             sendMessage({ type: 'name', team: 2, value: team2Name });
             sendMessage({ type: 'topText', value: categoriaText });
             sendMessage({ type: 'bottomText', value: circuitoText });
+
+            alert('Dados salvos!'); // Feedback visual de que os dados foram salvos
         }
 
         function setPointsActive(button, team, value) {
