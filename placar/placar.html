@@ -322,8 +322,8 @@
         const cronometroElement = document.getElementById('cronometro');
         const cronometroAreaElement = document.getElementById('cronometro-area');
         const breakPointAreaElement = document.getElementById('break-point-area');
-        const team1ServingIndicator = document.getElementById('team1-serving');
-        const team2ServingIndicator = document.getElementById('team2-serving');
+        let team1ServingIndicator = document.getElementById('team1-serving'); // Inicialização correta
+        let team2ServingIndicator = document.getElementById('team2-serving'); // Inicialização correta
 
         let cronometroInterval;
         let segundos = 0;
@@ -364,15 +364,10 @@
             switch (data.type) {
                 case 'name':
                     const names = data.value.split('/');
-                    if (data.team === 1) {
-                        team1NameElement.innerHTML = `<span id="team1-serving" class="serving-indicator" style="display: none;">►</span><span>${names.join('<span></span>')}</span>`;
-                    } else if (data.team === 2) {
-                        team2NameElement.innerHTML = `<span id="team2-serving" class="serving-indicator" style="display: none;">►</span><span>${names.join('<span></span>')}</span>`;
-                    }
-                    const team1ServingElement = document.getElementById('team1-serving');
-                    const team2ServingElement = document.getElementById('team2-serving');
-                    team1ServingIndicator = team1ServingElement;
-                    team2ServingIndicator = team2ServingElement;
+                    team1NameElement.innerHTML = `<span id="team1-serving" class="serving-indicator" style="display: none;">►</span><span>${names.join('<span></span>')}</span>`;
+                    team2NameElement.innerHTML = `<span id="team2-serving" class="serving-indicator" style="display: none;">►</span><span>${names.join('<span></span>')}</span>`;
+                    team1ServingIndicator = document.getElementById('team1-serving'); // Reatribuição após o innerHTML
+                    team2ServingIndicator = document.getElementById('team2-serving'); // Reatribuição após o innerHTML
                     break;
                 case 'points':
                     if (!tiebreakAtivo) {
@@ -384,8 +379,7 @@
                     if (data.team === 1) team1SetsContainer.textContent = parseInt(team1SetsContainer.textContent) + (data.change || 0);
                     else if (data.team === 2) team2SetsContainer.textContent = parseInt(team2SetsContainer.textContent) + (data.change || 0);
                     break;
-                case 'topText':
-                    categoriaTextElement.textContent = data.value;
+                case 'topText':categoriaTextElement.textContent = data.value;
                     break;
                 case 'bottomText':
                     circuitoTextElement.textContent = data.value;
