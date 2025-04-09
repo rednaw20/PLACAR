@@ -3,329 +3,149 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Placar Beach Tennis</title>
+  <title>Controle Mobile - Beach Tennis</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
-
-    :root {
-      --cor-fundo: #222;
-      --cor-texto: #eee;
-      --cor-container: #333;
-      --cor-texto-topo: #39ff14;
-      --cor-fundo-topo: #000c60;
-      --cor-fundo-categoria: #39ff14;
-      --cor-texto-categoria: #000c60;
-      --cor-texto-circuito: #000c60;
-      --cor-nome-fundo: #fff;
-      --cor-nome-texto: #000c60;
-      --cor-marcador1-fundo: #000c60;
-      --cor-marcador1-texto: #39ff14;
-      --cor-marcador2-fundo: #fff;
-      --cor-marcador2-texto: #000c60;
-      --cor-fundo-inferior: #add8e6;
-      --cor-texto-inferior: #000c60;
-      --tamanho-fonte-nome: 1.6em;
-      --tamanho-fonte-numeros: 3em;
-      --tamanho-fonte-sets: 3em;
-      --tamanho-fonte-cronometro: 2em;
-      --tamanho-fonte-categoria: 1.6em;
-      --tamanho-fonte-circuito: 1em;
-      --largura-placar: 700px;
-      --padding-placar: 20px;
-      --padding-linhas: 15px 20px;
-      --espacamento-colunas: 3fr 1fr 1fr;
-      --cor-linha-divisoria: #add8e6;
-    }
-
     body {
-      font-family: 'Open Sans', sans-serif;
+      font-family: sans-serif;
+      background-color: #f9f9f9;
       margin: 0;
-      background-color: var(--cor-fundo);
-      color: var(--cor-texto);
+      padding: 0;
+    }
+
+    iframe#placar-frame {
+      width: 100%;
+      height: 180px;
+      border: none;
+      transform: scale(0.85);
+      transform-origin: top left;
+      pointer-events: none; /* evita clique no iframe */
+    }
+
+    .container {
+      padding: 1rem;
+    }
+
+    h2 {
+      margin: 1rem 0 0.5rem;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 6px 0;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button.danger {
+      background-color: #dc3545;
+    }
+
+    .row {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
-
-    .scoreboard-container {
-      background-color: var(--cor-container);
-      border-radius: 10px;
-      box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.4);
-      width: var(--largura-placar);
-      padding: var(--padding-placar);
-      display: grid;
-      grid-template-rows: auto auto 1fr auto;
-      grid-template-columns: 1fr;
-    }
-
-    .top-bar {
-      display: grid;
-      grid-template-columns: 3fr 2fr;
-      border-bottom: 1px solid #555;
-    }
-
-    .cronometro-container, .categoria-container {
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .cronometro-container {
-      background-color: var(--cor-fundo-topo);
-      color: var(--cor-texto-topo);
-    }
-
-    .categoria-container {
-      background-color: var(--cor-fundo-categoria);
-      color: var(--cor-texto-categoria);
-    }
-
-    #cronometro {
-      font-size: var(--tamanho-fonte-cronometro);
-    }
-
-    #categoria-text {
-      font-size: var(--tamanho-fonte-categoria);
-      width: 80%;
-    }
-
-    .team-row {
-      display: grid;
-      grid-template-columns: var(--espacamento-colunas);
-      align-items: center;
-      background-color: #fff;
-      padding: var(--padding-linhas);
+      gap: 8px;
       margin-bottom: 10px;
     }
 
-    .team-names-container {
-      background-color: var(--cor-nome-fundo);
-      color: var(--cor-nome-texto);
-      padding: 8px;
-      border-radius: 5px;
-      font-weight: bold;
-      font-size: var(--tamanho-fonte-nome);
-      display: flex;
-      flex-direction: column;
+    .row button {
+      flex: 1;
     }
 
-    .team-names-container span + span {
-      margin-top: 5px;
-      border-top: 1px solid #ccc;
-      padding-top: 5px;
-      width: 90%;
-    }
-
-    .points-button {
-      background-color: var(--cor-marcador1-fundo);
-      color: var(--cor-marcador1-texto);
-      font-family: 'Roboto Mono', monospace;
-      font-size: var(--tamanho-fonte-numeros);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 5px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-      height: 100%;
-    }
-
-    .sets-container {
-      background-color: var(--cor-marcador2-fundo);
-      color: var(--cor-marcador2-texto);
-      font-family: 'Roboto Mono', monospace;
-      font-size: var(--tamanho-fonte-sets);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 5px;
-    }
-
-    .bottom-bar {
-      background-color: var(--cor-fundo-inferior);
-      color: var(--cor-texto-inferior);
-      padding: 10px 20px;
-      font-size: var(--tamanho-fonte-circuito);
-      display: flex;
-      align-items: center;
-      border-top: 1px solid #555;
-    }
-
-    .tiebreak-indicator, .serving-indicator, .break-point-indicator {
-      display: none;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .tiebreak-indicator {
-      color: red;
-      font-size: var(--tamanho-fonte-numeros);
-    }
-
-    .serving-indicator {
-      color: green;
-      font-size: 1.2em;
-    }
-
-    .break-point-indicator {
-      background-color: var(--cor-fundo-topo);
-      color: var(--cor-texto-topo);
-      padding: 10px 20px;
-      font-size: var(--tamanho-fonte-cronometro);
+    .section {
+      margin-bottom: 1.5rem;
     }
   </style>
 </head>
 <body>
-  <div class="scoreboard-container">
-    <div class="top-bar">
-      <div class="cronometro-container" id="cronometro-area">
-        <span id="cronometro">00:00</span>
+
+  <!-- Miniatura do placar no topo -->
+  <iframe id="placar-frame" src="placar.html"></iframe>
+
+  <div class="container">
+    <div class="section">
+      <h2>Dupla 1</h2>
+      <input type="text" id="team1-name" value="DIDÁ / GESIENE" />
+      <div class="row">
+        <button onclick="send({ type: 'points', team: 1, value: 0 })">0</button>
+        <button onclick="send({ type: 'points', team: 1, value: 15 })">15</button>
+        <button onclick="send({ type: 'points', team: 1, value: 30 })">30</button>
+        <button onclick="send({ type: 'points', team: 1, value: 40 })">40</button>
       </div>
-      <div class="categoria-container">
-        <span id="categoria-text">FEMININO D</span>
+      <div class="row">
+        <button onclick="send({ type: 'sets', team: 1, change: 1 })">+ Set</button>
+        <button onclick="send({ type: 'sets', team: 1, change: -1 })">- Set</button>
       </div>
+      <button onclick="send({ type: 'serving', team: 1 })">Saque</button>
     </div>
 
-    <div class="team-row">
-      <div class="team-names-container">
-        <span id="team1-name">DIDÁ / GESIENE</span>
+    <div class="section">
+      <h2>Dupla 2</h2>
+      <input type="text" id="team2-name" value="MATHEUS / ANA PAULA" />
+      <div class="row">
+        <button onclick="send({ type: 'points', team: 2, value: 0 })">0</button>
+        <button onclick="send({ type: 'points', team: 2, value: 15 })">15</button>
+        <button onclick="send({ type: 'points', team: 2, value: 30 })">30</button>
+        <button onclick="send({ type: 'points', team: 2, value: 40 })">40</button>
       </div>
-      <div class="points-button" id="team1-points">0</div>
-      <div class="sets-container" id="team1-sets">0</div>
-      <div class="tiebreak-indicator" id="team1-tiebreak">TB</div>
-      <div class="serving-indicator" id="team1-serving">Sacando</div>
-    </div>
-
-    <div class="team-row">
-      <div class="team-names-container">
-        <span id="team2-name">MATHEUS / ANA PAULA</span>
+      <div class="row">
+        <button onclick="send({ type: 'sets', team: 2, change: 1 })">+ Set</button>
+        <button onclick="send({ type: 'sets', team: 2, change: -1 })">- Set</button>
       </div>
-      <div class="points-button" id="team2-points">0</div>
-      <div class="sets-container" id="team2-sets">0</div>
-      <div class="tiebreak-indicator" id="team2-tiebreak">TB</div>
-      <div class="serving-indicator" id="team2-serving">Sacando</div>
+      <button onclick="send({ type: 'serving', team: 2 })">Saque</button>
     </div>
 
-    <div class="bottom-bar">
-      <strong><span id="circuito-text">CIRCUITO ARENA BEACH</span></strong>
+    <div class="section">
+      <h2>Textos</h2>
+      <input type="text" id="categoria" value="FEMININO D" />
+      <input type="text" id="circuito" value="CIRCUITO ARENA BEACH" />
+      <button onclick="atualizarTextos()">Atualizar Textos</button>
     </div>
 
-    <div class="break-point-indicator" id="break-point-area">BREAK POINT</div>
+    <div class="section">
+      <h2>Extras</h2>
+      <div class="row">
+        <button onclick="send({ action: 'startTimer' })">Iniciar Timer</button>
+        <button onclick="send({ action: 'stopTimer' })" class="danger">Zerar Timer</button>
+      </div>
+      <div class="row">
+        <button onclick="send({ action: 'resetGamePoints' })">Zerar Pontos</button>
+        <button onclick="send({ action: 'resetScore' })" class="danger">Zerar Tudo</button>
+      </div>
+      <div class="row">
+        <button onclick="send({ type: 'breakPoint', value: true })">Break ON</button>
+        <button onclick="send({ type: 'breakPoint', value: false })">Break OFF</button>
+      </div>
+      <div class="row">
+        <button onclick="send({ type: 'tiebreak', team: 1, value: true, score: 'TB' })">TB 1</button>
+        <button onclick="send({ type: 'tiebreak', team: 1, value: false })">TB 1 OFF</button>
+      </div>
+      <div class="row">
+        <button onclick="send({ type: 'tiebreak', team: 2, value: true, score: 'TB' })">TB 2</button>
+        <button onclick="send({ type: 'tiebreak', team: 2, value: false })">TB 2 OFF</button>
+      </div>
+    </div>
   </div>
 
   <script>
-    const team1NameElement = document.getElementById('team1-name');
-    const team2NameElement = document.getElementById('team2-name');
-    const team1PointsButton = document.getElementById('team1-points');
-    const team2PointsButton = document.getElementById('team2-points');
-    const team1SetsContainer = document.getElementById('team1-sets');
-    const team2SetsContainer = document.getElementById('team2-sets');
-    const categoriaTextElement = document.getElementById('categoria-text');
-    const circuitoTextElement = document.getElementById('circuito-text');
-    const cronometroElement = document.getElementById('cronometro');
-    const cronometroAreaElement = document.getElementById('cronometro-area');
-    const breakPointAreaElement = document.getElementById('break-point-area');
-    const team1TiebreakIndicator = document.getElementById('team1-tiebreak');
-    const team2TiebreakIndicator = document.getElementById('team2-tiebreak');
-    const team1ServingIndicator = document.getElementById('team1-serving');
-    const team2ServingIndicator = document.getElementById('team2-serving');
-
-    let cronometroInterval;
-    let segundos = 0;
-    let cronometroAtivo = false;
-    let tiebreakAtivo = false;
-
-    function formatTime(segundos) {
-      const minutos = Math.floor(segundos / 60).toString().padStart(2, '0');
-      const secs = (segundos % 60).toString().padStart(2, '0');
-      return `${minutos}:${secs}`;
-    }
-
-    function startCronometro() {
-      if (!cronometroAtivo) {
-        cronometroAtivo = true;
-        cronometroInterval = setInterval(() => {
-          segundos++;
-          cronometroElement.textContent = formatTime(segundos);
-        }, 1000);
-      }
-    }
-
-    function stopCronometro() {
-      clearInterval(cronometroInterval);
-      cronometroAtivo = false;
-      segundos = 0;
-      cronometroElement.textContent = '00:00';
-    }
-
     const channel = new BroadcastChannel('beachTennisScore');
 
-    channel.onmessage = (event) => {
-      const data = event.data;
+    function send(data) {
+      channel.postMessage(data);
+    }
 
-      switch (data.type) {
-        case 'name':
-          const names = data.value.split('/');
-          if (data.team === 1) {
-            team1NameElement.innerHTML = names.join('<span></span>');
-          } else {
-            team2NameElement.innerHTML = names.join('<span></span>');
-          }
-          break;
-        case 'points':
-          if (!tiebreakAtivo) {
-            if (data.team === 1) team1PointsButton.textContent = data.value;
-            else team2PointsButton.textContent = data.value;
-          }
-          break;
-        case 'sets':
-          if (data.team === 1)
-            team1SetsContainer.textContent = parseInt(team1SetsContainer.textContent) + (data.change || 0);
-          else
-            team2SetsContainer.textContent = parseInt(team2SetsContainer.textContent) + (data.change || 0);
-          break;
-        case 'topText':
-          categoriaTextElement.textContent = data.value;
-          break;
-        case 'bottomText':
-          circuitoTextElement.textContent = data.value;
-          break;
-        case 'serving':
-          team1ServingIndicator.style.display = data.team === 1 ? 'block' : 'none';
-          team2ServingIndicator.style.display = data.team === 2 ? 'block' : 'none';
-          break;
-        case 'breakPoint':
-          cronometroAreaElement.style.display = data.value ? 'none' : 'flex';
-          breakPointAreaElement.style.display = data.value ? 'flex' : 'none';
-          break;
-        case 'tiebreak':
-          tiebreakAtivo = data.value;
-          if (data.team === 1) {
-            team1PointsButton.style.display = data.value ? 'none' : 'flex';
-            team1TiebreakIndicator.style.display = data.value ? 'flex' : 'none';
-            team1TiebreakIndicator.textContent = data.value ? (data.score || 'TB') : '';
-          } else {
-            team2PointsButton.style.display = data.value ? 'none' : 'flex';
-            team2TiebreakIndicator.style.display = data.value ? 'flex' : 'none';
-            team2TiebreakIndicator.textContent = data.value ? (data.score || 'TB') : '';
-          }
-          break;
-      }
-
-      if (data.action === 'startTimer') startCronometro();
-      else if (data.action === 'stopTimer') stopCronometro();
-      else if (data.action === 'resetGamePoints') {
-        team1PointsButton.textContent = 0;
-        team2PointsButton.textContent = 0;
-      } else if (data.action === 'resetScore') {
-        team1PointsButton.textContent = 0;
-        team2PointsButton.textContent = 0;
-        team1SetsContainer.textContent = 0;
-        team2SetsContainer.textContent = 0;
-      }
-    };
-  </script>
-</body>
-</html>
+    function atualizarTextos() {
+      send({ type: 'name', team: 1, value: document.getElementById('team1-name').value });
+      send({ type: 'name', team: 2, value: document.getElementById('team2-name').value });
+      send({ type: 'topText', value: document.getElementById('categoria').value });
+      send({ type: 'bottomText', value: document.getElementById('circuito').value
