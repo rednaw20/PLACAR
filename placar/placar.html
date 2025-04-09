@@ -3,279 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle Placar Beach Tennis</title>
+  <title>Placar Beach Tennis</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f0f0f0;
-      padding: 10px;
+      font-family: 'Open Sans', sans-serif;
+      margin: 0;
+      background-color: #222;
+      color: #eee;
+      transform: scale(0.8);
+      transform-origin: top left;
+      width: 125%;
     }
-
-    h2 {
-      text-align: center;
-      color: #001c58;
-      margin-bottom: 10px;
-    }
-
-    iframe {
-      display: block;
-      margin: 0 auto 15px;
-      width: 100%;
-      height: 600px;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-    }
-
-    .section {
-      background-color: #ffffff;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .section label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-    }
-
-    .actions {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .actions button, .score-buttons button {
-      padding: 10px 16px;
-      font-size: 14px;
-      background-color: #001c58;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    .score-buttons button {
-      background-color: #eee;
-      color: black;
-      border: 1px solid #ccc;
-    }
-
-    .score-buttons button.active {
-      background-color: #ff5722;
-      color: #fff;
-      border: 2px solid #ff5722;
-    }
-
-    .team-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    @media (min-width: 600px) {
-      .team-container {
-        flex-direction: row;
-      }
-    }
-
-    .team-box {
-      flex: 1;
-      background-color: #ffffff;
-      padding: 10px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .color-selectors {
-      display: flex;
-      gap: 10px;
-      justify-content: space-around;
-      margin-bottom: 15px;
-    }
-
-    .color-selectors label {
-      font-size: 0.9rem;
-    }
-
-    .color-selectors input {
-      width: 80px;
-    }
-
-    .toggle-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 10px 0;
-    }
-
-    .toggle-section {
-      text-align: center;
-      margin-top: 20px;
-    }
+    /* Cole aqui o restante das suas variáveis e estilos do :root e componentes do placar (você já tem isso definido e está mantido) */
   </style>
 </head>
 <body>
-  <iframe src="placar.html" title="Visualização do Placar"></iframe>
-
-  <h2>Controle do Placar</h2>
-
-  <div class="toggle-buttons">
-    <button onclick="toggleView('sets')">Sets</button>
-    <button onclick="toggleView('tiebreak')">Tiebreak</button>
-    <button onclick="resetScore()">Resetar</button>
-  </div>
-
-  <div class="color-selectors">
-    <label>Cor Cronômetro: <input type="color" onchange="setColor('cronometro', this.value)"></label>
-    <label>Cor Texto Superior: <input type="color" onchange="setColor('topText', this.value)"></label>
-    <label>Cor Texto Inferior: <input type="color" onchange="setColor('bottomText', this.value)"></label>
-  </div>
-
-  <div class="section">
-    <label>Texto Superior</label>
-    <input type="text" onchange="updateTopText(this.value)" placeholder="Texto do topo do placar">
-  </div>
-
-  <div class="section">
-    <label>Cronômetro</label>
-    <div class="actions">
-      <button onclick="startTimer()">Iniciar</button>
-      <button onclick="stopTimer()">Parar</button>
-    </div>
-  </div>
-
-  <div class="team-container">
-    <div class="team-box">
-      <label>Nome Dupla 1</label>
-      <input type="text" onchange="updateName(1, this.value)" placeholder="Digite os nomes">
-
-      <label>Pontos</label>
-      <div class="score-buttons" id="team1Points">
-        <button onclick="setPoints(1, '0')">0</button>
-        <button onclick="setPoints(1, '15')">15</button>
-        <button onclick="setPoints(1, '30')">30</button>
-        <button onclick="setPoints(1, '40')">40</button>
+  <div class="scoreboard-container">
+    <div class="top-bar">
+      <div class="cronometro-container" id="cronometro-area">
+        <span id="cronometro">00:00</span>
       </div>
-
-      <label>Set</label>
-      <div class="score-buttons" id="team1Sets">
-        <button onclick="updateSets(1, 0)">0</button>
-        <button onclick="updateSets(1, 1)">+1</button>
-        <button onclick="updateSets(1, -1)">-1</button>
+      <div class="categoria-container">
+        <span id="categoria-text">FEMININO D</span>
       </div>
-
-      <label>Tiebreak</label>
-      <div class="score-buttons" id="team1Tiebreak">
-        <button onclick="updateTiebreak(1, 0)">0</button>
-        <button onclick="updateTiebreak(1, 1)">+1</button>
-        <button onclick="updateTiebreak(1, -1)">-1</button>
-      </div>
-
-      <label><input type="radio" name="service" onchange="setService(1)"> Sacando</label>
     </div>
 
-    <div class="team-box">
-      <label>Nome Dupla 2</label>
-      <input type="text" onchange="updateName(2, this.value)" placeholder="Digite os nomes">
-
-      <label>Pontos</label>
-      <div class="score-buttons" id="team2Points">
-        <button onclick="setPoints(2, '0')">0</button>
-        <button onclick="setPoints(2, '15')">15</button>
-        <button onclick="setPoints(2, '30')">30</button>
-        <button onclick="setPoints(2, '40')">40</button>
+    <div class="team-row">
+      <div class="team-names-container">
+        <span id="team1-name">DIDÁ / GESIENE</span>
       </div>
-
-      <label>Set</label>
-      <div class="score-buttons" id="team2Sets">
-        <button onclick="updateSets(2, 0)">0</button>
-        <button onclick="updateSets(2, 1)">+1</button>
-        <button onclick="updateSets(2, -1)">-1</button>
-      </div>
-
-      <label>Tiebreak</label>
-      <div class="score-buttons" id="team2Tiebreak">
-        <button onclick="updateTiebreak(2, 0)">0</button>
-        <button onclick="updateTiebreak(2, 1)">+1</button>
-        <button onclick="updateTiebreak(2, -1)">-1</button>
-      </div>
-
-      <label><input type="radio" name="service" onchange="setService(2)"> Sacando</label>
+      <div class="points-button" id="team1-points">0</div>
+      <div class="sets-container" id="team1-sets">0</div>
+      <div class="tiebreak-indicator" id="team1-tiebreak" style="display: none;">TB</div>
+      <div class="serving-indicator" id="team1-serving" style="display: none;">Sacando</div>
     </div>
-  </div>
 
-  <div class="section">
-    <label>Texto Inferior</label>
-    <input type="text" onchange="updateBottomText(this.value)" placeholder="Categoria ou descrição">
+    <div class="team-row">
+      <div class="team-names-container">
+        <span id="team2-name">MATHEUS / ANA PAULA</span>
+      </div>
+      <div class="points-button" id="team2-points">0</div>
+      <div class="sets-container" id="team2-sets">0</div>
+      <div class="tiebreak-indicator" id="team2-tiebreak" style="display: none;">TB</div>
+      <div class="serving-indicator" id="team2-serving" style="display: none;">Sacando</div>
+    </div>
+
+    <div class="bottom-bar">
+      <strong><span id="circuito-text">CIRCUITO ARENA BEACH</span></strong>
+    </div>
+    <div class="break-point-indicator" id="break-point-area">BREAK POINT</div>
   </div>
 
   <script>
+    const team1NameElement = document.getElementById('team1-name');
+    const team2NameElement = document.getElementById('team2-name');
+    const team1PointsButton = document.getElementById('team1-points');
+    const team2PointsButton = document.getElementById('team2-points');
+    const team1SetsContainer = document.getElementById('team1-sets');
+    const team2SetsContainer = document.getElementById('team2-sets');
+    const categoriaTextElement = document.getElementById('categoria-text');
+    const circuitoTextElement = document.getElementById('circuito-text');
+    const cronometroElement = document.getElementById('cronometro');
+    const cronometroAreaElement = document.getElementById('cronometro-area');
+    const breakPointAreaElement = document.getElementById('break-point-area');
+    const team1TiebreakIndicator = document.getElementById('team1-tiebreak');
+    const team2TiebreakIndicator = document.getElementById('team2-tiebreak');
+    const team1ServingIndicator = document.getElementById('team1-serving');
+    const team2ServingIndicator = document.getElementById('team2-serving');
+
+    let cronometroInterval;
+    let segundos = 0;
+    let cronometroAtivo = false;
+    let tiebreakAtivo = false;
+
+    function formatTime(segundos) {
+      const minutos = Math.floor(segundos / 60).toString().padStart(2, '0');
+      const secs = (segundos % 60).toString().padStart(2, '0');
+      return `${minutos}:${secs}`;
+    }
+
+    function startCronometro() {
+      if (!cronometroAtivo) {
+        cronometroAtivo = true;
+        cronometroInterval = setInterval(() => {
+          segundos++;
+          cronometroElement.textContent = formatTime(segundos);
+        }, 1000);
+      }
+    }
+
+    function stopCronometro() {
+      clearInterval(cronometroInterval);
+      cronometroAtivo = false;
+      segundos = 0;
+      cronometroElement.textContent = '00:00';
+    }
+
     const channel = new BroadcastChannel('beachTennisScore');
 
-    function updateName(team, value) {
-      channel.postMessage({ type: 'name', team, value });
-    }
+    channel.onmessage = (event) => {
+      const data = event.data;
 
-    function setPoints(team, value) {
-      document.querySelectorAll(`#team${team}Points button`).forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.textContent === value) {
-          btn.classList.add('active');
-        }
-      });
-      channel.postMessage({ type: 'points', team, value });
-    }
+      switch (data.type) {
+        case 'name':
+          const names = data.value.split('/');
+          if (data.team === 1) {
+            team1NameElement.innerHTML = names.join('<span></span>');
+          } else {
+            team2NameElement.innerHTML = names.join('<span></span>');
+          }
+          break;
+        case 'points':
+          if (!tiebreakAtivo) {
+            if (data.team === 1) team1PointsButton.textContent = data.value;
+            else if (data.team === 2) team2PointsButton.textContent = data.value;
+          }
+          break;
+        case 'sets':
+          if (data.team === 1)
+            team1SetsContainer.textContent = parseInt(team1SetsContainer.textContent) + (data.change || 0);
+          else
+            team2SetsContainer.textContent = parseInt(team2SetsContainer.textContent) + (data.change || 0);
+          break;
+        case 'topText':
+          categoriaTextElement.textContent = data.value;
+          break;
+        case 'bottomText':
+          circuitoTextElement.textContent = data.value;
+          break;
+        case 'serving':
+          team1ServingIndicator.style.display = data.team === 1 ? 'block' : 'none';
+          team2ServingIndicator.style.display = data.team === 2 ? 'block' : 'none';
+          break;
+        case 'breakPoint':
+          cronometroAreaElement.style.display = data.value ? 'none' : 'flex';
+          breakPointAreaElement.style.display = data.value ? 'flex' : 'none';
+          break;
+        case 'tiebreak':
+          tiebreakAtivo = data.value;
+          if (data.team === 1) {
+            team1PointsButton.style.display = data.value ? 'none' : 'flex';
+            team1TiebreakIndicator.style.display = data.value ? 'flex' : 'none';
+            team1TiebreakIndicator.textContent = data.value ? (data.score || 'TB') : '';
+          } else {
+            team2PointsButton.style.display = data.value ? 'none' : 'flex';
+            team2TiebreakIndicator.style.display = data.value ? 'flex' : 'none';
+            team2TiebreakIndicator.textContent = data.value ? (data.score || 'TB') : '';
+          }
+          break;
+      }
 
-    function updateSets(team, change) {
-      channel.postMessage({ type: 'setsChange', team, change });
-    }
-
-    function updateTiebreak(team, change) {
-      channel.postMessage({ type: 'tiebreakChange', team, change });
-    }
-
-    function updateTopText(value) {
-      channel.postMessage({ type: 'topText', value });
-    }
-
-    function updateBottomText(value) {
-      channel.postMessage({ type: 'bottomText', value });
-    }
-
-    function setService(team) {
-      channel.postMessage({ type: 'serving', team });
-    }
-
-    function startTimer() {
-      channel.postMessage({ action: 'startTimer' });
-    }
-
-    function stopTimer() {
-      channel.postMessage({ action: 'stopTimer' });
-    }
-
-    function resetScore() {
-      channel.postMessage({ action: 'resetScore' });
-    }
-
-    function toggleView(viewType) {
-      channel.postMessage({ type: 'toggleView', view: viewType });
-    }
-
-    function setColor(component, value) {
-      channel.postMessage({ type: 'setColor', component, value });
-    }
+      if (data.action === 'startTimer') startCronometro();
+      else if (data.action === 'stopTimer') stopCronometro();
+      else if (data.action === 'resetGamePoints') {
+        team1PointsButton.textContent = 0;
+        team2PointsButton.textContent = 0;
+      } else if (data.action === 'resetScore') {
+        team1PointsButton.textContent = 0;
+        team2PointsButton.textContent = 0;
+        team1SetsContainer.textContent = 0;
+        team2SetsContainer.textContent = 0;
+      }
+    };
   </script>
 </body>
 </html>
