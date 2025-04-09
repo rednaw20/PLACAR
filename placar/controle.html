@@ -1,204 +1,179 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Controle do Placar - Beach Tennis</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle Placar Beach Tennis</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #f0f0f0;
-      margin: 0;
       padding: 20px;
     }
 
     h2 {
-      margin-top: 0;
       text-align: center;
+      color: #001c58;
     }
 
     .container {
-      max-width: 600px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 800px;
       margin: 0 auto;
-    }
-
-    .section {
-      background: white;
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
     label {
       font-weight: bold;
-      display: block;
-      margin-bottom: 5px;
     }
 
-    input[type="text"] {
+    input[type="text"], input[type="number"] {
       width: 100%;
-      padding: 10px;
+      padding: 8px;
       margin-bottom: 10px;
-      border-radius: 5px;
+    }
+
+    .score-buttons button {
+      padding: 8px 16px;
+      margin-right: 5px;
+      background-color: #eee;
       border: 1px solid #ccc;
-      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
-    button {
-      background-color: #007bff;
+    .score-buttons button.active {
+      background-color: #001c58;
       color: white;
-      padding: 12px;
-      margin: 5px 0;
+      border: 2px solid #001c58;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .actions button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #001c58;
+      color: white;
       border: none;
       border-radius: 5px;
-      font-size: 16px;
       cursor: pointer;
-      width: 100%;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .row button {
-      flex: 1;
-    }
-
-    .green {
-      background-color: #28a745;
-    }
-
-    .green:hover {
-      background-color: #218838;
-    }
-
-    .red {
-      background-color: #dc3545;
-    }
-
-    .red:hover {
-      background-color: #c82333;
-    }
-
-    iframe {
-      width: 100%;
-      height: 250px;
-      border: none;
-      margin-bottom: 20px;
-      border-radius: 8px;
     }
   </style>
 </head>
 <body>
+  <h2>Controle do Placar</h2>
   <div class="container">
-    <h2>Placar Beach Tennis</h2>
-    <iframe src="placar.html"></iframe>
+    <div>
+      <label>Nome Dupla 1</label>
+      <input type="text" onchange="updateName(1, this.value)" placeholder="Digite os nomes">
 
-    <div class="section">
-      <label>Nome Dupla 1:</label>
-      <input type="text" id="team1-name" value="DIDÁ / GESIENE" />
+      <label>Pontos</label>
+      <div class="score-buttons" id="team1Points">
+        <button onclick="setPoints(1, '0')">0</button>
+        <button onclick="setPoints(1, '15')">15</button>
+        <button onclick="setPoints(1, '30')">30</button>
+        <button onclick="setPoints(1, '40')">40</button>
+      </div>
 
-      <label>Nome Dupla 2:</label>
-      <input type="text" id="team2-name" value="MATHEUS / ANA PAULA" />
+      <label>Sets</label>
+      <input type="number" min="0" onchange="updateSets(1, this.value)">
 
-      <label>Texto Superior:</label>
-      <input type="text" id="top-text" value="FEMININO D" />
+      <label>Tiebreak</label>
+      <input type="number" min="0" onchange="updateTiebreak(1, this.value)">
 
-      <label>Texto Inferior:</label>
-      <input type="text" id="bottom-text" value="CIRCUITO ARENA BEACH" />
-
-      <button onclick="updateTexts()">Salvar Alterações</button>
+      <label><input type="radio" name="service" onchange="setService(1)"> Sacando</label>
     </div>
 
-    <div class="section">
-      <label>Saque:</label>
-      <div class="row">
-        <button class="green" onclick="sendMessage({ type: 'serving', team: 1 })">◄ Dupla 1</button>
-        <button class="green" onclick="sendMessage({ type: 'serving', team: 2 })">Dupla 2 ►</button>
-      </div>
-    </div>
+    <div>
+      <label>Nome Dupla 2</label>
+      <input type="text" onchange="updateName(2, this.value)" placeholder="Digite os nomes">
 
-    <div class="section">
-      <label>Pontuação Dupla 1:</label>
-      <div class="row">
-        <button onclick="sendPoints(1, 0)">0</button>
-        <button onclick="sendPoints(1, 15)">15</button>
-        <button onclick="sendPoints(1, 30)">30</button>
-        <button onclick="sendPoints(1, 40)">40</button>
+      <label>Pontos</label>
+      <div class="score-buttons" id="team2Points">
+        <button onclick="setPoints(2, '0')">0</button>
+        <button onclick="setPoints(2, '15')">15</button>
+        <button onclick="setPoints(2, '30')">30</button>
+        <button onclick="setPoints(2, '40')">40</button>
       </div>
 
-      <label>Sets Dupla 1:</label>
-      <div class="row">
-        <button onclick="sendMessage({ type: 'sets', team: 1, change: 1 })">+ Set</button>
-        <button onclick="sendMessage({ type: 'sets', team: 1, change: -1 })">- Set</button>
-      </div>
+      <label>Sets</label>
+      <input type="number" min="0" onchange="updateSets(2, this.value)">
 
-      <label>Tiebreak:</label>
-      <div class="row">
-        <button onclick="sendMessage({ type: 'tiebreakPoint', team: 1, change: 1 })">+1</button>
-        <button onclick="sendMessage({ type: 'tiebreakPoint', team: 1, change: -1 })">-1</button>
-      </div>
-    </div>
+      <label>Tiebreak</label>
+      <input type="number" min="0" onchange="updateTiebreak(2, this.value)">
 
-    <div class="section">
-      <label>Pontuação Dupla 2:</label>
-      <div class="row">
-        <button onclick="sendPoints(2, 0)">0</button>
-        <button onclick="sendPoints(2, 15)">15</button>
-        <button onclick="sendPoints(2, 30)">30</button>
-        <button onclick="sendPoints(2, 40)">40</button>
-      </div>
-
-      <label>Sets Dupla 2:</label>
-      <div class="row">
-        <button onclick="sendMessage({ type: 'sets', team: 2, change: 1 })">+ Set</button>
-        <button onclick="sendMessage({ type: 'sets', team: 2, change: -1 })">- Set</button>
-      </div>
-
-      <label>Tiebreak:</label>
-      <div class="row">
-        <button onclick="sendMessage({ type: 'tiebreakPoint', team: 2, change: 1 })">+1</button>
-        <button onclick="sendMessage({ type: 'tiebreakPoint', team: 2, change: -1 })">-1</button>
-      </div>
-    </div>
-
-    <div class="section">
-      <label>Controles:</label>
-      <div class="row">
-        <button class="green" onclick="sendMessage({ action: 'startTimer' })">Iniciar Cronômetro</button>
-        <button class="red" onclick="sendMessage({ action: 'stopTimer' })">Zerar Cronômetro</button>
-      </div>
-      <div class="row">
-        <button onclick="sendMessage({ action: 'resetGamePoints' })">Zerar Pontos</button>
-        <button class="red" onclick="sendMessage({ action: 'resetScore' })">Zerar Tudo</button>
-      </div>
+      <label><input type="radio" name="service" onchange="setService(2)"> Sacando</label>
     </div>
   </div>
 
+  <div style="max-width: 800px; margin: 20px auto;">
+    <label>Texto Superior</label>
+    <input type="text" onchange="updateTopText(this.value)" placeholder="Texto do topo do placar">
+
+    <label>Texto Inferior</label>
+    <input type="text" onchange="updateBottomText(this.value)" placeholder="Categoria ou descrição">
+  </div>
+
+  <div class="actions">
+    <button onclick="startTimer()">Iniciar Cronômetro</button>
+    <button onclick="stopTimer()">Parar</button>
+    <button onclick="resetScore()">Resetar</button>
+  </div>
+
   <script>
-    const channel = new BroadcastChannel("beachTennisScore");
+    const channel = new BroadcastChannel('beachTennisScore');
 
-    function sendMessage(data) {
-      console.log("Enviando:", data);
-      channel.postMessage(data);
+    function updateName(team, value) {
+      channel.postMessage({ type: 'name', team, value });
     }
 
-    function sendPoints(team, value) {
-      sendMessage({ type: "points", team, value });
+    function setPoints(team, value) {
+      document.querySelectorAll(`#team${team}Points button`).forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent === value) {
+          btn.classList.add('active');
+        }
+      });
+      channel.postMessage({ type: 'points', team, value });
     }
 
-    function updateTexts() {
-      sendMessage({ type: "name", team: 1, value: document.getElementById("team1-name").value });
-      sendMessage({ type: "name", team: 2, value: document.getElementById("team2-name").value });
-      sendMessage({ type: "topText", value: document.getElementById("top-text").value });
-      sendMessage({ type: "bottomText", value: document.getElementById("bottom-text").value });
+    function updateSets(team, value) {
+      channel.postMessage({ type: 'sets', team, value });
+    }
+
+    function updateTiebreak(team, value) {
+      channel.postMessage({ type: 'tiebreak', team, value });
+    }
+
+    function updateTopText(value) {
+      channel.postMessage({ type: 'topText', value });
+    }
+
+    function updateBottomText(value) {
+      channel.postMessage({ type: 'bottomText', value });
+    }
+
+    function setService(team) {
+      channel.postMessage({ type: 'serving', team });
+    }
+
+    function startTimer() {
+      channel.postMessage({ action: 'startTimer' });
+    }
+
+    function stopTimer() {
+      channel.postMessage({ action: 'stopTimer' });
+    }
+
+    function resetScore() {
+      channel.postMessage({ action: 'resetScore' });
     }
   </script>
 </body>
