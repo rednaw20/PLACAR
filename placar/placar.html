@@ -13,30 +13,30 @@
             --cor-fundo: #222;
             --cor-texto: #eee;
             --cor-container: #333;
-            --cor-texto-topo: #39ff14; /* Cor do texto do cronômetro */
-            --cor-fundo-topo: #000c60; /* Fundo do cronômetro */
-            --cor-fundo-categoria: #39ff14; /* Fundo da categoria */
-            --cor-texto-categoria: #000c60; /* Cor do texto da categoria */
+            --cor-texto-topo: #39ff14;
+            --cor-fundo-topo: #000c60;
+            --cor-fundo-categoria: #39ff14;
+            --cor-texto-categoria: #000c60;
             --cor-texto-circuito: #000c60;
             --cor-nome-fundo: #fff;
             --cor-nome-texto: #000c60;
-            --cor-marcador1-fundo: #000c60; /* Fundo dos primeiros marcadores (pontos) */
-            --cor-marcador1-texto: #39ff14; /* Cor da fonte dos primeiros marcadores (pontos) */
-            --cor-marcador2-fundo: #fff; /* Fundo dos segundos marcadores (sets) */
-            --cor-marcador2-texto: #000c60; /* Cor da fonte dos segundos marcadores (sets) */
-            --cor-fundo-inferior: #add8e6; /* Fundo azul claro inferior */
-            --cor-texto-inferior: #000c60; /* Cor da fonte inferior */
-            --tamanho-fonte-nome: 1.6em;
-            --tamanho-fonte-numeros: 3em; /* Para pontos */
-            --tamanho-fonte-sets: 3em; /* Para sets */
-            --tamanho-fonte-cronometro: 2em; /* Aumentei a fonte do cronômetro */
-            --tamanho-fonte-categoria: 1.6em; /* Aumentei a fonte da categoria */
-            --tamanho-fonte-circuito: 1em; /* Ajustei a fonte do circuito */
-            --largura-placar: 700px;
-            --padding-placar: 20px;
-            --padding-linhas: 15px 20px;
-            --espacamento-colunas: 3fr 1fr 1fr; /* Removida a coluna extra para o indicador de saque */
-            --cor-linha-divisoria: #add8e6; /* Cor da linha divisória (azul claro) */
+            --cor-marcador1-fundo: #000c60;
+            --cor-marcador1-texto: #39ff14;
+            --cor-marcador2-fundo: #fff;
+            --cor-marcador2-texto: #000c60;
+            --cor-fundo-inferior: #add8e6;
+            --cor-texto-inferior: #000c60;
+            --tamanho-fonte-nome: 1.4em;
+            --tamanho-fonte-numeros: 2.5em;
+            --tamanho-fonte-sets: 2.5em;
+            --tamanho-fonte-cronometro: 1.8em;
+            --tamanho-fonte-categoria: 1.4em;
+            --tamanho-fonte-circuito: 0.9em;
+            --largura-placar: 100%;
+            --padding-placar: 10px;
+            --padding-linhas: 8px 10px;
+            --espacamento-colunas: 3fr 1fr 1fr 1fr;
+            --cor-linha-divisoria: #add8e6;
         }
 
         body {
@@ -49,45 +49,50 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            box-sizing: border-box;
         }
 
         .scoreboard-container {
             background-color: var(--cor-container);
             color: var(--cor-texto);
-            border-radius: 10px;
-            box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
             overflow: hidden;
-            width: var(--largura-placar);
+            width: 100%;
             padding: var(--padding-placar);
             display: grid;
-            grid-template-rows: auto auto auto 1fr auto; /* Linha para a barra superior, linha para divisória, linhas dos times, linha inferior */
-            grid-template-columns: 1fr; /* Uma única coluna para o container principal */
+            grid-template-rows: auto auto auto 1fr auto;
+            grid-template-columns: 1fr;
+            box-sizing: border-box;
         }
 
         .top-bar {
             display: grid;
-            grid-template-columns: 3fr 2fr; /* Divide a barra superior para alinhar com os placares */
+            grid-template-columns: 3fr 2fr;
             border-bottom: 1px solid #555;
+            box-sizing: border-box;
         }
 
         .cronometro-container {
             background-color: var(--cor-fundo-topo);
             color: var(--cor-texto-topo);
-            padding: 10px 20px;
+            padding: 6px 10px;
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-sizing: border-box;
         }
 
         .categoria-container {
             background-color: var(--cor-fundo-categoria);
             color: var(--cor-texto-categoria);
-            padding: 10px 20px;
+            padding: 6px 10px;
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-sizing: border-box;
         }
 
         #cronometro {
@@ -96,7 +101,11 @@
 
         #categoria-text {
             font-size: var(--tamanho-fonte-categoria);
-            width: 80%;
+            width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            box-sizing: border-box;
         }
 
         .team-row {
@@ -105,32 +114,42 @@
             align-items: center;
             transition: background-color 0.3s ease;
             background-color: #fff;
-            grid-column: 1 / -1; /* Ocupa a largura total */
+            grid-column: 1 / -1;
+            padding: var(--padding-linhas);
+            box-sizing: border-box;
         }
 
         .team-row:nth-child(1) {
-            border-bottom: 2px solid var(--cor-linha-divisoria);
-            padding-bottom: 10px;
-            margin-bottom: 10px;
+            border-bottom: 1px solid var(--cor-linha-divisoria);
+            margin-bottom: 3px;
         }
 
         .team-names-container {
             background-color: var(--cor-nome-fundo);
             color: var(--cor-nome-texto);
-            padding: 8px;
-            border-radius: 5px;
+            padding: 4px;
+            border-radius: 4px;
             font-weight: bold;
             font-size: var(--tamanho-fonte-nome);
             text-align: left;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+            width: 95%;
         }
 
         .team-names-container span + span {
-            margin-top: 5px;
+            margin-top: 2px;
             border-top: 1px solid #ccc;
-            padding-top: 5px;
+            padding-top: 2px;
             width: 90%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
         }
 
         .points-button {
@@ -139,8 +158,8 @@
             font-family: 'Roboto Mono', monospace;
             font-size: var(--tamanho-fonte-numeros);
             text-align: center;
-            cursor: pointer;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            cursor: default;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
             transition: transform 0.2s ease-in-out;
             width: 100%;
             height: 100%;
@@ -148,12 +167,9 @@
             align-items: center;
             justify-content: center;
             border: none;
-            border-radius: 5px;
-            margin: 2px;
-        }
-
-        .points-button:hover {
-            transform: scale(1.1);
+            border-radius: 4px;
+            margin: 1px;
+            box-sizing: border-box;
         }
 
         .sets-container {
@@ -165,26 +181,31 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            border-radius: 5px;
-            margin: 2px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            margin: 1px;
+            box-sizing: border-box;
         }
 
         .bottom-bar {
             background-color: var(--cor-fundo-inferior);
             color: var(--cor-texto-inferior);
-            padding: 10px 20px;
+            padding: 6px 10px;
             text-align: left;
             font-size: var(--tamanho-fonte-circuito);
             border-top: 1px solid #555;
             grid-column: 1 / -1;
             display: flex;
             align-items: center;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
         }
 
         .bottom-bar strong {
             font-weight: bold;
-            margin-right: 10px;
+            margin-right: 5px;
         }
 
         .tiebreak-indicator {
@@ -194,25 +215,30 @@
             text-align: center;
             align-items: center;
             justify-content: center;
+            display: none;
+            box-sizing: border-box;
         }
 
         .serving-indicator {
-            font-size: 1.2em;
+            font-size: 0.9em;
             color: green;
             font-weight: bold;
             text-align: center;
+            display: none;
+            box-sizing: border-box;
         }
 
         .break-point-indicator {
             display: none;
             background-color: var(--cor-fundo-topo);
             color: var(--cor-texto-topo);
-            padding: 10px 20px;
+            padding: 6px 10px;
             text-align: center;
             grid-column: 1 / 2;
             font-size: var(--tamanho-fonte-cronometro);
             align-items: center;
             justify-content: center;
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -232,8 +258,8 @@
             </div>
             <div class="points-button" id="team1-points">0</div>
             <div class="sets-container" id="team1-sets">0</div>
-            <div class="tiebreak-indicator" id="team1-tiebreak" style="display: none;">TB</div>
-            <div class="serving-indicator" id="team1-serving" style="display: none;">Sacando</div>
+            <div class="tiebreak-indicator" id="team1-tiebreak">TB</div>
+            <div class="serving-indicator" id="team1-serving">Sacando</div>
         </div>
         <div class="team-row">
             <div class="team-names-container">
@@ -241,8 +267,8 @@
             </div>
             <div class="points-button" id="team2-points">0</div>
             <div class="sets-container" id="team2-sets">0</div>
-            <div class="tiebreak-indicator" id="team2-tiebreak" style="display: none;">TB</div>
-            <div class="serving-indicator" id="team2-serving" style="display: none;">Sacando</div>
+            <div class="tiebreak-indicator" id="team2-tiebreak">TB</div>
+            <div class="serving-indicator" id="team2-serving">Sacando</div>
         </div>
         <div class="bottom-bar">
             <strong><span id="circuito-text">CIRCUITO ARENA BEACH</span></strong>
@@ -301,7 +327,7 @@
 
         channel.onmessage = (event) => {
             const data = event.data;
-            console.log("Mensagem recebida no placar:", data);
+            console.log("Mensagem recebida no placar:", data); // LOG PARA DEBUG
 
             switch (data.type) {
                 case 'name':
@@ -347,6 +373,7 @@
                         team2TiebreakIndicator.style.display = data.value ? 'flex' : 'none';
                         team2TiebreakIndicator.textContent = data.value ? (data.score || 'TB') : '';
                     }
+                    tiebreakAtivo = data.value;
                     break;
             }
 
@@ -356,4 +383,13 @@
                 team1PointsButton.textContent = 0;
                 team2PointsButton.textContent = 0;
             } else if (data.action === 'resetScore') {
-                team1PointsButton.
+                team1PointsButton.textContent = 0;
+                team2PointsButton.textContent = 0;
+                
+		team1SetsContainer.textContent = 0;
+                team2SetsContainer.textContent = 0;
+            }
+        };
+    </script>
+</body>
+</html>
