@@ -118,7 +118,6 @@
         .timer-control,
         .tiebreak-control,
         .break-point-control,
-        .serving-control,
         .reset-control {
             display: flex;
             gap: 5px;
@@ -127,11 +126,31 @@
         }
 
         .timer-control button,
-        .serving-control button,
         .reset-control button {
             flex: 1 1 calc(50% - 5px);
             padding: 12px;
             font-size: 16px;
+        }
+
+        .serving-control {
+            display: flex;
+            flex-direction: column; /* Organizar verticalmente */
+            gap: 5px;
+            margin-bottom: 8px; /* Adicionar espaço abaixo */
+        }
+
+        .serving-control button {
+            padding: 12px;
+            font-size: 16px;
+            background-color: #00c853; /* Cor verde mais vibrante para saque */
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .serving-control button:hover {
+            background-color: #00a54a;
         }
 
         .tiebreak-control button {
@@ -170,6 +189,11 @@
                 <div class="control-group">
                     <label for="circuito-text-input">Texto Inferior:</label>
                     <input type="text" id="circuito-text-input" value="CIRCUITO ARENA BEACH">
+                </div>
+                <div class="control-group serving-control">
+                    <label>Saque:</label>
+                    <button onclick="sendMessage({ type: 'serving', team: 1 })">Dupla 1 Sacando ►</button>
+                    <button onclick="sendMessage({ type: 'serving', team: 2 })">◄ Dupla 2 Sacando</button>
                 </div>
                 <button onclick="updateData()">Atualizar Dados</button>
             </div>
@@ -219,10 +243,6 @@
                 <div class="control-group timer-control">
                     <button onclick="sendMessage({ action: 'startTimer' })" style="background-color: green; color: white;">Iniciar Cronômetro</button>
                     <button onclick="sendMessage({ action: 'stopTimer' })" style="background-color: red; color: white;">Zerar Cronômetro</button>
-                </div>
-                <div class="control-group serving-control">
-                    <button onclick="sendMessage({ type: 'serving', team: 1 })">Dupla 1 Sacando</button>
-                    <button onclick="sendMessage({ type: 'serving', team: 2 })">Dupla 2 Sacando</button>
                 </div>
                 <div class="control-group tiebreak-control">
                     <button onclick="sendMessage({ type: 'tiebreak', team: 1, change: 1 })">TB Dupla 1 +1 Set</button>
