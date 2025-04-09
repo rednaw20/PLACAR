@@ -13,54 +13,46 @@
       color: #000;
     }
 
-    .top-bar {
+    .quadros {
       display: flex;
       flex-direction: column;
-      background-color: #001c58;
-      color: #ffffff;
+      gap: 8px;
+      padding: 10px;
     }
 
-    .top-line {
-      background-color: #001c58;
-      color: #ffffff;
-      padding: 5px 10px;
-      font-size: 16px;
+    .quadro {
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .quadro1 { background-color: #e0f7fa; }
+    .quadro2 { background-color: #e8eaf6; }
+    .quadro3 { background-color: #fffde7; }
+    .quadro4 { background-color: #f3e5f5; }
+
+    .top-text-full {
+      font-size: 20px;
       font-weight: bold;
-      text-align: left;
+      color: #001c58;
+      text-align: center;
     }
 
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 5px 10px;
-      background-color: #001c58;
+      font-size: 18px;
     }
 
     .timer {
-      color: #00ff00;
-      font-size: 18px;
+      color: #00aa00;
       font-weight: bold;
-    }
-
-    .category {
-      background-color: #7fff00;
-      color: #000;
-      padding: 3px 8px;
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .scoreboard {
-      display: flex;
-      flex-direction: column;
     }
 
     .team-line {
       display: flex;
       align-items: center;
-      padding: 10px;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
     }
 
@@ -82,29 +74,20 @@
       text-align: center;
       background-color: #001c58;
       color: #00ff00;
-      font-size: 32px;
-      padding: 4px 0;
+      font-size: 28px;
       border-radius: 5px;
       margin: 0 5px;
     }
 
-    .sets {
+    .sets, .tiebreak {
       flex: 0.3;
       text-align: center;
-      font-size: 24px;
+      font-size: 20px;
       color: #001c58;
-      margin-right: 5px;
     }
 
     .sets.tiebreak-active {
       color: red;
-    }
-
-    .tiebreak {
-      flex: 0.3;
-      text-align: center;
-      font-size: 24px;
-      color: #001c58;
     }
 
     .footer {
@@ -117,32 +100,37 @@
   </style>
 </head>
 <body>
-  <div class="top-bar">
-    <div class="top-line" id="top-text">CIRCUITO ARENA BEACH - FASE DE GRUPO</div>
-    <div class="header">
+  <div class="quadros">
+    <div class="quadro quadro1 header">
       <div class="timer" id="timer">00:00</div>
-      <div class="category" id="category">FEMININO D</div>
     </div>
-  </div>
 
-  <div class="scoreboard">
-    <div class="team-line">
-      <div class="team-name" id="team1-name">MIRELLA / VANESSA</div>
-      <div class="points" id="team1-score">15</div>
-      <div class="sets" id="team1-sets">3</div>
-      <div class="tiebreak" id="team1-tiebreak">0</div>
+    <div class="quadro quadro2">
+      <div class="top-text-full" id="top-text">CAMPEONATO MUNICIPAL DE BEACH TENNIS - FINAL</div>
     </div>
-    <div class="team-line">
-      <div class="team-name" id="team2-name">ANNA / VALÉRIA</div>
-      <div class="points" id="team2-score">40</div>
-      <div class="sets" id="team2-sets">2</div>
-      <div class="tiebreak" id="team2-tiebreak">0</div>
+
+    <div class="quadro quadro3">
+      <div class="team-line">
+        <div class="team-name" id="team1-name">MIRELLA / VANESSA</div>
+        <div class="points" id="team1-score">15</div>
+        <div class="sets" id="team1-sets">3</div>
+        <div class="tiebreak" id="team1-tiebreak">0</div>
+      </div>
+      <div class="team-line">
+        <div class="team-name" id="team2-name">ANNA / VALÉRIA</div>
+        <div class="points" id="team2-score">40</div>
+        <div class="sets" id="team2-sets">2</div>
+        <div class="tiebreak" id="team2-tiebreak">0</div>
+      </div>
+    </div>
+
+    <div class="quadro quadro4">
+      <div class="footer" id="category">CIRCUITO ARENA BEACH - FEMININO D</div>
     </div>
   </div>
 
   <script>
     const channel = new BroadcastChannel('beachTennisScore');
-
     let timerInterval;
     let seconds = 0;
 
