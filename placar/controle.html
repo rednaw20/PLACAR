@@ -73,9 +73,9 @@
     }
 
     .score-buttons button.active {
-      background-color: #ff0000;
+      background-color: #ff5722;
       color: #fff;
-      border: 2px solid #ff0000;
+      border: 2px solid #ff5722;
     }
 
     .team-container {
@@ -97,11 +97,44 @@
       border-radius: 5px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
+
+    .color-selectors {
+      display: flex;
+      gap: 10px;
+      justify-content: space-around;
+      margin-bottom: 15px;
+    }
+
+    .color-selectors label {
+      font-size: 0.9rem;
+    }
+
+    .color-selectors input {
+      width: 80px;
+    }
+
+    .toggle-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
   </style>
 </head>
 <body>
-  <h2>Controle do Placar</h2>
   <img src="Screenshot_20250407_122158_YouTube.jpg" alt="Placar modelo" class="placar-img">
+  <h2>Controle do Placar</h2>
+
+  <div class="color-selectors">
+    <label>Cor Cronômetro: <input type="color" onchange="setColor('cronometro', this.value)"></label>
+    <label>Cor Texto Superior: <input type="color" onchange="setColor('topText', this.value)"></label>
+    <label>Cor Texto Inferior: <input type="color" onchange="setColor('bottomText', this.value)"></label>
+  </div>
+
+  <div class="section">
+    <label>Texto Superior</label>
+    <input type="text" onchange="updateTopText(this.value)" placeholder="Texto do topo do placar">
+  </div>
 
   <div class="section">
     <label>Cronômetro</label>
@@ -111,12 +144,7 @@
     </div>
   </div>
 
-  <div class="section">
-    <label>Texto Superior</label>
-    <input type="text" onchange="updateTopText(this.value)" placeholder="Texto do topo do placar">
-  </div>
-
-  <div class="actions">
+  <div class="toggle-buttons">
     <button onclick="toggleView('sets')">Sets</button>
     <button onclick="toggleView('tiebreak')">Tiebreak</button>
     <button onclick="resetScore()">Resetar</button>
@@ -135,11 +163,19 @@
         <button onclick="setPoints(1, '40')">40</button>
       </div>
 
-      <label>Sets</label>
-      <input type="number" min="0" onchange="updateSets(1, this.value)">
+      <label>Set</label>
+      <div class="score-buttons" id="team1Sets">
+        <button onclick="updateSets(1, 0)">0</button>
+        <button onclick="updateSets(1, 1)">+1</button>
+        <button onclick="updateSets(1, -1)">-1</button>
+      </div>
 
       <label>Tiebreak</label>
-      <input type="number" min="0" onchange="updateTiebreak(1, this.value)">
+      <div class="score-buttons" id="team1Tiebreak">
+        <button onclick="updateTiebreak(1, 0)">0</button>
+        <button onclick="updateTiebreak(1, 1)">+1</button>
+        <button onclick="updateTiebreak(1, -1)">-1</button>
+      </div>
 
       <label><input type="radio" name="service" onchange="setService(1)"> Sacando</label>
     </div>
@@ -156,11 +192,19 @@
         <button onclick="setPoints(2, '40')">40</button>
       </div>
 
-      <label>Sets</label>
-      <input type="number" min="0" onchange="updateSets(2, this.value)">
+      <label>Set</label>
+      <div class="score-buttons" id="team2Sets">
+        <button onclick="updateSets(2, 0)">0</button>
+        <button onclick="updateSets(2, 1)">+1</button>
+        <button onclick="updateSets(2, -1)">-1</button>
+      </div>
 
       <label>Tiebreak</label>
-      <input type="number" min="0" onchange="updateTiebreak(2, this.value)">
+      <div class="score-buttons" id="team2Tiebreak">
+        <button onclick="updateTiebreak(2, 0)">0</button>
+        <button onclick="updateTiebreak(2, 1)">+1</button>
+        <button onclick="updateTiebreak(2, -1)">-1</button>
+      </div>
 
       <label><input type="radio" name="service" onchange="setService(2)"> Sacando</label>
     </div>
@@ -188,12 +232,12 @@
       channel.postMessage({ type: 'points', team, value });
     }
 
-    function updateSets(team, value) {
-      channel.postMessage({ type: 'sets', team, value });
+    function updateSets(team, change) {
+      channel.postMessage({ type: 'setsChange', team, change });
     }
 
-    function updateTiebreak(team, value) {
-      channel.postMessage({ type: 'tiebreak', team, value });
+    function updateTiebreak(team, change) {
+      channel.postMessage({ type: 'tiebreakChange', team, change });
     }
 
     function updateTopText(value) {
@@ -222,6 +266,10 @@
 
     function toggleView(viewType) {
       channel.postMessage({ type: 'toggleView', view: viewType });
+    }
+
+    function setColor(component, value) {
+      channel.postMessage({ type: 'setColor', component, value });
     }
   </script>
 </body>
