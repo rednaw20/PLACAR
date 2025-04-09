@@ -29,13 +29,14 @@
             --tamanho-fonte-nome: 1.4em;
             --tamanho-fonte-numeros: 2.5em;
             --tamanho-fonte-sets: 2.5em;
+            --tamanho-fonte-tiebreak: 2.5em; /* Novo tamanho para tiebreak */
             --tamanho-fonte-cronometro: 1.8em;
             --tamanho-fonte-categoria: 1.4em;
             --tamanho-fonte-circuito: 0.9em;
             --largura-placar: 100%;
             --padding-placar: 10px;
             --padding-linhas: 8px 10px;
-            --espacamento-colunas: 3fr 1fr 1fr 1fr;
+            --espacamento-colunas: 3fr 1fr 1fr 1fr 1fr; /* Adicionando mais uma fração */
             --cor-linha-divisoria: #add8e6;
         }
 
@@ -198,6 +199,22 @@
             box-sizing: border-box;
         }
 
+        .tiebreak-container {
+            background-color: #f44336; /* Cor vermelha para destacar */
+            color: white;
+            font-family: 'Roboto Mono', monospace;
+            font-size: var(--tamanho-fonte-tiebreak);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            margin: 1px;
+            box-sizing: border-box;
+            display: none; /* Inicialmente oculto */
+        }
+
         .bottom-bar {
             background-color: var(--cor-fundo-inferior);
             color: var(--cor-texto-inferior);
@@ -217,18 +234,6 @@
         .bottom-bar strong {
             font-weight: bold;
             margin-right: 5px;
-        }
-
-        .tiebreak-indicator {
-            color: red;
-            font-weight: bold;
-            font-size: var(--tamanho-fonte-numeros);
-            text-align: center;
-            align-items: center;
-            justify-content: center;
-            display: none;
-            box-sizing: border-box;
-            margin-left: 5px; /* Espaço para não grudar no nome */
         }
 
         .serving-indicator {
@@ -272,7 +277,7 @@
             </div>
             <div class="points-button" id="team1-points">0</div>
             <div class="sets-container" id="team1-sets">0</div>
-            <div class="tiebreak-indicator" id="team1-tiebreak"></div>
+            <div class="tiebreak-container" id="team1-tiebreak-score"></div>
         </div>
         <div class="team-row">
             <div class="team-names-container">
@@ -283,7 +288,7 @@
             </div>
             <div class="points-button" id="team2-points">0</div>
             <div class="sets-container" id="team2-sets">0</div>
-            <div class="tiebreak-indicator" id="team2-tiebreak"></div>
+            <div class="tiebreak-container" id="team2-tiebreak-score"></div>
         </div>
         <div class="bottom-bar">
             <strong><span id="circuito-text">CIRCUITO ARENA BEACH</span></strong>
@@ -300,13 +305,13 @@
         const team2PointsButton = document.getElementById('team2-points');
         const team1SetsContainer = document.getElementById('team1-sets');
         const team2SetsContainer = document.getElementById('team2-sets');
+        const team1TiebreakScoreElement = document.getElementById('team1-tiebreak-score');
+        const team2TiebreakScoreElement = document.getElementById('team2-tiebreak-score');
         const categoriaTextElement = document.getElementById('categoria-text');
         const circuitoTextElement = document.getElementById('circuito-text');
         const cronometroElement = document.getElementById('cronometro');
         const cronometroAreaElement = document.getElementById('cronometro-area');
         const breakPointAreaElement = document.getElementById('break-point-area');
-        const team1TiebreakIndicator = document.getElementById('team1-tiebreak');
-        const team2TiebreakIndicator = document.getElementById('team2-tiebreak');
         const team1ServingIndicator = document.getElementById('team1-serving');
         const team2ServingIndicator = document.getElementById('team2-serving');
 
@@ -372,7 +377,7 @@
                     circuitoTextElement.textContent = data.value;
                     break;
                 case 'serving':
-                    team1ServingIndicator.style.display = data.team === 1 ? 'inline' : 'none';
+                    team1ServingIndicator.style.display = data.team=== 1 ? 'inline' : 'none';
                     team2ServingIndicator.style.display = data.team === 2 ? 'inline' : 'none';
                     break;
                 case 'breakPoint':
@@ -384,16 +389,16 @@
                     tiebreakAtivo = true;
                     team1PointsButton.style.display = 'none';
                     team2PointsButton.style.display = 'none';
-                    team1TiebreakIndicator.style.display = 'inline';
-                    team2TiebreakIndicator.style.display = 'inline';
+                    team1TiebreakScoreElement.style.display = 'flex';
+                    team2TiebreakScoreElement.style.display = 'flex';
                     if (data.team === 1) {
                         team1TiebreakScore += data.change;
-                        team1TiebreakIndicator.textContent = team1TiebreakScore;
-                        team1TiebreakIndicator.style.color = 'red';
-                    } else if (data.team ===2) {
+                        team1TiebreakScoreElement.textContent = team1TiebreakScore;
+                        team1TiebreakScoreElement.style.color = 'red';
+                    } else if (data.team === 2) {
                         team2TiebreakScore += data.change;
-                        team2TiebreakIndicator.textContent = team2TiebreakScore;
-                        team2TiebreakIndicator.style.color = 'red';
+                        team2TiebreakScoreElement.textContent = team2TiebreakScore;
+                        team2TiebreakScoreElement.style.color = 'red';
                     }
                     break;
                 case 'resetGamePoints':
@@ -401,10 +406,10 @@
                     team2PointsButton.textContent = 0;
                     team1TiebreakScore = 0;
                     team2TiebreakScore = 0;
-                    team1TiebreakIndicator.textContent = '';
-                    team2TiebreakIndicator.textContent = '';
-                    team1TiebreakIndicator.style.display = 'none';
-                    team2TiebreakIndicator.style.display = 'none';
+                    team1TiebreakScoreElement.textContent = '';
+                    team2TiebreakScoreElement.textContent = '';
+                    team1TiebreakScoreElement.style.display = 'none';
+                    team2TiebreakScoreElement.style.display = 'none';
                     team1PointsButton.style.display = 'flex';
                     team2PointsButton.style.display = 'flex';
                     team1ServingIndicator.style.display = 'none';
@@ -418,10 +423,10 @@
                     team2SetsContainer.textContent = 0;
                     team1TiebreakScore = 0;
                     team2TiebreakScore = 0;
-                    team1TiebreakIndicator.textContent = '';
-                    team2TiebreakIndicator.textContent = '';
-                    team1TiebreakIndicator.style.display = 'none';
-                    team2TiebreakIndicator.style.display = 'none';
+                    team1TiebreakScoreElement.textContent = '';
+                    team2TiebreakScoreElement.textContent = '';
+                    team1TiebreakScoreElement.style.display = 'none';
+                    team2TiebreakScoreElement.style.display = 'none';
                     team1PointsButton.style.display = 'flex';
                     team2PointsButton.style.display = 'flex';
                     team1ServingIndicator.style.display = 'none';
