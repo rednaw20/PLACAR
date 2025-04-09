@@ -116,7 +116,7 @@
         }
 
         .timer-control,
-        .tiebreak-control,
+        .tiebreak-control-section,
         .break-point-control,
         .reset-control {
             display: flex;
@@ -155,20 +155,21 @@
         }
 
         .tiebreak-control {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Duas colunas */
+            display: flex;
+            align-items: center;
             gap: 5px;
-            margin-top: 8px;
+            margin-top: 3px;
         }
 
         .tiebreak-control label {
-            grid-column: 1 / -1; /* Ocupa toda a largura */
             font-weight: bold;
-            margin-bottom: 3px;
+            font-size: 16px;
+            min-width: 80px; /* Para alinhar os controles */
+            text-align: right;
         }
 
         .tiebreak-control button {
-            padding: 12px;
+            padding: 8px 12px;
             font-size: 16px;
             background-color: #f44336; /* Cor vermelha */
             color: white;
@@ -239,6 +240,11 @@
                         <button onclick="sendMessage({ type: 'sets', team: 1, change: -1 })">- Set</button>
                     </div>
                 </div>
+                <div class="control-group tiebreak-control">
+                    <label>Tiebreak:</label>
+                    <button onclick="sendMessage({ type: 'tiebreakPoint', team: 1, change: 1 })">+1</button>
+                    <button onclick="sendMessage({ type: 'tiebreakPoint', team: 1, change: -1 })">-1</button>
+                </div>
             </div>
 
             <div class="control-container">
@@ -259,6 +265,11 @@
                         <button onclick="sendMessage({ type: 'sets', team: 2, change: -1 })">- Set</button>
                     </div>
                 </div>
+                <div class="control-group tiebreak-control">
+                    <label>Tiebreak:</label>
+                    <button onclick="sendMessage({ type: 'tiebreakPoint', team: 2, change: 1 })">+1</button>
+                    <button onclick="sendMessage({ type: 'tiebreakPoint', team: 2, change: -1 })">-1</button>
+                </div>
             </div>
 
             <div class="control-container">
@@ -266,13 +277,6 @@
                 <div class="control-group timer-control">
                     <button onclick="sendMessage({ action: 'startTimer' })" style="background-color: green; color: white;">Iniciar Cronômetro</button>
                     <button onclick="sendMessage({ action: 'stopTimer' })" style="background-color: red; color: white;">Zerar Cronômetro</button>
-                </div>
-                <div class="control-group tiebreak-control">
-                    <label>Tiebreak:</label>
-                    <button onclick="sendMessage({ type: 'tiebreakPoint', team: 1, change: 1 })">+1 Dupla 1</button>
-                    <button onclick="sendMessage({ type: 'tiebreakPoint', team: 1, change: -1 })">-1 Dupla 1</button>
-                    <button onclick="sendMessage({ type: 'tiebreakPoint', team: 2, change: 1 })">+1 Dupla 2</button>
-                    <button onclick="sendMessage({ type: 'tiebreakPoint', team: 2, change: -1 })">-1 Dupla 2</button>
                 </div>
                 <div class="control-group break-point-control">
                     <button onclick="handleBreakPoint()">Break Point</button>
