@@ -218,7 +218,7 @@
                     <label for="circuito-text-input">Texto Inferior:</label>
                     <input type="text" id="circuito-text-input" value="CIRCUITO ARENA BEACH">
                 </div>
-                <button onclick="updateData()">Salvar Alterações</button>
+                <button onclick="sendMessage({ type: 'name', team: 1, value: document.getElementById('team1-name-input').value }); sendMessage({ type: 'name', team: 2, value: document.getElementById('team2-name-input').value }); sendMessage({ type: 'topText', value: document.getElementById('categoria-text-input').value }); sendMessage({ type: 'bottomText', value: document.getElementById('circuito-text-input').value });">Salvar Alterações</button>
             </div>
 
             <div class="control-container">
@@ -226,10 +226,10 @@
                 <div class="control-group">
                     <label>Pontos:</label>
                     <div class="points-control">
-                        <button onclick="setPointsActive(this, 1, 0)">0</button>
-                        <button onclick="setPointsActive(this, 1, 15)">15</button>
-                        <button onclick="setPointsActive(this, 1, 30)">30</button>
-                        <button onclick="setPointsActive(this, 1, 40)">40</button>
+                        <button onclick="sendMessage({ type: 'points', team: 1, value: 0 })">0</button>
+                        <button onclick="sendMessage({ type: 'points', team: 1, value: 15 })">15</button>
+                        <button onclick="sendMessage({ type: 'points', team: 1, value: 30 })">30</button>
+                        <button onclick="sendMessage({ type: 'points', team: 1, value: 40 })">40</button>
                     </div>
                 </div>
                 <div class="control-group">
@@ -246,10 +246,10 @@
                 <div class="control-group">
                     <label>Pontos:</label>
                     <div class="points-control">
-                        <button onclick="setPointsActive(this, 2, 0)">0</button>
-                        <button onclick="setPointsActive(this, 2, 15)">15</button>
-                        <button onclick="setPointsActive(this, 2, 30)">30</button>
-                        <button onclick="setPointsActive(this, 2, 40)">40</button>
+                        <button onclick="sendMessage({ type: 'points', team: 2, value: 0 })">0</button>
+                        <button onclick="sendMessage({ type: 'points', team: 2, value: 15 })">15</button>
+                        <button onclick="sendMessage({ type: 'points', team: 2, value: 30 })">30</button>
+                        <button onclick="sendMessage({ type: 'points', team: 2, value: 40 })">40</button>
                     </div>
                 </div>
                 <div class="control-group">
@@ -287,99 +287,16 @@
 
     <script>
         const channel = new BroadcastChannel('beachTennisScore');
-        const team1NameInput = document.getElementById('team1-name-input');
-        const team2NameInput = document.getElementById('team2-name-input');
-        const categoriaTextInput = document.getElementById('categoria-text-input');
-        const circuitoTextInput = document.getElementById('circuito-text-input');
-        const scoreboardFrame = document.getElementById('scoreboard-frame');
-        let activePointButtons = {}; // Objeto para rastrear botões ativos por time
 
         function sendMessage(data) {
             console.log("Mensagem enviada do controle:", data);
             channel.postMessage(data);
         }
 
-        function updateData() {
-            const team1Name = team1NameInput.value;
-            const team2Name = team2NameInput.value;
-            const categoriaText = categoriaTextInput.value;
-            const circuitoText = circuitoTextInput.value;
-
-            localStorage.setItem('team1Name', team1Name);
-            localStorage.setItem('team2Name', team2Name);
-            localStorage.setItem('categoriaText', categoriaText);
-            localStorage.setItem('circuitoText', circuitoText);
-
-            sendMessage({ type: 'name', team: 1, value: team1Name });
-            sendMessage({ type: 'name', team: 2, value: team2Name });
-            sendMessage({ type: 'topText', value: categoriaText });
-            sendMessage({ type: 'bottomText', value: circuitoText });
-
-            alert('Dados salvos!'); // Feedback visual de que os dados foram salvos
-        }
-
-        function setPointsActive(button, team, value) {
-            sendMessage({ type: 'points', team: team, value: value });
-
-            const teamId = `team-${team}`;
-            const pointButtons = button.parentNode.querySelectorAll('button');
-
-            pointButtons.forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            button.classList.add('active');
-
-            // Manter o estado ativo para carregamento futuro (opcional)
-            if (!activePointButtons[teamId]) {
-                activePointButtons[teamId] = {};
-            }
-            activePointButtons[teamId].value = value;
-        }
-
         function handleBreakPoint() {
             sendMessage({ action: 'stopTimer' });
             sendMessage({ type: 'breakPoint', value: true });
         }
-
-        // Carregar dados salvos ao carregar a página de controle
-        window.onload = function() {
-            const savedTeam1Name = localStorage.getItem('team1Name');
-            const savedTeam2Name = localStorage.getItem('team2Name');
-            const savedCategoriaText = localStorage.getItem('categoriaText');
-            const savedCircuitoText = localStorage.getItem('circuitoText');
-
-            if (savedTeam1Name) team1NameInput.value = savedTeam1Name;
-            if (savedTeam2Name) team2NameInput.value = savedTeam2Name;
-            if (savedCategoriaText) categoriaTextInput.value = savedCategoriaText;
-            if (savedCircuitoText) circuitoTextInput.value = savedCircuitoText;
-
-            // Enviar dados iniciais para o placar, caso ele já esteja aberto
-            sendMessage({ type: 'name', team: 1, value: team1NameInput.value });
-            sendMessage({ type: 'name', team: 2, value: team2NameInput.value });
-            sendMessage({ type: 'topText', value: categoriaTextInput.value });
-            sendMessage({ type: 'bottomText', value: circuitoTextInput.value });
-
-            // Restaurar o estado ativo dos botões de ponto (opcional)
-            const team1PointsContainer = document.querySelectorAll('.control-container')[1].querySelector('.points-control');
-            const team2PointsContainer = document.querySelectorAll('.control-container')[2].querySelector('.points-control');
-
-            if (activePointButtons['team-1'] && team1PointsContainer) {
-                team1PointsContainer.querySelectorAll('button').forEach(btn => {
-                    if (parseInt(btn.textContent) === activePointButtons['team-1'].value) {
-                        btn.classList.add('active');
-                    }
-                });
-            }
-
-            if (activePointButtons['team-2'] && team2PointsContainer) {
-                team2PointsContainer.querySelectorAll('button').forEach(btn => {
-                    if (parseInt(btn.textContent) === activePointButtons['team-2'].value) {
-                        btn.classList.add('active');
-                    }
-                });
-            }
-        };
     </script>
 </body>
 </html>
