@@ -5,7 +5,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Placar Beach Tennis - Controle</title>
     <style>
-        /* Estilos CSS omitidos para brevidade - mantenha seus estilos */
+        body {
+            font-family: sans-serif;
+            margin: 10px;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main-container {
+            display: flex;
+            width: 98%;
+            max-width: 600px;
+            flex-direction: column;
+        }
+
+        .scoreboard-container {
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        #scoreboard-frame {
+            width: 100%;
+            height: 300px;
+            border: none;
+        }
+
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .control-container {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .control-group {
+            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .control-group input[type="text"],
+        .control-group button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .control-group button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+
+        .control-group button:hover {
+            background-color: #0056b3;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 5px;
+            margin-top: 3px;
+        }
+
+        .controls-row > * {
+            flex: 1;
+        }
+
+        .points-control {
+            display: flex;
+            gap: 5px;
+            margin-top: 3px;
+            flex-wrap: wrap;
+        }
+
+        .points-control button {
+            flex: 1 1 calc(50% - 5px);
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        .points-control button.active {
+            background-color: red;
+        }
+
+        .timer-control,
+        .tiebreak-control,
+        .break-point-control,
+        .reset-control {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .timer-control button,
+        .reset-control button {
+            flex: 1 1 calc(50% - 5px);
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        .serving-control {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+
+        .serving-control button {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #00c853; /* Cor verde mais vibrante para saque */
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-align: center; /* Centralizar o texto */
+        }
+
+        .serving-control button:hover {
+            background-color: #00a54a;
+        }
+
+        .tiebreak-control {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Duas colunas */
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .tiebreak-control label {
+            grid-column: 1 / -1; /* Ocupa toda a largura */
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .tiebreak-control button {
+            padding: 12px;
+            font-size: 16px;
+            background-color: #f44336; /* Cor vermelha */
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .tiebreak-control button:hover {
+            background-color: #d32f2f;
+        }
+
+        .break-point-control button {
+            background-color: green; /* Cor do cronômetro */
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -108,7 +287,99 @@
 
     <script>
         const channel = new BroadcastChannel('beachTennisScore');
-        // ... (seu JavaScript do controle) ...
+        const team1NameInput = document.getElementById('team1-name-input');
+        const team2NameInput = document.getElementById('team2-name-input');
+        const categoriaTextInput = document.getElementById('categoria-text-input');
+        const circuitoTextInput = document.getElementById('circuito-text-input');
+        const scoreboardFrame = document.getElementById('scoreboard-frame');
+        let activePointButtons = {}; // Objeto para rastrear botões ativos por time
+
+        function sendMessage(data) {
+            console.log("Mensagem enviada do controle:", data);
+            channel.postMessage(data);
+        }
+
+        function updateData() {
+            const team1Name = team1NameInput.value;
+            const team2Name = team2NameInput.value;
+            const categoriaText = categoriaTextInput.value;
+            const circuitoText = circuitoTextInput.value;
+
+            localStorage.setItem('team1Name', team1Name);
+            localStorage.setItem('team2Name', team2Name);
+            localStorage.setItem('categoriaText', categoriaText);
+            localStorage.setItem('circuitoText', circuitoText);
+
+            sendMessage({ type: 'name', team: 1, value: team1Name });
+            sendMessage({ type: 'name', team: 2, value: team2Name });
+            sendMessage({ type: 'topText', value: categoriaText });
+            sendMessage({ type: 'bottomText', value: circuitoText });
+
+            alert('Dados salvos!'); // Feedback visual de que os dados foram salvos
+        }
+
+        function setPointsActive(button, team, value) {
+            sendMessage({ type: 'points', team: team, value: value });
+
+            const teamId = `team-${team}`;
+            const pointButtons = button.parentNode.querySelectorAll('button');
+
+            pointButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            button.classList.add('active');
+
+            // Manter o estado ativo para carregamento futuro (opcional)
+            if (!activePointButtons[teamId]) {
+                activePointButtons[teamId] = {};
+            }
+            activePointButtons[teamId].value = value;
+        }
+
+        function handleBreakPoint() {
+            sendMessage({ action: 'stopTimer' });
+            sendMessage({ type: 'breakPoint', value: true });
+        }
+
+        // Carregar dados salvos ao carregar a página de controle
+        window.onload = function() {
+            const savedTeam1Name = localStorage.getItem('team1Name');
+            const savedTeam2Name = localStorage.getItem('team2Name');
+            const savedCategoriaText = localStorage.getItem('categoriaText');
+            const savedCircuitoText = localStorage.getItem('circuitoText');
+
+            if (savedTeam1Name) team1NameInput.value = savedTeam1Name;
+            if (savedTeam2Name) team2NameInput.value = savedTeam2Name;
+            if (savedCategoriaText) categoriaTextInput.value = savedCategoriaText;
+            if (savedCircuitoText) circuitoTextInput.value = savedCircuitoText;
+
+            // Enviar dados iniciais para o placar, caso ele já esteja aberto
+            sendMessage({ type: 'name', team: 1, value: team1NameInput.value });
+            sendMessage({ type: 'name', team: 2, value: team2NameInput.value });
+            sendMessage({ type: 'topText', value: categoriaTextInput.value });
+            sendMessage({ type: 'bottomText', value: circuitoTextInput.value });
+
+            // Restaurar o estado ativo dos botões de ponto (opcional)
+            const team1PointsContainer = document.querySelectorAll('.control-container')[1].querySelector('.points-control');
+            const team2PointsContainer = document.querySelectorAll('.control-container')[2].querySelector('.points-control');
+
+            if (activePointButtons['team-1'] && team1PointsContainer) {
+                team1PointsContainer.querySelectorAll('button').forEach(btn => {
+                    if (parseInt(btn.textContent) === activePointButtons['team-1'].value) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            if (activePointButtons['team-2'] && team2PointsContainer) {
+                team2PointsContainer.querySelectorAll('button').forEach(btn => {
+                    if (parseInt(btn.textContent) === activePointButtons['team-2'].value) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+        };
     </script>
 </body>
 </html>
