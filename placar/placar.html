@@ -13,69 +13,100 @@
       color: #000;
     }
 
-    .scoreboard {
+    .header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 20px;
-      background-color: #f0f0f0;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      justify-content: space-between;
+      background-color: #001c58;
+      color: #00ff00;
+      padding: 5px 10px;
+      font-size: 18px;
+      font-weight: bold;
     }
 
-    .team {
-      flex: 1;
-      text-align: center;
+    .category {
+      background-color: #7fff00;
+      color: #000;
+      padding: 3px 8px;
+      margin-left: 10px;
+    }
+
+    .scoreboard {
+      display: flex;
+      flex-direction: column;
+      border-top: 2px solid #ccc;
+      border-bottom: 2px solid #ccc;
+    }
+
+    .team-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      border-bottom: 1px solid #eee;
     }
 
     .team-name {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
+      flex: 2;
+      display: flex;
+      align-items: center;
+      color: #001c58;
     }
 
-    .score {
-      font-size: 60px;
-      font-weight: bold;
+    .team-name.serving::before {
+      content: '▶';
+      margin-right: 5px;
+      color: #001c58;
     }
 
-    .serving {
-      color: green;
-    }
-
-    .middle-info {
+    .points {
+      flex: 0.5;
       text-align: center;
+      background-color: #001c58;
+      color: #00ff00;
+      font-size: 32px;
+      padding: 4px 0;
+      border-radius: 5px;
     }
 
-    .middle-info h2,
-    .middle-info p {
-      margin: 5px 0;
+    .sets {
+      flex: 0.3;
+      text-align: center;
+      font-size: 24px;
+      color: #001c58;
     }
 
-    .tiebreak {
+    .footer {
+      background-color: #87cefa;
+      text-align: center;
       font-size: 18px;
       font-weight: bold;
-      color: red;
+      padding: 8px;
     }
   </style>
 </head>
 <body>
+  <div class="header">
+    <div id="timer">00:00</div>
+    <div class="category" id="top-text">FEMININO D</div>
+  </div>
+
   <div class="scoreboard">
-    <div class="team" id="team1">
-      <div class="team-name" id="team1-name">DIDÁ / GESIENE</div>
-      <div class="score" id="team1-score">0</div>
-      <div class="tiebreak" id="team1-tiebreak"></div>
+    <div class="team-line">
+      <div class="team-name" id="team1-name">MIRELLA / VANESSA</div>
+      <div class="points" id="team1-score">15</div>
+      <div class="sets" id="team1-sets">3</div>
     </div>
-    <div class="middle-info">
-      <h2 id="top-text">FEMININO D</h2>
-      <p id="timer">00:00</p>
-      <p id="bottom-text">CIRCUITO ARENA BEACH</p>
-    </div>
-    <div class="team" id="team2">
-      <div class="team-name" id="team2-name">MATHEUS / ANA PAULA</div>
-      <div class="score" id="team2-score">0</div>
-      <div class="tiebreak" id="team2-tiebreak"></div>
+    <div class="team-line">
+      <div class="team-name" id="team2-name">ANNA / VALÉRIA</div>
+      <div class="points" id="team2-score">40</div>
+      <div class="sets" id="team2-sets">2</div>
     </div>
   </div>
+
+  <div class="footer" id="bottom-text">CIRCUITO ARENA BEACH - FASE DE GRUPO</div>
 
   <script>
     const channel = new BroadcastChannel('beachTennisScore');
@@ -114,9 +145,8 @@
         document.getElementById(`team${data.team}-name`).textContent = data.value;
       } else if (data.type === 'points') {
         document.getElementById(`team${data.team}-score`).textContent = data.value;
-      } else if (data.type === 'tiebreakPoint') {
-        const el = document.getElementById(`team${data.team}-tiebreak`);
-        el.textContent = `Tiebreak: ${parseInt(el.textContent.split(': ')[1] || 0) + data.change}`;
+      } else if (data.type === 'sets') {
+        document.getElementById(`team${data.team}-sets`).textContent = data.value;
       } else if (data.type === 'topText') {
         document.getElementById('top-text').textContent = data.value;
       } else if (data.type === 'bottomText') {
@@ -128,18 +158,12 @@
         startTimer();
       } else if (data.action === 'stopTimer') {
         stopTimer();
-      } else if (data.action === 'resetGamePoints') {
-        document.getElementById('team1-score').textContent = 0;
-        document.getElementById('team2-score').textContent = 0;
-        document.getElementById('team1-tiebreak').textContent = '';
-        document.getElementById('team2-tiebreak').textContent = '';
       } else if (data.action === 'resetScore') {
-        document.getElementById('team1-score').textContent = 0;
-        document.getElementById('team2-score').textContent = 0;
-        document.getElementById('team1-tiebreak').textContent = '';
-        document.getElementById('team2-tiebreak').textContent = '';
-        document.getElementById('team1-name').textContent = '';
-        document.getElementById('team2-name').textContent = '';
+        ['1', '2'].forEach(team => {
+          document.getElementById(`team${team}-score`).textContent = '0';
+          document.getElementById(`team${team}-sets`).textContent = '0';
+          document.getElementById(`team${team}-name`).textContent = '';
+        });
         document.getElementById('top-text').textContent = '';
         document.getElementById('bottom-text').textContent = '';
         stopTimer();
