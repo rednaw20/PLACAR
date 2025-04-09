@@ -35,7 +35,7 @@
             --largura-placar: 700px;
             --padding-placar: 20px;
             --padding-linhas: 15px 20px;
-            --espacamento-colunas: 0.5fr 2.5fr 1fr 1fr 1fr; /* Espaço para o indicador, nome, pontos, sets, tiebreak */
+            --espacamento-colunas: 0.3fr 2.7fr 1fr 1fr 1fr; /* Ajustando as frações para o grid */
             --cor-linha-divisoria: #add8e6; /* Cor da linha divisória (azul claro) */
         }
 
@@ -60,18 +60,29 @@
             width: var(--largura-placar);
             padding: var(--padding-placar);
             display: grid;
-            grid-template-rows: auto auto 1fr auto; /* Linha para a barra superior, linha para divisória, linhas dos times, linha inferior */
-            grid-template-columns: 1fr; /* Uma única coluna para o container principal */
+            grid-template-rows: auto auto 1fr auto;
+            grid-template-columns: 1fr;
         }
 
         .top-bar {
             display: grid;
-            grid-template-columns: var(--espacamento-colunas); /* Usar o mesmo alinhamento */
+            grid-template-columns: 0.3fr 2.7fr; /* Alinhamento com a linha dos times */
             border-bottom: 1px solid #555;
         }
 
+        .serving-indicator-top {
+            grid-column: 1;
+            text-align: center;
+            font-size: 1.2em;
+            color: green;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .cronometro-container {
-            grid-column: 2; /* Alinhado com o nome */
+            grid-column: 2;
             background-color: var(--cor-fundo-topo);
             color: var(--cor-texto-topo);
             padding: 10px 20px;
@@ -82,7 +93,7 @@
         }
 
         .categoria-container {
-            grid-column: 3 / -1; /* Ocupa o restante do espaço */
+            grid-column: 1 / -1; /* Ocupa toda a largura abaixo do cronômetro */
             background-color: var(--cor-fundo-categoria);
             color: var(--cor-texto-categoria);
             padding: 10px 20px;
@@ -107,7 +118,7 @@
             align-items: center;
             transition: background-color 0.3s ease;
             background-color: #fff;
-            grid-column: 1 / -1; /* Ocupa a largura total */
+            grid-column: 1 / -1;
             padding: var(--padding-linhas);
             box-sizing: border-box;
         }
@@ -117,18 +128,19 @@
             margin-bottom: 10px;
         }
 
-        .serving-container {
-            grid-column: 1; /* Campo para o indicador de saque */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .serving-indicator {
+            grid-column: 1;
+            text-align: center;
             font-size: 1.2em;
             color: green;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .team-names-container {
-            grid-column: 2; /* Campo para o nome da dupla */
+            grid-column: 2;
             background-color: var(--cor-nome-fundo);
             color: var(--cor-nome-texto);
             padding: 8px;
@@ -149,7 +161,7 @@
         }
 
         .points-button {
-            grid-column: 3; /* Campo para os pontos */
+            grid-column: 3;
             background-color: var(--cor-marcador1-fundo);
             color: var(--cor-marcador1-texto);
             font-family: 'Roboto Mono', monospace;
@@ -174,7 +186,7 @@
         }
 
         .sets-container {
-            grid-column: 4; /* Campo para os sets */
+            grid-column: 4;
             background-color: var(--cor-marcador2-fundo);
             color: var(--cor-marcador2-texto);
             font-family: 'Roboto Mono', monospace;
@@ -190,37 +202,38 @@
         }
 
         .tiebreak-indicator {
-            grid-column: 5; /* Campo para o tiebreak */
+            grid-column: 5;
             color: red;
             font-weight: bold;
             font-size: var(--tamanho-fonte-numeros);
             text-align: center;
             align-items: center;
             justify-content: center;
-            display: flex; /* Para alinhar internamente */
+            display: flex;
         }
 
         .bottom-bar {
-            grid-column: 1 / -1; /* Ocupa toda a largura */
+            grid-column: 1 / -1;
         }
 
         .break-point-indicator {
-            grid-column: 1 / -1; /* Ocupa toda a largura */
+            grid-column: 1 / -1;
         }
     </style>
 </head>
 <body>
     <div class="scoreboard-container">
         <div class="top-bar">
-            <div class="serving-container"></div> <div class="cronometro-container" id="cronometro-area">
+            <div class="serving-indicator-top"></div>
+            <div class="cronometro-container" id="cronometro-area">
                 <span id="cronometro">00:00</span>
             </div>
-            <div class="categoria-container" id="categoria-area">
-                <span id="categoria-text">FEMININO D</span>
-            </div>
-            <div></div> <div></div> </div>
+        </div>
+        <div class="categoria-container" id="categoria-area">
+            <span id="categoria-text">FEMININO D</span>
+        </div>
         <div class="team-row">
-            <div class="serving-container" id="team1-serving"></div>
+            <div class="serving-indicator" id="team1-serving"></div>
             <div class="team-names-container">
                 <span id="team1-name">DIDÁ / GESIENE</span>
             </div>
@@ -229,7 +242,7 @@
             <div class="tiebreak-indicator" id="team1-tiebreak" style="display: none;">TB</div>
         </div>
         <div class="team-row">
-            <div class="serving-container" id="team2-serving"></div>
+            <div class="serving-indicator" id="team2-serving"></div>
             <div class="team-names-container">
                 <span id="team2-name">MATHEUS / ANA PAULA</span>
             </div>
@@ -259,8 +272,9 @@
         const breakPointAreaElement = document.getElementById('break-point-area');
         const team1TiebreakIndicator = document.getElementById('team1-tiebreak');
         const team2TiebreakIndicator = document.getElementById('team2-tiebreak');
-        const team1ServingContainer = document.getElementById('team1-serving');
-        const team2ServingContainer = document.getElementById('team2-serving');
+        const team1ServingIndicator = document.getElementById('team1-serving');
+        const team2ServingIndicator = document.getElementById('team2-serving');
+        const servingIndicatorTop = document.querySelector('.serving-indicator-top');
 
         let cronometroInterval;
         let segundos = 0;
@@ -299,11 +313,8 @@
             switch (data.type) {
                 case 'name':
                     const names = data.value.split('/');
-                    if (data.team === 1) {
-                        team1NameElement.textContent = names.join(' / ');
-                    } else if (data.team === 2) {
-                        team2NameElement.textContent = names.join(' / ');
-                    }
+                    team1NameElement.textContent = names.join(' / ');
+                    team2NameElement.textContent = names.join(' / ');
                     break;
                 case 'points':
                     if (!tiebreakAtivo) {
@@ -322,8 +333,9 @@
                     circuitoTextElement.textContent = data.value;
                     break;
                 case 'serving':
-                    team1ServingContainer.textContent = data.team === 1 ? '►' : '';
-                    team2ServingContainer.textContent = data.team === 2 ? '►' : '';
+                    servingIndicatorTop.textContent = data.team === 1 ? '►' : '';
+                    team1ServingIndicator.textContent = data.team === 1 ? '►' : '';
+                    team2ServingIndicator.textContent = data.team === 2 ? '►' : '';
                     break;
                 case 'breakPoint':
                     const isBreakPoint = data.value;
@@ -351,8 +363,9 @@
                     team1TiebreakIndicator.style.display = 'none';
                     team2TiebreakIndicator.style.display = 'none';
                     tiebreakAtivo = false;
-                    team1ServingContainer.textContent = '';
-                    team2ServingContainer.textContent = '';
+                    servingIndicatorTop.textContent = '';
+                    team1ServingIndicator.textContent = '';
+                    team2ServingIndicator.textContent = '';
                     break;
             }
 
