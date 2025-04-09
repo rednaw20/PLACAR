@@ -139,6 +139,13 @@
             margin-bottom: 8px; /* Adicionar espaço abaixo */
         }
 
+        .serving-control label {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
         .serving-control button {
             padding: 12px;
             font-size: 16px;
@@ -174,6 +181,11 @@
         <div class="controls-container">
             <div class="control-container">
                 <h2>Configurações Gerais</h2>
+                <div class="control-group serving-control">
+                    <label>Saque:</label>
+                    <button onclick="sendMessage({ type: 'serving', team: 1 })">Dupla 1 Sacando ►</button>
+                    <button onclick="sendMessage({ type: 'serving', team: 2 })">◄ Dupla 2 Sacando</button>
+                </div>
                 <div class="control-group">
                     <label for="team1-name-input">Nome Dupla 1:</label>
                     <input type="text" id="team1-name-input" value="DIDÁ / GESIENE">
@@ -189,11 +201,6 @@
                 <div class="control-group">
                     <label for="circuito-text-input">Texto Inferior:</label>
                     <input type="text" id="circuito-text-input" value="CIRCUITO ARENA BEACH">
-                </div>
-                <div class="control-group serving-control">
-                    <label>Saque:</label>
-                    <button onclick="sendMessage({ type: 'serving', team: 1 })">Dupla 1 Sacando ►</button>
-                    <button onclick="sendMessage({ type: 'serving', team: 2 })">◄ Dupla 2 Sacando</button>
                 </div>
                 <button onclick="updateData()">Atualizar Dados</button>
             </div>
