@@ -3,21 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Placar Beach Tennis</title>
+  <title>Scoreboard Tênis Profissional</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
 
     :root {
-      --cor-fundo: #1e1e1e;
-      --cor-texto: #f0f0f0;
-      --cor-principal: #39ff14;
-      --cor-secundaria: #000c60;
-      --cor-destaque: #add8e6;
-      --cor-set: #ffffff;
-      --cor-set-texto: #000c60;
-      --cor-botao-ativo: #ff9800;
-      --font-nome: 'Open Sans', sans-serif;
-      --font-numeros: 'Roboto Mono', monospace;
+      --cor-fundo: #121212;
+      --cor-texto: #e0e0e0;
+      --cor-primaria: #00ff88;
+      --cor-secundaria: #003366;
+      --cor-destaque: #f5f5f5;
+      --cor-ativo: #ffaa00;
+      --font-principal: 'Open Sans', sans-serif;
+      --font-digito: 'Roboto Mono', monospace;
     }
 
     * {
@@ -28,116 +26,121 @@
 
     body {
       background-color: var(--cor-fundo);
+      font-family: var(--font-principal);
       color: var(--cor-texto);
-      font-family: var(--font-nome);
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 1rem;
       min-height: 100vh;
+      padding: 1rem;
     }
 
     .placar {
-      background: #2c2c2c;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      background-color: #1f1f1f;
+      border-radius: 16px;
       overflow: hidden;
-      max-width: 800px;
+      max-width: 900px;
       width: 100%;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
       display: grid;
-      grid-template-rows: auto auto 1fr auto;
+      grid-template-rows: auto auto 1fr auto auto;
     }
 
     .topo, .rodape {
-      background: var(--cor-secundaria);
-      color: var(--cor-principal);
-      padding: 0.8rem;
+      background-color: var(--cor-secundaria);
+      color: var(--cor-primaria);
+      padding: 1rem;
       text-align: center;
-    }
-
-    .jogadores {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      padding: 0.5rem;
-      gap: 0.5rem;
-    }
-
-    .jogador {
-      background: #fff;
-      color: var(--cor-secundaria);
-      border-radius: 8px;
-      padding: 0.5rem;
       font-weight: bold;
       font-size: 1.2rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .pontuacao, .sets {
-      font-family: var(--font-numeros);
-      font-size: 2rem;
-      background: var(--cor-secundaria);
-      color: var(--cor-principal);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .pontuacao.ativo, .sets.ativo {
-      background: var(--cor-botao-ativo);
-      color: #fff;
     }
 
     .linha {
-      display: contents;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 0.5rem;
+      padding: 0.8rem;
+      align-items: center;
+      transition: background 0.3s ease;
+    }
+
+    .jogador {
+      background: var(--cor-destaque);
+      color: var(--cor-secundaria);
+      padding: 1rem;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .pontuacao, .sets {
+      font-family: var(--font-digito);
+      background: var(--cor-secundaria);
+      color: var(--cor-primaria);
+      padding: 1rem;
+      text-align: center;
+      border-radius: 12px;
+      font-size: 2.2rem;
+      transition: background 0.3s ease, transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .pontuacao.ativo, .sets.ativo {
+      background: var(--cor-ativo);
+      color: #fff;
+      transform: scale(1.1);
     }
 
     .info-extra {
-      text-align: center;
+      background: #ffd700;
+      color: #000;
       padding: 0.5rem;
-      background: var(--cor-destaque);
-      color: var(--cor-secundaria);
-      font-size: 0.9rem;
+      text-align: center;
+      display: none;
+      font-weight: bold;
+    }
+
+    .tie-break {
+      background-color: #440000 !important;
+      animation: piscar 1s infinite alternate;
+    }
+
+    @keyframes piscar {
+      from { opacity: 1; }
+      to { opacity: 0.5; }
     }
 
     @media (max-width: 600px) {
-      .jogadores {
+      .linha {
         grid-template-columns: 1fr 1fr;
         grid-template-areas:
           "nome nome"
           "ponto set";
       }
-      .jogador { grid-area: nome; }
+      .jogador {
+        grid-area: nome;
+      }
     }
   </style>
 </head>
 <body>
   <div class="placar">
     <div class="topo" id="cronometro">00:00</div>
-    <div class="topo" id="categoria">FEMININO D</div>
+    <div class="topo" id="categoria">MASCULINO A</div>
 
-    <div class="linha">
-      <div class="jogadores">
-        <div class="jogador" id="jogador1">DIDÁ / GESIENE</div>
-        <div class="pontuacao" id="pontos1">0</div>
-        <div class="sets" id="sets1">0</div>
-      </div>
+    <div class="linha" id="linha1">
+      <div class="jogador" id="jogador1">EQUIPE 1</div>
+      <div class="pontuacao" id="pontos1">0</div>
+      <div class="sets" id="sets1">0</div>
+    </div>
+    <div class="linha" id="linha2">
+      <div class="jogador" id="jogador2">EQUIPE 2</div>
+      <div class="pontuacao" id="pontos2">0</div>
+      <div class="sets" id="sets2">0</div>
     </div>
 
-    <div class="linha">
-      <div class="jogadores">
-        <div class="jogador" id="jogador2">MATHEUS / ANA PAULA</div>
-        <div class="pontuacao" id="pontos2">0</div>
-        <div class="sets" id="sets2">0</div>
-      </div>
-    </div>
-
-    <div class="rodape" id="circuito">CIRCUITO ARENA BEACH</div>
-    <div class="info-extra" id="breakpoint" style="display: none;">BREAK POINT</div>
+    <div class="info-extra" id="breakpoint">BREAK POINT</div>
+    <div class="rodape" id="circuito">TORNEIO MASTER 2025</div>
   </div>
 
   <script>
@@ -149,6 +152,8 @@
     const pontos2 = document.getElementById('pontos2');
     const sets1 = document.getElementById('sets1');
     const sets2 = document.getElementById('sets2');
+    const linha1 = document.getElementById('linha1');
+    const linha2 = document.getElementById('linha2');
 
     function atualizarCronometro() {
       tempo++;
@@ -167,16 +172,34 @@
       cronometro.textContent = '00:00';
     }
 
-    pontos1.addEventListener('click', () => toggleBotao(pontos1));
-    pontos2.addEventListener('click', () => toggleBotao(pontos2));
-    sets1.addEventListener('click', () => toggleBotao(sets1));
-    sets2.addEventListener('click', () => toggleBotao(sets2));
-
     function toggleBotao(botao) {
       botao.classList.toggle('ativo');
     }
 
-    // BroadcastChannel
+    function animarTroca(botao) {
+      botao.classList.add('ativo');
+      setTimeout(() => botao.classList.remove('ativo'), 400);
+    }
+
+    function checarTieBreak() {
+      const totalSets1 = parseInt(sets1.textContent);
+      const totalSets2 = parseInt(sets2.textContent);
+      const isTiebreak = totalSets1 === 1 && totalSets2 === 1;
+      linha1.classList.toggle('tie-break', isTiebreak);
+      linha2.classList.toggle('tie-break', isTiebreak);
+    }
+
+    pontos1.addEventListener('click', () => animarTroca(pontos1));
+    pontos2.addEventListener('click', () => animarTroca(pontos2));
+    sets1.addEventListener('click', () => {
+      animarTroca(sets1);
+      checarTieBreak();
+    });
+    sets2.addEventListener('click', () => {
+      animarTroca(sets2);
+      checarTieBreak();
+    });
+
     const canal = new BroadcastChannel('beachTennisScore');
 
     canal.onmessage = (e) => {
@@ -189,10 +212,12 @@
       if (d.type === 'points') {
         if (d.team === 1) pontos1.textContent = d.value;
         if (d.team === 2) pontos2.textContent = d.value;
+        animarTroca(d.team === 1 ? pontos1 : pontos2);
       }
       if (d.type === 'sets') {
         if (d.team === 1) sets1.textContent = d.value;
         if (d.team === 2) sets2.textContent = d.value;
+        checarTieBreak();
       }
       if (d.type === 'topText') categoria.textContent = d.value;
       if (d.type === 'bottomText') circuito.textContent = d.value;
