@@ -2,198 +2,207 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Controle - Beach Tennis</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Placar Beach Tennis Colorido</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+
     :root {
-      --primary: #007bff;
-      --danger: #dc3545;
-      --success: #28a745;
-      --warning: #ffc107;
-      --background: #f0f2f5;
+      --bg: #fefbd8;
+      --cor1: #ff6f61;
+      --cor2: #009688;
+      --cor-txt: #333;
+      --cor-txt-inv: #fff;
+      --cor-set: #ffd54f;
+      --cor-tiebreak: #f44336;
+      --font: 'Rubik', sans-serif;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: var(--background);
-      color: #333;
-    }
-
-    iframe#placar-frame {
-      width: 100%;
-      height: 150px;
-      border: none;
-      pointer-events: none;
-      transform: scale(0.85);
-      transform-origin: top left;
-    }
-
-    .container {
-      padding: 1rem;
+      background: var(--bg);
+      font-family: var(--font);
+      color: var(--cor-txt);
       display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      max-width: 600px;
-      margin: auto;
-    }
-
-    .section {
-      background: white;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
 
-    h2 {
-      margin-bottom: 0.75rem;
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    input {
+    .placar {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-
-    .row {
-      display: flex;
+      max-width: 900px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      background: #fff;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
       gap: 0.5rem;
-      margin-bottom: 0.75rem;
-      flex-wrap: wrap;
     }
 
-    .row button { flex: 1; }
-
-    button {
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      background-color: var(--primary);
-      color: white;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: 0.2s;
+    .topo, .rodape {
+      background: var(--cor1);
+      color: var(--cor-txt-inv);
+      text-align: center;
+      font-weight: bold;
+      padding: 0.8rem;
+      font-size: 1.1rem;
     }
 
-    button.danger { background-color: var(--danger); }
-    button.success { background-color: var(--success); }
-    button.warning { background-color: var(--warning); color: black; }
+    .linha {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 0.5rem;
+      align-items: center;
+      padding: 0.8rem;
+      background: #f0f0f0;
+    }
 
-    button.active { box-shadow: 0 0 0 3px rgba(40,167,69,0.3); }
-    button.serve { box-shadow: 0 0 0 3px rgba(255,193,7,0.5); }
+    .linha:nth-child(even) {
+      background: #e0e0e0;
+    }
 
-    button:active { transform: scale(0.97); }
+    .nome {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .ponto, .set {
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 8px;
+      padding: 0.5rem;
+      color: var(--cor-txt-inv);
+    }
+
+    .ponto {
+      background: var(--cor2);
+    }
+
+    .set {
+      background: var(--cor-set);
+      color: #000;
+    }
+
+    .ativo {
+      animation: destaque 0.3s ease;
+      transform: scale(1.05);
+    }
+
+    @keyframes destaque {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .tiebreak {
+      background-color: var(--cor-tiebreak) !important;
+      color: white !important;
+      animation: pisca 1s infinite;
+    }
+
+    @keyframes pisca {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .break {
+      text-align: center;
+      background: #ffc107;
+      color: #000;
+      font-weight: bold;
+      padding: 0.3rem;
+      display: none;
+    }
   </style>
 </head>
 <body>
-
-  <iframe id="placar-frame" src="placar.html"></iframe>
-
-  <div class="container">
-
-    <!-- Dupla 1 -->
-    <div class="section">
-      <h2>Dupla 1</h2>
-      <input type="text" id="team1-name" value="DIDÁ / GESIENE" />
-      <div class="row">
-        <button onclick="setPoints(1, 0)">0</button>
-        <button onclick="setPoints(1, 15)">15</button>
-        <button onclick="setPoints(1, 30)">30</button>
-        <button onclick="setPoints(1, 40)">40</button>
-      </div>
-      <div class="row">
-        <button onclick="changeSet(1, 1)">+ Set</button>
-        <button onclick="changeSet(1, -1)" class="danger">- Set</button>
-      </div>
-      <button id="serve1" onclick="setServe(1)">Saque</button>
+  <div class="placar">
+    <div class="topo" id="topText">Final Feminina - Etapa Verão</div>
+    
+    <div class="linha" id="linha1">
+      <div class="nome" id="nome1">DUPLA A</div>
+      <div class="ponto" id="ponto1">0</div>
+      <div class="set" id="set1">0</div>
+    </div>
+    <div class="linha" id="linha2">
+      <div class="nome" id="nome2">DUPLA B</div>
+      <div class="ponto" id="ponto2">0</div>
+      <div class="set" id="set2">0</div>
     </div>
 
-    <!-- Dupla 2 -->
-    <div class="section">
-      <h2>Dupla 2</h2>
-      <input type="text" id="team2-name" value="MATHEUS / ANA PAULA" />
-      <div class="row">
-        <button onclick="setPoints(2, 0)">0</button>
-        <button onclick="setPoints(2, 15)">15</button>
-        <button onclick="setPoints(2, 30)">30</button>
-        <button onclick="setPoints(2, 40)">40</button>
-      </div>
-      <div class="row">
-        <button onclick="changeSet(2, 1)">+ Set</button>
-        <button onclick="changeSet(2, -1)" class="danger">- Set</button>
-      </div>
-      <button id="serve2" onclick="setServe(2)">Saque</button>
-    </div>
+    <div class="break" id="breakInfo">BREAK POINT!</div>
 
-    <!-- Textos -->
-    <div class="section">
-      <h2>Textos</h2>
-      <input type="text" id="categoria" value="FEMININO D" />
-      <input type="text" id="circuito" value="CIRCUITO ARENA BEACH" />
-      <button onclick="atualizarTextos()">Atualizar Textos</button>
-    </div>
-
-    <!-- Extras -->
-    <div class="section">
-      <h2>Extras</h2>
-      <div class="row">
-        <button onclick="send({ action: 'startTimer' })">Iniciar Timer</button>
-        <button onclick="send({ action: 'stopTimer' })" class="danger">Zerar Timer</button>
-      </div>
-      <div class="row">
-        <button onclick="send({ action: 'resetGamePoints' })">Zerar Pontos</button>
-        <button onclick="send({ action: 'resetScore' })" class="danger">Zerar Tudo</button>
-      </div>
-      <div class="row">
-        <button id="breakOn" onclick="toggleBreak(true)">Break Point</button>
-        <button id="breakOff" onclick="toggleBreak(false)" class="danger">Cancelar Break</button>
-      </div>
-    </div>
+    <div class="rodape" id="bottomText">COPA ARENA SUNSET 2025</div>
   </div>
 
   <script>
-    const channel = new BroadcastChannel("beachTennisScore");
+    const ponto1 = document.getElementById('ponto1');
+    const ponto2 = document.getElementById('ponto2');
+    const set1 = document.getElementById('set1');
+    const set2 = document.getElementById('set2');
+    const nome1 = document.getElementById('nome1');
+    const nome2 = document.getElementById('nome2');
+    const linha1 = document.getElementById('linha1');
+    const linha2 = document.getElementById('linha2');
+    const topText = document.getElementById('topText');
+    const bottomText = document.getElementById('bottomText');
+    const breakInfo = document.getElementById('breakInfo');
 
-    function send(data) {
-      channel.postMessage(data);
+    function animar(el) {
+      el.classList.add('ativo');
+      setTimeout(() => el.classList.remove('ativo'), 300);
     }
 
-    function setPoints(team, value) {
-      send({ type: "points", team, value });
+    function verificarTieBreak() {
+      const s1 = parseInt(set1.textContent);
+      const s2 = parseInt(set2.textContent);
+      const tie = s1 === 1 && s2 === 1;
+      linha1.classList.toggle('tiebreak', tie);
+      linha2.classList.toggle('tiebreak', tie);
     }
 
-    function changeSet(team, change) {
-      send({ type: "sets", team, change });
-    }
+    const canal = new BroadcastChannel('beachTennisScore');
 
-    function setServe(team) {
-      send({ type: "serving", team });
-      document.getElementById("serve1").classList.remove("serve");
-      document.getElementById("serve2").classList.remove("serve");
-      document.getElementById(`serve${team}`).classList.add("serve");
-    }
+    canal.onmessage = ({ data }) => {
+      if (data.type === 'name') {
+        if (data.team === 1) nome1.textContent = data.value;
+        if (data.team === 2) nome2.textContent = data.value;
+      }
+      if (data.type === 'points') {
+        if (data.team === 1) {
+          ponto1.textContent = data.value;
+          animar(ponto1);
+        } else {
+          ponto2.textContent = data.value;
+          animar(ponto2);
+        }
+      }
+      if (data.type === 'sets') {
+        if (data.team === 1) {
+          set1.textContent = data.value;
+          animar(set1);
+        } else {
+          set2.textContent = data.value;
+          animar(set2);
+        }
+        verificarTieBreak();
+      }
+      if (data.type === 'topText') topText.textContent = data.value;
+      if (data.type === 'bottomText') bottomText.textContent = data.value;
 
-    function toggleBreak(on) {
-      send({ type: "breakPoint", value: on });
-      document.getElementById("breakOn").classList.toggle("active", on);
-      document.getElementById("breakOff").classList.toggle("active", !on);
-    }
-
-    function atualizarTextos() {
-      send({ type: "name", team: 1, value: document.getElementById("team1-name").value });
-      send({ type: "name", team: 2, value: document.getElementById("team2-name").value });
-      send({ type: "topText", value: document.getElementById("categoria").value });
-      send({ type: "bottomText", value: document.getElementById("circuito").value });
-    }
+      if (data.type === 'breakPoint') {
+        breakInfo.style.display = data.value ? 'block' : 'none';
+      }
+    };
   </script>
 </body>
 </html>
