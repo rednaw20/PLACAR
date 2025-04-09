@@ -2,230 +2,216 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scoreboard Profissional de Tênis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Placar Beach Tennis</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600&display=swap');
 
     :root {
-      --cor-fundo: #111;
-      --cor-texto: #fff;
-      --cor-primaria: #00ff88;
-      --cor-secundaria: #222;
-      --cor-destaque: #444;
-      --cor-ativo: #ffaa00;
-      --cor-tiebreak: #8b0000;
-      --font-principal: 'Open Sans', sans-serif;
-      --font-digito: 'Roboto Mono', monospace;
+      --fundo: #fffbe6;
+      --texto: #222;
+      --azul: #0077ff;
+      --laranja: #ff7b00;
+      --verde: #00c853;
+      --sombra: rgba(0,0,0,0.15);
+      --sacando: #000;
+      --breakpoint: #d50000;
+      --font: 'Barlow Condensed', sans-serif;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: var(--font-principal);
-      background-color: var(--cor-fundo);
+      background: var(--fundo);
+      font-family: var(--font);
+      color: var(--texto);
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
       padding: 1rem;
-      color: var(--cor-texto);
     }
 
     .placar {
-      display: grid;
-      grid-template-rows: repeat(4, auto);
-      gap: 0.5rem;
-      background: var(--cor-secundaria);
-      padding: 1rem;
-      border-radius: 12px;
-      max-width: 900px;
       width: 100%;
-      box-shadow: 0 0 20px #000a;
+      max-width: 900px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px var(--sombra);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
     }
 
-    .top-info, .bottom-info {
+    .topo, .rodape {
+      background: var(--azul);
+      color: #fff;
       text-align: center;
-      padding: 0.5rem;
-      background-color: var(--cor-destaque);
-      font-weight: bold;
       font-size: 1.2rem;
+      padding: 0.5rem;
+    }
+
+    .linhas {
+      display: grid;
+      grid-template-rows: repeat(2, 1fr);
     }
 
     .linha {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 0.5rem;
+      grid-template-columns: 1fr 0.5fr 0.5fr 0.5fr;
       align-items: center;
-      padding: 0.5rem;
+      gap: 0.3rem;
+      padding: 0.7rem;
+      font-size: 1.5rem;
     }
 
-    .jogador {
-      background: #eee;
-      color: #000;
-      padding: 0.8rem;
-      border-radius: 8px;
+    .linha:nth-child(odd) {
+      background: #e0f7fa;
+    }
+
+    .nome {
+      font-size: 1.4rem;
       font-weight: bold;
-      font-size: 1.1rem;
     }
 
-    .pontuacao, .sets {
-      font-family: var(--font-digito);
-      background: #000;
-      color: var(--cor-primaria);
-      font-size: 2rem;
-      padding: 0.8rem;
-      text-align: center;
-      border-radius: 8px;
-      transition: transform 0.2s, background 0.2s;
-    }
-
-    .pontuacao.ativo, .sets.ativo {
-      background: var(--cor-ativo);
-      color: #fff;
-      transform: scale(1.1);
-    }
-
-    .linha.tie-break {
-      background-color: var(--cor-tiebreak);
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      0% { opacity: 1; }
-      50% { opacity: 0.6; }
-      100% { opacity: 1; }
-    }
-
-    .info-extra {
-      background: yellow;
-      color: #000;
+    .ponto, .set {
+      background: var(--laranja);
+      color: white;
       padding: 0.5rem;
+      border-radius: 6px;
       text-align: center;
-      font-weight: bold;
-      display: none;
+      transition: all 0.3s;
     }
 
-    @media (max-width: 600px) {
-      .linha {
-        grid-template-columns: 1fr 1fr;
-        grid-template-areas:
-          "nome nome"
-          "ponto set";
-      }
-      .jogador {
-        grid-area: nome;
-      }
+    .set {
+      background: var(--verde);
+    }
+
+    .ativo {
+      transform: scale(1.15);
+    }
+
+    .sacando::before {
+      content: 'S';
+      display: inline-block;
+      margin-right: 6px;
+      background: var(--sacando);
+      color: white;
+      font-size: 0.8rem;
+      border-radius: 50%;
+      width: 1.2rem;
+      height: 1.2rem;
+      text-align: center;
+      line-height: 1.2rem;
+    }
+
+    .break {
+      grid-column: 1 / -1;
+      background: var(--breakpoint);
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      animation: piscar 1s infinite;
+    }
+
+    @keyframes piscar {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
   </style>
 </head>
 <body>
   <div class="placar">
-    <div class="top-info" id="categoria">Final Masculina - Open 2025</div>
-    <div class="top-info" id="cronometro">00:00</div>
+    <div class="topo" id="topo-texto">FINAL MASCULINA</div>
 
-    <div class="linha" id="linha1">
-      <div class="jogador" id="jogador1">DUPLA A</div>
-      <div class="pontuacao" id="pontos1">0</div>
-      <div class="sets" id="sets1">0</div>
-    </div>
-    <div class="linha" id="linha2">
-      <div class="jogador" id="jogador2">DUPLA B</div>
-      <div class="pontuacao" id="pontos2">0</div>
-      <div class="sets" id="sets2">0</div>
+    <div class="linhas">
+      <div class="linha" id="linha1">
+        <div class="nome" id="nome1">DUPLA A</div>
+        <div class="ponto" id="pontos1">0</div>
+        <div class="set" id="set1">0</div>
+        <div class="set" id="tb1"></div>
+      </div>
+      <div class="linha" id="linha2">
+        <div class="nome" id="nome2">DUPLA B</div>
+        <div class="ponto" id="pontos2">0</div>
+        <div class="set" id="set2">0</div>
+        <div class="set" id="tb2"></div>
+      </div>
     </div>
 
-    <div class="info-extra" id="breakpoint">BREAK POINT</div>
-    <div class="bottom-info" id="circuito">CAMPEONATO BRASILEIRO DE BEACH TENNIS 2025</div>
+    <div class="break" id="breakpoint" style="display: none;">BREAK POINT</div>
+
+    <div class="rodape" id="rodape-texto">CIRCUITO ARENA BEACH 2025</div>
   </div>
 
   <script>
-    let tempo = 0;
-    let intervalo;
+    const canal = new BroadcastChannel('beachTennisScore');
 
-    const cronometro = document.getElementById('cronometro');
+    const nome1 = document.getElementById('nome1');
+    const nome2 = document.getElementById('nome2');
     const pontos1 = document.getElementById('pontos1');
     const pontos2 = document.getElementById('pontos2');
-    const sets1 = document.getElementById('sets1');
-    const sets2 = document.getElementById('sets2');
+    const set1 = document.getElementById('set1');
+    const set2 = document.getElementById('set2');
+    const tb1 = document.getElementById('tb1');
+    const tb2 = document.getElementById('tb2');
+    const topoTexto = document.getElementById('topo-texto');
+    const rodapeTexto = document.getElementById('rodape-texto');
+    const breakpoint = document.getElementById('breakpoint');
     const linha1 = document.getElementById('linha1');
     const linha2 = document.getElementById('linha2');
-    const categoria = document.getElementById('categoria');
-    const circuito = document.getElementById('circuito');
-    const breakpoint = document.getElementById('breakpoint');
-    const jogador1 = document.getElementById('jogador1');
-    const jogador2 = document.getElementById('jogador2');
-
-    function atualizarCronometro() {
-      tempo++;
-      const min = String(Math.floor(tempo / 60)).padStart(2, '0');
-      const seg = String(tempo % 60).padStart(2, '0');
-      cronometro.textContent = `${min}:${seg}`;
-    }
-
-    function iniciarCronometro() {
-      intervalo = setInterval(atualizarCronometro, 1000);
-    }
-
-    function resetarCronometro() {
-      clearInterval(intervalo);
-      tempo = 0;
-      cronometro.textContent = '00:00';
-    }
-
-    function animarTroca(elem) {
-      elem.classList.add('ativo');
-      setTimeout(() => elem.classList.remove('ativo'), 300);
-    }
-
-    function checarTieBreak() {
-      const s1 = parseInt(sets1.textContent);
-      const s2 = parseInt(sets2.textContent);
-      const tie = s1 === 1 && s2 === 1;
-      linha1.classList.toggle('tie-break', tie);
-      linha2.classList.toggle('tie-break', tie);
-    }
-
-    pontos1.addEventListener('click', () => animarTroca(pontos1));
-    pontos2.addEventListener('click', () => animarTroca(pontos2));
-    sets1.addEventListener('click', () => {
-      animarTroca(sets1);
-      checarTieBreak();
-    });
-    sets2.addEventListener('click', () => {
-      animarTroca(sets2);
-      checarTieBreak();
-    });
-
-    const canal = new BroadcastChannel('beachTennisScore');
 
     canal.onmessage = (e) => {
       const d = e.data;
-      if (d.type === 'name') {
-        if (d.team === 1) jogador1.textContent = d.value;
-        if (d.team === 2) jogador2.textContent = d.value;
-      }
-      if (d.type === 'points') {
-        if (d.team === 1) pontos1.textContent = d.value;
-        if (d.team === 2) pontos2.textContent = d.value;
-        animarTroca(d.team === 1 ? pontos1 : pontos2);
-      }
-      if (d.type === 'sets') {
-        if (d.team === 1) sets1.textContent = d.value;
-        if (d.team === 2) sets2.textContent = d.value;
-        checarTieBreak();
-      }
-      if (d.type === 'topText') categoria.textContent = d.value;
-      if (d.type === 'bottomText') circuito.textContent = d.value;
-      if (d.type === 'breakPoint') breakpoint.style.display = d.value ? 'block' : 'none';
 
-      if (d.action === 'startTimer') iniciarCronometro();
-      if (d.action === 'stopTimer') resetarCronometro();
+      if (d.type === 'name') {
+        if (d.team === 1) nome1.textContent = d.value;
+        if (d.team === 2) nome2.textContent = d.value;
+      }
+
+      if (d.type === 'points') {
+        if (d.team === 1) {
+          pontos1.textContent = d.value;
+          animar(pontos1);
+        }
+        if (d.team === 2) {
+          pontos2.textContent = d.value;
+          animar(pontos2);
+        }
+      }
+
+      if (d.type === 'sets') {
+        if (d.team === 1) {
+          set1.textContent = d.value;
+          animar(set1);
+        }
+        if (d.team === 2) {
+          set2.textContent = d.value;
+          animar(set2);
+        }
+      }
+
+      if (d.type === 'tiebreak') {
+        if (d.team === 1) tb1.textContent = d.value ? d.score : '';
+        if (d.team === 2) tb2.textContent = d.value ? d.score : '';
+      }
+
+      if (d.type === 'serving') {
+        nome1.classList.toggle('sacando', d.team === 1);
+        nome2.classList.toggle('sacando', d.team === 2);
+      }
+
+      if (d.type === 'breakPoint') {
+        breakpoint.style.display = d.value ? 'block' : 'none';
+      }
+
+      if (d.type === 'topText') topoTexto.textContent = d.value;
+      if (d.type === 'bottomText') rodapeTexto.textContent = d.value;
     };
+
+    function animar(elem) {
+      elem.classList.add('ativo');
+      setTimeout(() => elem.classList.remove('ativo'), 300);
+    }
   </script>
 </body>
 </html>
