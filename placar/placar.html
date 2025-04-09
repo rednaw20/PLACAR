@@ -133,7 +133,7 @@
             font-size: var(--tamanho-fonte-nome);
             text-align: left;
             display: flex;
-            flex-direction: column;
+            align-items: center; /* Alinhar verticalmente para o indicador de saque */
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -217,6 +217,7 @@
             justify-content: center;
             display: none;
             box-sizing: border-box;
+            margin-left: 5px; /* Espaço para não grudar no nome */
         }
 
         .serving-indicator {
@@ -224,8 +225,8 @@
             color: green;
             font-weight: bold;
             text-align: center;
-            display: none;
             box-sizing: border-box;
+            margin-right: 5px; /* Espaço entre a seta e o nome */
         }
 
         .break-point-indicator {
@@ -254,21 +255,21 @@
         </div>
         <div class="team-row">
             <div class="team-names-container">
+                <span id="team1-serving" class="serving-indicator">◄</span>
                 <span id="team1-name">DIDÁ / GESIENE</span>
             </div>
             <div class="points-button" id="team1-points">0</div>
             <div class="sets-container" id="team1-sets">0</div>
-            <div class="tiebreak-indicator" id="team1-tiebreak">TB</div>
-            <div class="serving-indicator" id="team1-serving">Sacando</div>
+            <div class="tiebreak-indicator" id="team1-tiebreak"></div>
         </div>
         <div class="team-row">
             <div class="team-names-container">
+                <span id="team2-serving" class="serving-indicator">►</span>
                 <span id="team2-name">MATHEUS / ANA PAULA</span>
             </div>
             <div class="points-button" id="team2-points">0</div>
             <div class="sets-container" id="team2-sets">0</div>
-            <div class="tiebreak-indicator" id="team2-tiebreak">TB</div>
-            <div class="serving-indicator" id="team2-serving">Sacando</div>
+            <div class="tiebreak-indicator" id="team2-tiebreak"></div>
         </div>
         <div class="bottom-bar">
             <strong><span id="circuito-text">CIRCUITO ARENA BEACH</span></strong>
@@ -299,6 +300,8 @@
         let segundos = 0;
         let cronometroAtivo = false;
         let tiebreakAtivo = false;
+        let team1TiebreakScore = 0;
+        let team2TiebreakScore = 0;
 
         function formatTime(segundos) {
             const minutos = Math.floor(segundos / 60).toString().padStart(2, '0');
@@ -355,41 +358,62 @@
                     circuitoTextElement.textContent = data.value;
                     break;
                 case 'serving':
-                    team1ServingIndicator.style.display = data.team === 1 ? 'block' : 'none';
-                    team2ServingIndicator.style.display = data.team === 2 ? 'block' : 'none';
+                    team1ServingIndicator.style.display = data.team === 1 ? 'inline' : 'none';
+                    team2ServingIndicator.style.display = data.team === 2 ? 'inline' : 'none';
                     break;
                 case 'breakPoint':
                     const isBreakPoint = data.value;
                     cronometroAreaElement.style.display = isBreakPoint ? 'none' : 'flex';
                     breakPointAreaElement.style.display = isBreakPoint ? 'flex' : 'none';
                     break;
-                case 'tiebreak':
+                case 'tiebreakPoint':
+                    tiebreakAtivo = true;
+                    team1PointsButton.style.display = 'none';
+                    team2PointsButton.style.display = 'none';
+                    team1TiebreakIndicator.style.display = 'inline';
+                    team2TiebreakIndicator.style.display = 'inline';
                     if (data.team === 1) {
-                        team1PointsButton.style.display = data.value ? 'none' : 'flex';
-                        team1TiebreakIndicator.style.display = data.value ? 'flex' : 'none';
-                        team1TiebreakIndicator.textContent = data.value ? (data.score || 'TB') : '';
+                        team1TiebreakScore += data.change;
+                        team1TiebreakIndicator.textContent = team1TiebreakScore;
+                        team1TiebreakIndicator.style.color = 'red';
                     } else if (data.team === 2) {
-                        team2PointsButton.style.display = data.value ? 'none' : 'flex';
-                        team2TiebreakIndicator.style.display = data.value ? 'flex' : 'none';
-                        team2TiebreakIndicator.textContent = data.value ? (data.score || 'TB') : '';
+                        team2TiebreakScore += data.change;
+                        team2TiebreakIndicator.textContent = team2TiebreakScore;
+                        team2TiebreakIndicator.style.color = 'red';
                     }
-                    tiebreakAtivo = data.value;
                     break;
             }
 
             if (data.action === 'startTimer') startCronometro();
             else if (data.action === 'stopTimer') stopCronometro();
             else if (data.action === 'resetGamePoints') {
-                team1PointsButton.textContent = 0;
-                team2PointsButton.textContent = 0;
-            } else if (data.action === 'resetScore') {
-                team1PointsButton.textContent = 0;
-                team2PointsButton.textContent = 0;
-                
-		team1SetsContainer.textContent = 0;
-                team2SetsContainer.textContent = 0;
-            }
-        };
+                    team1PointsButton.textContent = 0;
+                    team2PointsButton.textContent = 0;
+                    team1TiebreakScore = 0;
+                    team2TiebreakScore = 0;
+                    team1TiebreakIndicator.textContent = '';
+                    team2TiebreakIndicator.textContent = '';
+                    team1TiebreakIndicator.style.display = 'none';
+                    team2TiebreakIndicator.style.display = 'none';
+                    team1PointsButton.style.display = 'flex';
+                    team2PointsButton.style.display = 'flex';
+                    tiebreakAtivo = false;
+                } else if (data.action === 'resetScore') {
+                    team1PointsButton.textContent = 0;
+                    team2PointsButton.textContent = 0;
+                    team1SetsContainer.textContent = 0;
+                    team2SetsContainer.textContent = 0;
+                    team1TiebreakScore = 0;
+                    team2TiebreakScore = 0;
+                    team1TiebreakIndicator.textContent = '';
+                    team2TiebreakIndicator.textContent = '';
+                    team1TiebreakIndicator.style.display = 'none';
+                    team2TiebreakIndicator.style.display = 'none';
+                    team1PointsButton.style.display = 'flex';
+                    team2PointsButton.style.display = 'flex';
+                    tiebreakAtivo = false;
+                }
+            };
     </script>
 </body>
 </html>
