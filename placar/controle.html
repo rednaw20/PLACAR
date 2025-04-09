@@ -116,7 +116,6 @@
         }
 
         .timer-control,
-        .tiebreak-control,
         .break-point-control,
         .reset-control {
             display: flex;
@@ -154,9 +153,31 @@
             background-color: #00a54a;
         }
 
+        .tiebreak-control {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Duas colunas */
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .tiebreak-control label {
+            grid-column: 1 / -1; /* Ocupa toda a largura */
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
         .tiebreak-control button {
-            background-color: #dc3545;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #f44336; /* Cor vermelha */
             color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .tiebreak-control button:hover {
+            background-color: #d32f2f;
         }
 
         .break-point-control button {
@@ -246,10 +267,11 @@
                     <button onclick="sendMessage({ action: 'stopTimer' })" style="background-color: red; color: white;">Zerar Cronômetro</button>
                 </div>
                 <div class="control-group tiebreak-control">
-                    <button onclick="sendMessage({ type: 'tiebreak', team: 1, change: 1 })">TB Dupla 1 +1 Set</button>
-                    <button onclick="sendMessage({ type: 'tiebreak', team: 1, change: -1 })">TB Dupla 1 -1 Set</button>
-                    <button onclick="sendMessage({ type: 'tiebreak', team: 2, change: 1 })">TB Dupla 2 +1 Set</button>
-                    <button onclick="sendMessage({ type: 'tiebreak', team: 2, change: -1 })">TB Dupla 2 -1 Set</button>
+                    <label>Tiebreak:</label>
+                    <button onclick="sendMessage({ type: 'tiebreakPoint', team: 1, change: 1 })">+1 Dupla 1</button>
+                    <button onclick="sendMessage({ type: 'tiebreakPoint', team: 1, change: -1 })">-1 Dupla 1</button>
+                    <button onclick="sendMessage({ type: 'tiebreakPoint', team: 2, change: 1 })">+1 Dupla 2</button>
+                    <button onclick="sendMessage({ type: 'tiebreakPoint', team: 2, change: -1 })">-1 Dupla 2</button>
                 </div>
                 <div class="control-group break-point-control">
                     <button onclick="handleBreakPoint()">Break Point</button>
