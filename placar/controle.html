@@ -4,52 +4,70 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Controle Mobile - Beach Tennis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: sans-serif;
-      background-color: #f9f9f9;
+      font-family: 'Inter', sans-serif;
+      background-color: #f0f2f5;
       margin: 0;
       padding: 0;
+      color: #333;
     }
 
     iframe#placar-frame {
       width: 100%;
       height: 180px;
       border: none;
-      transform: scale(0.85);
+      transform: scale(0.9);
       transform-origin: top left;
-      pointer-events: none; /* evita clique no iframe */
+      pointer-events: none;
     }
 
     .container {
       padding: 1rem;
+      max-width: 600px;
+      margin: auto;
     }
 
     h2 {
-      margin: 1rem 0 0.5rem;
-      font-size: 1rem;
-      color: #333;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      color: #111;
+      font-weight: 600;
     }
 
     input, button {
       width: 100%;
-      padding: 12px;
+      padding: 10px 14px;
       margin: 6px 0;
       font-size: 1rem;
-      border-radius: 5px;
+      border-radius: 6px;
       border: 1px solid #ccc;
       box-sizing: border-box;
     }
 
+    input {
+      background-color: #fff;
+    }
+
     button {
       background-color: #007bff;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
     }
 
     button.danger {
       background-color: #dc3545;
+    }
+
+    button.danger:hover {
+      background-color: #a71d2a;
     }
 
     .row {
@@ -63,16 +81,33 @@
     }
 
     .section {
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .section:last-child {
+      margin-bottom: 3rem;
+    }
+
+    .title {
+      text-align: center;
+      padding: 1rem 0;
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: #007bff;
     }
   </style>
 </head>
 <body>
 
-  <!-- Miniatura do placar no topo -->
   <iframe id="placar-frame" src="placar.html"></iframe>
 
   <div class="container">
+    <div class="title">Controle de Placar - Beach Tennis</div>
+
     <div class="section">
       <h2>Dupla 1</h2>
       <input type="text" id="team1-name" value="DIDÁ / GESIENE" />
@@ -148,4 +183,8 @@
       send({ type: 'name', team: 1, value: document.getElementById('team1-name').value });
       send({ type: 'name', team: 2, value: document.getElementById('team2-name').value });
       send({ type: 'topText', value: document.getElementById('categoria').value });
-      send({ type: 'bottomText', value: document.getElementById('circuito').value
+      send({ type: 'bottomText', value: document.getElementById('circuito').value });
+    }
+  </script>
+</body>
+</html>
