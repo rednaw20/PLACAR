@@ -26,7 +26,7 @@
       padding: 5px 10px;
       font-size: 16px;
       font-weight: bold;
-      text-align: center;
+      text-align: left;
     }
 
     .header {
@@ -66,7 +66,9 @@
 
     .team-name {
       flex: 2;
+      background-color: #ffffff;
       color: #001c58;
+      padding: 5px;
     }
 
     .team-name.serving::before {
@@ -92,6 +94,10 @@
       font-size: 24px;
       color: #001c58;
       margin-right: 5px;
+    }
+
+    .sets.tiebreak-active {
+      color: red;
     }
 
     .tiebreak {
@@ -172,9 +178,18 @@
       } else if (data.type === 'points') {
         document.getElementById(`team${data.team}-score`).textContent = data.value;
       } else if (data.type === 'sets') {
-        document.getElementById(`team${data.team}-sets`).textContent = data.value;
+        const setsEl = document.getElementById(`team${data.team}-sets`);
+        setsEl.textContent = data.value;
+        setsEl.classList.remove('tiebreak-active');
       } else if (data.type === 'tiebreak') {
-        document.getElementById(`team${data.team}-tiebreak`).textContent = data.value;
+        const tiebreakEl = document.getElementById(`team${data.team}-tiebreak`);
+        const setsEl = document.getElementById(`team${data.team}-sets`);
+        tiebreakEl.textContent = data.value;
+        if (parseInt(data.value) > 0) {
+          setsEl.classList.add('tiebreak-active');
+        } else {
+          setsEl.classList.remove('tiebreak-active');
+        }
       } else if (data.type === 'topText') {
         document.getElementById('top-text').textContent = data.value;
       } else if (data.type === 'bottomText') {
@@ -192,6 +207,7 @@
           document.getElementById(`team${team}-sets`).textContent = '0';
           document.getElementById(`team${team}-tiebreak`).textContent = '0';
           document.getElementById(`team${team}-name`).textContent = '';
+          document.getElementById(`team${team}-sets`).classList.remove('tiebreak-active');
         });
         document.getElementById('top-text').textContent = '';
         document.getElementById('category').textContent = '';
