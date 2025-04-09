@@ -3,19 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Controle Mobile - Beach Tennis</title>
+  <title>Controle Mobile + Mini Placar</title>
   <style>
     body {
       font-family: sans-serif;
-      background-color: #f9f9f9;
       margin: 0;
+      background-color: #f9f9f9;
+      padding: 0;
+    }
+
+    #placar-frame {
+      width: 100%;
+      height: 180px;
+      border: none;
+      transform: scale(0.9);
+      transform-origin: top left;
+    }
+
+    .container {
       padding: 1rem;
     }
+
     h2 {
       margin: 1rem 0 0.5rem;
       font-size: 1.1rem;
       color: #333;
     }
+
     input, button {
       width: 100%;
       padding: 12px;
@@ -26,6 +40,7 @@
       border-radius: 5px;
       box-sizing: border-box;
     }
+
     button {
       background-color: #007bff;
       color: white;
@@ -33,83 +48,93 @@
       border: none;
       cursor: pointer;
     }
+
     button.danger {
       background-color: #dc3545;
     }
+
     .row {
       display: flex;
       gap: 10px;
       margin-bottom: 10px;
     }
+
     .row button {
       flex: 1;
     }
+
     .section {
       margin-bottom: 2rem;
     }
   </style>
 </head>
 <body>
-  <div class="section">
-    <h2>Dupla 1</h2>
-    <input type="text" id="team1-name" placeholder="Nome dupla 1" value="DIDÁ / GESIENE" />
-    <div class="row">
-      <button onclick="send({ type: 'points', team: 1, value: 0 })">0</button>
-      <button onclick="send({ type: 'points', team: 1, value: 15 })">15</button>
-      <button onclick="send({ type: 'points', team: 1, value: 30 })">30</button>
-      <button onclick="send({ type: 'points', team: 1, value: 40 })">40</button>
-    </div>
-    <div class="row">
-      <button onclick="send({ type: 'sets', team: 1, change: 1 })">+ Set</button>
-      <button onclick="send({ type: 'sets', team: 1, change: -1 })">- Set</button>
-    </div>
-    <button onclick="send({ type: 'serving', team: 1 })">Saque</button>
-  </div>
 
-  <div class="section">
-    <h2>Dupla 2</h2>
-    <input type="text" id="team2-name" placeholder="Nome dupla 2" value="MATHEUS / ANA PAULA" />
-    <div class="row">
-      <button onclick="send({ type: 'points', team: 2, value: 0 })">0</button>
-      <button onclick="send({ type: 'points', team: 2, value: 15 })">15</button>
-      <button onclick="send({ type: 'points', team: 2, value: 30 })">30</button>
-      <button onclick="send({ type: 'points', team: 2, value: 40 })">40</button>
-    </div>
-    <div class="row">
-      <button onclick="send({ type: 'sets', team: 2, change: 1 })">+ Set</button>
-      <button onclick="send({ type: 'sets', team: 2, change: -1 })">- Set</button>
-    </div>
-    <button onclick="send({ type: 'serving', team: 2 })">Saque</button>
-  </div>
+  <!-- Miniatura do placar -->
+  <iframe id="placar-frame" src="placar.html"></iframe>
 
-  <div class="section">
-    <h2>Texto Superior / Inferior</h2>
-    <input type="text" id="categoria" placeholder="Categoria" value="FEMININO D" />
-    <input type="text" id="circuito" placeholder="Circuito" value="CIRCUITO ARENA BEACH" />
-    <button onclick="atualizarTextos()">Atualizar Textos</button>
-  </div>
+  <div class="container">
+    <div class="section">
+      <h2>Dupla 1</h2>
+      <input type="text" id="team1-name" value="DIDÁ / GESIENE" />
+      <div class="row">
+        <button onclick="send({ type: 'points', team: 1, value: 0 })">0</button>
+        <button onclick="send({ type: 'points', team: 1, value: 15 })">15</button>
+        <button onclick="send({ type: 'points', team: 1, value: 30 })">30</button>
+        <button onclick="send({ type: 'points', team: 1, value: 40 })">40</button>
+      </div>
+      <div class="row">
+        <button onclick="send({ type: 'sets', team: 1, change: 1 })">+ Set</button>
+        <button onclick="send({ type: 'sets', team: 1, change: -1 })">- Set</button>
+      </div>
+      <button onclick="send({ type: 'serving', team: 1 })">Saque</button>
+    </div>
 
-  <div class="section">
-    <h2>Extras</h2>
-    <div class="row">
-      <button onclick="send({ action: 'startTimer' })">Iniciar Cronômetro</button>
-      <button onclick="send({ action: 'stopTimer' })" class="danger">Zerar Cronômetro</button>
+    <div class="section">
+      <h2>Dupla 2</h2>
+      <input type="text" id="team2-name" value="MATHEUS / ANA PAULA" />
+      <div class="row">
+        <button onclick="send({ type: 'points', team: 2, value: 0 })">0</button>
+        <button onclick="send({ type: 'points', team: 2, value: 15 })">15</button>
+        <button onclick="send({ type: 'points', team: 2, value: 30 })">30</button>
+        <button onclick="send({ type: 'points', team: 2, value: 40 })">40</button>
+      </div>
+      <div class="row">
+        <button onclick="send({ type: 'sets', team: 2, change: 1 })">+ Set</button>
+        <button onclick="send({ type: 'sets', team: 2, change: -1 })">- Set</button>
+      </div>
+      <button onclick="send({ type: 'serving', team: 2 })">Saque</button>
     </div>
-    <div class="row">
-      <button onclick="send({ action: 'resetGamePoints' })">Zerar Pontos</button>
-      <button onclick="send({ action: 'resetScore' })" class="danger">Zerar Tudo</button>
+
+    <div class="section">
+      <h2>Textos</h2>
+      <input type="text" id="categoria" placeholder="Categoria" value="FEMININO D" />
+      <input type="text" id="circuito" placeholder="Circuito" value="CIRCUITO ARENA BEACH" />
+      <button onclick="atualizarTextos()">Atualizar Textos</button>
     </div>
-    <div class="row">
-      <button onclick="send({ type: 'breakPoint', value: true })">Break Point ON</button>
-      <button onclick="send({ type: 'breakPoint', value: false })">Break Point OFF</button>
-    </div>
-    <div class="row">
-      <button onclick="send({ type: 'tiebreak', team: 1, value: true, score: 'TB' })">TB Dupla 1</button>
-      <button onclick="send({ type: 'tiebreak', team: 2, value: true, score: 'TB' })">TB Dupla 2</button>
-    </div>
-    <div class="row">
-      <button onclick="send({ type: 'tiebreak', team: 1, value: false })">TB 1 OFF</button>
-      <button onclick="send({ type: 'tiebreak', team: 2, value: false })">TB 2 OFF</button>
+
+    <div class="section">
+      <h2>Extras</h2>
+      <div class="row">
+        <button onclick="send({ action: 'startTimer' })">Iniciar Timer</button>
+        <button onclick="send({ action: 'stopTimer' })" class="danger">Zerar Timer</button>
+      </div>
+      <div class="row">
+        <button onclick="send({ action: 'resetGamePoints' })">Zerar Pontos</button>
+        <button onclick="send({ action: 'resetScore' })" class="danger">Zerar Tudo</button>
+      </div>
+      <div class="row">
+        <button onclick="send({ type: 'breakPoint', value: true })">Break ON</button>
+        <button onclick="send({ type: 'breakPoint', value: false })">Break OFF</button>
+      </div>
+      <div class="row">
+        <button onclick="send({ type: 'tiebreak', team: 1, value: true })">TB 1 ON</button>
+        <button onclick="send({ type: 'tiebreak', team: 1, value: false })">TB 1 OFF</button>
+      </div>
+      <div class="row">
+        <button onclick="send({ type: 'tiebreak', team: 2, value: true })">TB 2 ON</button>
+        <button onclick="send({ type: 'tiebreak', team: 2, value: false })">TB 2 OFF</button>
+      </div>
     </div>
   </div>
 
@@ -121,19 +146,13 @@
     }
 
     function atualizarTextos() {
-      const team1 = document.getElementById('team1-name').value;
-      const team2 = document.getElementById('team2-name').value;
-      const categoria = document.getElementById('categoria').value;
-      const circuito = document.getElementById('circuito').value;
-
-      send({ type: 'name', team: 1, value: team1 });
-      send({ type: 'name', team: 2, value: team2 });
-      send({ type: 'topText', value: categoria });
-      send({ type: 'bottomText', value: circuito });
+      send({ type: 'name', team: 1, value: document.getElementById('team1-name').value });
+      send({ type: 'name', team: 2, value: document.getElementById('team2-name').value });
+      send({ type: 'topText', value: document.getElementById('categoria').value });
+      send({ type: 'bottomText', value: document.getElementById('circuito').value });
     }
 
-    // Ao carregar, envia os textos iniciais
-    window.onload = () => atualizarTextos();
+    window.onload = atualizarTextos;
   </script>
 </body>
 </html>
