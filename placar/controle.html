@@ -17,11 +17,13 @@
       margin-bottom: 10px;
     }
 
-    .placar-img {
+    iframe {
       display: block;
-      margin: 10px auto;
-      max-width: 100%;
-      height: auto;
+      margin: 0 auto 15px;
+      width: 100%;
+      height: 300px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
     }
 
     .section {
@@ -122,13 +124,19 @@
   </style>
 </head>
 <body>
-  <img src="Screenshot_20250407_122158_YouTube.jpg" alt="Placar modelo" class="placar-img">
+  <iframe src="placar.html" title="Visualização do Placar"></iframe>
   <h2>Controle do Placar</h2>
 
   <div class="color-selectors">
     <label>Cor Cronômetro: <input type="color" onchange="setColor('cronometro', this.value)"></label>
     <label>Cor Texto Superior: <input type="color" onchange="setColor('topText', this.value)"></label>
     <label>Cor Texto Inferior: <input type="color" onchange="setColor('bottomText', this.value)"></label>
+  </div>
+
+  <div class="toggle-buttons">
+    <button onclick="toggleView('sets')">Sets</button>
+    <button onclick="toggleView('tiebreak')">Tiebreak</button>
+    <button onclick="resetScore()">Resetar</button>
   </div>
 
   <div class="section">
@@ -142,12 +150,6 @@
       <button onclick="startTimer()">Iniciar</button>
       <button onclick="stopTimer()">Parar</button>
     </div>
-  </div>
-
-  <div class="toggle-buttons">
-    <button onclick="toggleView('sets')">Sets</button>
-    <button onclick="toggleView('tiebreak')">Tiebreak</button>
-    <button onclick="resetScore()">Resetar</button>
   </div>
 
   <div class="team-container">
