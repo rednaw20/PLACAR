@@ -212,7 +212,7 @@
             border-radius: 4px;
             margin: 1px;
             box-sizing: border-box;
-            display: none; /* Inicialmente oculto */
+            /* display: none; Removido para manter visível */
         }
 
         .bottom-bar {
@@ -368,7 +368,7 @@
                     break;
                 case 'sets':
                     if (data.team === 1) team1SetsContainer.textContent = parseInt(team1SetsContainer.textContent) + (data.change || 0);
-                    else if (data.team === 2) team2SetsContainer.textContent = parseInt(team2SetsContainer.textContent) + (data.change || 0);
+                    else if (data.team === 2) team2SetsContainer.textContent = parseInt(team2SetsContainer.textContent) + (data.change ||0);
                     break;
                 case 'topText':
                     categoriaTextElement.textContent = data.value;
@@ -377,7 +377,7 @@
                     circuitoTextElement.textContent = data.value;
                     break;
                 case 'serving':
-                    team1ServingIndicator.style.display = data.team=== 1 ? 'inline' : 'none';
+                    team1ServingIndicator.style.display = data.team === 1 ? 'inline' : 'none';
                     team2ServingIndicator.style.display = data.team === 2 ? 'inline' : 'none';
                     break;
                 case 'breakPoint':
@@ -387,8 +387,8 @@
                     break;
                 case 'tiebreakPoint':
                     tiebreakAtivo = true;
-                    team1PointsButton.style.display = 'none';
-                    team2PointsButton.style.display = 'none';
+                    // team1PointsButton.style.display = 'none'; // Removido para manter visível
+                    // team2PointsButton.style.display = 'none'; // Removido para manter visível
                     team1TiebreakScoreElement.style.display = 'flex';
                     team2TiebreakScoreElement.style.display = 'flex';
                     if (data.team === 1) {
