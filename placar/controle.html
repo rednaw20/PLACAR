@@ -21,7 +21,7 @@
       display: block;
       margin: 0 auto 15px;
       width: 100%;
-      height: 300px;
+      height: 600px;
       border: 2px solid #ccc;
       border-radius: 10px;
     }
@@ -125,18 +125,19 @@
 </head>
 <body>
   <iframe src="placar.html" title="Visualização do Placar"></iframe>
-  <h2>Controle do Placar</h2>
 
-  <div class="color-selectors">
-    <label>Cor Cronômetro: <input type="color" onchange="setColor('cronometro', this.value)"></label>
-    <label>Cor Texto Superior: <input type="color" onchange="setColor('topText', this.value)"></label>
-    <label>Cor Texto Inferior: <input type="color" onchange="setColor('bottomText', this.value)"></label>
-  </div>
+  <h2>Controle do Placar</h2>
 
   <div class="toggle-buttons">
     <button onclick="toggleView('sets')">Sets</button>
     <button onclick="toggleView('tiebreak')">Tiebreak</button>
     <button onclick="resetScore()">Resetar</button>
+  </div>
+
+  <div class="color-selectors">
+    <label>Cor Cronômetro: <input type="color" onchange="setColor('cronometro', this.value)"></label>
+    <label>Cor Texto Superior: <input type="color" onchange="setColor('topText', this.value)"></label>
+    <label>Cor Texto Inferior: <input type="color" onchange="setColor('bottomText', this.value)"></label>
   </div>
 
   <div class="section">
