@@ -3,54 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scoreboard Tênis Profissional</title>
+  <title>Scoreboard Profissional de Tênis</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
 
     :root {
-      --cor-fundo: #121212;
-      --cor-texto: #e0e0e0;
+      --cor-fundo: #111;
+      --cor-texto: #fff;
       --cor-primaria: #00ff88;
-      --cor-secundaria: #003366;
-      --cor-destaque: #f5f5f5;
+      --cor-secundaria: #222;
+      --cor-destaque: #444;
       --cor-ativo: #ffaa00;
+      --cor-tiebreak: #8b0000;
       --font-principal: 'Open Sans', sans-serif;
       --font-digito: 'Roboto Mono', monospace;
     }
 
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      background-color: var(--cor-fundo);
       font-family: var(--font-principal);
-      color: var(--cor-texto);
+      background-color: var(--cor-fundo);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 1rem;
+      color: var(--cor-texto);
     }
 
     .placar {
-      background-color: #1f1f1f;
-      border-radius: 16px;
-      overflow: hidden;
+      display: grid;
+      grid-template-rows: repeat(4, auto);
+      gap: 0.5rem;
+      background: var(--cor-secundaria);
+      padding: 1rem;
+      border-radius: 12px;
       max-width: 900px;
       width: 100%;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
-      display: grid;
-      grid-template-rows: auto auto 1fr auto auto;
+      box-shadow: 0 0 20px #000a;
     }
 
-    .topo, .rodape {
-      background-color: var(--cor-secundaria);
-      color: var(--cor-primaria);
-      padding: 1rem;
+    .top-info, .bottom-info {
       text-align: center;
+      padding: 0.5rem;
+      background-color: var(--cor-destaque);
       font-weight: bold;
       font-size: 1.2rem;
     }
@@ -59,30 +60,28 @@
       display: grid;
       grid-template-columns: 2fr 1fr 1fr;
       gap: 0.5rem;
-      padding: 0.8rem;
       align-items: center;
-      transition: background 0.3s ease;
+      padding: 0.5rem;
     }
 
     .jogador {
-      background: var(--cor-destaque);
-      color: var(--cor-secundaria);
-      padding: 1rem;
-      border-radius: 12px;
+      background: #eee;
+      color: #000;
+      padding: 0.8rem;
+      border-radius: 8px;
       font-weight: bold;
       font-size: 1.1rem;
     }
 
     .pontuacao, .sets {
       font-family: var(--font-digito);
-      background: var(--cor-secundaria);
+      background: #000;
       color: var(--cor-primaria);
-      padding: 1rem;
+      font-size: 2rem;
+      padding: 0.8rem;
       text-align: center;
-      border-radius: 12px;
-      font-size: 2.2rem;
-      transition: background 0.3s ease, transform 0.3s ease;
-      cursor: pointer;
+      border-radius: 8px;
+      transition: transform 0.2s, background 0.2s;
     }
 
     .pontuacao.ativo, .sets.ativo {
@@ -91,23 +90,24 @@
       transform: scale(1.1);
     }
 
+    .linha.tie-break {
+      background-color: var(--cor-tiebreak);
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
     .info-extra {
-      background: #ffd700;
+      background: yellow;
       color: #000;
       padding: 0.5rem;
       text-align: center;
-      display: none;
       font-weight: bold;
-    }
-
-    .tie-break {
-      background-color: #440000 !important;
-      animation: piscar 1s infinite alternate;
-    }
-
-    @keyframes piscar {
-      from { opacity: 1; }
-      to { opacity: 0.5; }
+      display: none;
     }
 
     @media (max-width: 600px) {
@@ -125,22 +125,22 @@
 </head>
 <body>
   <div class="placar">
-    <div class="topo" id="cronometro">00:00</div>
-    <div class="topo" id="categoria">MASCULINO A</div>
+    <div class="top-info" id="categoria">Final Masculina - Open 2025</div>
+    <div class="top-info" id="cronometro">00:00</div>
 
     <div class="linha" id="linha1">
-      <div class="jogador" id="jogador1">EQUIPE 1</div>
+      <div class="jogador" id="jogador1">DUPLA A</div>
       <div class="pontuacao" id="pontos1">0</div>
       <div class="sets" id="sets1">0</div>
     </div>
     <div class="linha" id="linha2">
-      <div class="jogador" id="jogador2">EQUIPE 2</div>
+      <div class="jogador" id="jogador2">DUPLA B</div>
       <div class="pontuacao" id="pontos2">0</div>
       <div class="sets" id="sets2">0</div>
     </div>
 
     <div class="info-extra" id="breakpoint">BREAK POINT</div>
-    <div class="rodape" id="circuito">TORNEIO MASTER 2025</div>
+    <div class="bottom-info" id="circuito">CAMPEONATO BRASILEIRO DE BEACH TENNIS 2025</div>
   </div>
 
   <script>
@@ -154,6 +154,11 @@
     const sets2 = document.getElementById('sets2');
     const linha1 = document.getElementById('linha1');
     const linha2 = document.getElementById('linha2');
+    const categoria = document.getElementById('categoria');
+    const circuito = document.getElementById('circuito');
+    const breakpoint = document.getElementById('breakpoint');
+    const jogador1 = document.getElementById('jogador1');
+    const jogador2 = document.getElementById('jogador2');
 
     function atualizarCronometro() {
       tempo++;
@@ -172,21 +177,17 @@
       cronometro.textContent = '00:00';
     }
 
-    function toggleBotao(botao) {
-      botao.classList.toggle('ativo');
-    }
-
-    function animarTroca(botao) {
-      botao.classList.add('ativo');
-      setTimeout(() => botao.classList.remove('ativo'), 400);
+    function animarTroca(elem) {
+      elem.classList.add('ativo');
+      setTimeout(() => elem.classList.remove('ativo'), 300);
     }
 
     function checarTieBreak() {
-      const totalSets1 = parseInt(sets1.textContent);
-      const totalSets2 = parseInt(sets2.textContent);
-      const isTiebreak = totalSets1 === 1 && totalSets2 === 1;
-      linha1.classList.toggle('tie-break', isTiebreak);
-      linha2.classList.toggle('tie-break', isTiebreak);
+      const s1 = parseInt(sets1.textContent);
+      const s2 = parseInt(sets2.textContent);
+      const tie = s1 === 1 && s2 === 1;
+      linha1.classList.toggle('tie-break', tie);
+      linha2.classList.toggle('tie-break', tie);
     }
 
     pontos1.addEventListener('click', () => animarTroca(pontos1));
@@ -204,7 +205,6 @@
 
     canal.onmessage = (e) => {
       const d = e.data;
-
       if (d.type === 'name') {
         if (d.team === 1) jogador1.textContent = d.value;
         if (d.team === 2) jogador2.textContent = d.value;
