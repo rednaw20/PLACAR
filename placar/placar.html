@@ -13,31 +13,30 @@
             --cor-fundo: #222;
             --cor-texto: #eee;
             --cor-container: #333;
-            --cor-texto-topo: #39ff14;
-            --cor-fundo-topo: #000c60;
-            --cor-fundo-categoria: #39ff14;
-            --cor-texto-categoria: #000c60;
+            --cor-texto-topo: #39ff14; /* Cor do texto do cronômetro */
+            --cor-fundo-topo: #000c60; /* Fundo do cronômetro */
+            --cor-fundo-categoria: #39ff14; /* Fundo da categoria */
+            --cor-texto-categoria: #000c60; /* Cor do texto da categoria */
             --cor-texto-circuito: #000c60;
             --cor-nome-fundo: #fff;
             --cor-nome-texto: #000c60;
-            --cor-marcador1-fundo: #000c60;
-            --cor-marcador1-texto: #39ff14;
-            --cor-marcador2-fundo: #fff;
-            --cor-marcador2-texto: #000c60;
-            --cor-fundo-inferior: #add8e6;
-            --cor-texto-inferior: #000c60;
-            --tamanho-fonte-nome: 1.4em;
-            --tamanho-fonte-numeros: 2.5em;
-            --tamanho-fonte-sets: 2.5em;
-            --tamanho-fonte-tiebreak: 2.5em; /* Novo tamanho para tiebreak */
-            --tamanho-fonte-cronometro: 1.8em;
-            --tamanho-fonte-categoria: 1.4em;
-            --tamanho-fonte-circuito: 0.9em;
-            --largura-placar: 100%;
-            --padding-placar: 10px;
-            --padding-linhas: 8px 10px;
-            --espacamento-colunas: 3fr 1fr 1fr 1fr 1fr; /* Adicionando mais uma fração */
-            --cor-linha-divisoria: #add8e6;
+            --cor-marcador1-fundo: #000c60; /* Fundo dos primeiros marcadores (pontos) */
+            --cor-marcador1-texto: #39ff14; /* Cor da fonte dos primeiros marcadores (pontos) */
+            --cor-marcador2-fundo: #fff; /* Fundo dos segundos marcadores (sets) */
+            --cor-marcador2-texto: #000c60; /* Cor da fonte dos segundos marcadores (sets) */
+            --cor-fundo-inferior: #add8e6; /* Fundo azul claro inferior */
+            --cor-texto-inferior: #000c60; /* Cor da fonte inferior */
+            --tamanho-fonte-nome: 1.6em;
+            --tamanho-fonte-numeros: 3em; /* Para pontos */
+            --tamanho-fonte-sets: 3em; /* Para sets */
+            --tamanho-fonte-cronometro: 2em; /* Aumentei a fonte do cronômetro */
+            --tamanho-fonte-categoria: 1.6em; /* Aumentei a fonte da categoria */
+            --tamanho-fonte-circuito: 1em; /* Ajustei a fonte do circuito */
+            --largura-placar: 700px;
+            --padding-placar: 20px;
+            --padding-linhas: 15px 20px;
+            --espacamento-colunas: 3fr 1fr 1fr 1fr; /* Adicionando espaço para o indicador de saque */
+            --cor-linha-divisoria: #add8e6; /* Cor da linha divisória (azul claro) */
         }
 
         body {
@@ -50,52 +49,45 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            box-sizing: border-box;
         }
 
         .scoreboard-container {
             background-color: var(--cor-container);
             color: var(--cor-texto);
-            border-radius: 8px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.4);
             overflow: hidden;
-            width: 100%;
+            width: var(--largura-placar);
             padding: var(--padding-placar);
             display: grid;
-            grid-template-rows: auto auto auto 1fr auto;
-            grid-template-columns: 1fr;
-            box-sizing: border-box;
+            grid-template-rows: auto auto auto 1fr auto; /* Linha para a barra superior, linha para divisória, linhas dos times, linha inferior */
+            grid-template-columns: 1fr; /* Uma única coluna para o container principal */
         }
 
         .top-bar {
             display: grid;
-            grid-template-columns: 3fr 2fr;
+            grid-template-columns: 3fr 2fr; /* Divide a barra superior para alinhar com os placares */
             border-bottom: 1px solid #555;
-            box-sizing: border-box;
         }
 
-        .cronometro-container,
-        .tiebreak-display-container {
+        .cronometro-container {
             background-color: var(--cor-fundo-topo);
             color: var(--cor-texto-topo);
-            padding: 6px 10px;
+            padding: 10px 20px;
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-sizing: border-box;
-            font-size: var(--tamanho-fonte-tiebreak); /* Usando a fonte do tiebreak */
         }
 
         .categoria-container {
             background-color: var(--cor-fundo-categoria);
             color: var(--cor-texto-categoria);
-            padding: 6px 10px;
+            padding: 10px 20px;
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-sizing: border-box;
         }
 
         #cronometro {
@@ -104,11 +96,7 @@
 
         #categoria-text {
             font-size: var(--tamanho-fonte-categoria);
-            width: 90%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            box-sizing: border-box;
+            width: 80%;
         }
 
         .team-row {
@@ -117,55 +105,33 @@
             align-items: center;
             transition: background-color 0.3s ease;
             background-color: #fff;
-            grid-column: 1 / -1;
+            grid-column: 1 / -1; /* Ocupa a largura total */
             padding: var(--padding-linhas);
             box-sizing: border-box;
         }
 
         .team-row:nth-child(1) {
-            border-bottom: 1px solid var(--cor-linha-divisoria);
-            margin-bottom: 3px;
+            border-bottom: 2px solid var(--cor-linha-divisoria);
+            margin-bottom: 10px;
         }
 
         .team-names-container {
             background-color: var(--cor-nome-fundo);
             color: var(--cor-nome-texto);
-            padding: 4px;
-            border-radius: 4px;
+            padding: 8px;
+            border-radius: 5px;
             font-weight: bold;
             font-size: var(--tamanho-fonte-nome);
             text-align: left;
             display: flex;
-            align-items: center;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            box-sizing: border-box;
-            width: 95%;
+            flex-direction: row; /* Alinhar nome e indicador de saque na mesma linha */
+            align-items: center; /* Alinhar verticalmente */
+            gap: 10px; /* Espaço entre nome e indicador */
         }
 
-        .team-names-container-inner {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            box-sizing: border-box;
-            width: 85%;
-        }
-
-        .team-names-container-inner span {
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .team-names-container-inner span + span {
-            margin-top: 0;
-            margin-left: 5px;
-            padding-top: 0;
-            border-top: none;
+        .team-names-container span + span {
+            margin-top: 0; /* Resetar margem superior */
+            border-top: none; /* Resetar borda superior */
         }
 
         .points-button {
@@ -174,8 +140,8 @@
             font-family: 'Roboto Mono', monospace;
             font-size: var(--tamanho-fonte-numeros);
             text-align: center;
-            cursor: default;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             transition: transform 0.2s ease-in-out;
             width: 100%;
             height: 100%;
@@ -183,9 +149,13 @@
             align-items: center;
             justify-content: center;
             border: none;
-            border-radius: 4px;
-            margin: 1px;
+            border-radius: 5px;
+            margin: 2px;
             box-sizing: border-box;
+        }
+
+        .points-button:hover {
+            transform: scale(1.1);
         }
 
         .sets-container {
@@ -197,69 +167,55 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            border-radius: 4px;
-            margin: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            margin: 2px;
             box-sizing: border-box;
-        }
-
-        .tiebreak-container {
-            background-color: #f44336; /* Cor vermelha para destacar */
-            color: white;
-            font-family: 'Roboto Mono', monospace;
-            font-size: var(--tamanho-fonte-tiebreak);
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            border-radius: 4px;
-            margin: 1px;
-            box-sizing: border-box;
-            /* display: none; Removido para manter visível */
         }
 
         .bottom-bar {
             background-color: var(--cor-fundo-inferior);
             color: var(--cor-texto-inferior);
-            padding: 6px 10px;
+            padding: 10px 20px;
             text-align: left;
             font-size: var(--tamanho-fonte-circuito);
             border-top: 1px solid #555;
             grid-column: 1 / -1;
             display: flex;
             align-items: center;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            box-sizing: border-box;
         }
 
         .bottom-bar strong {
             font-weight: bold;
-            margin-right: 5px;
+            margin-right: 10px;
+        }
+
+        .tiebreak-indicator {
+            color: red;
+            font-weight: bold;
+            font-size: var(--tamanho-fonte-numeros);
+            text-align: center;
+            align-items: center;
+            justify-content: center;
         }
 
         .serving-indicator {
-            font-size: 0.9em;
+            font-size: 1.2em;
             color: green;
             font-weight: bold;
             text-align: center;
-            margin-right: 5px;
-            box-sizing: border-box;
         }
 
         .break-point-indicator {
             display: none;
             background-color: var(--cor-fundo-topo);
             color: var(--cor-texto-topo);
-            padding: 6px 10px;
+            padding: 10px 20px;
             text-align: center;
             grid-column: 1 / 2;
             font-size: var(--tamanho-fonte-cronometro);
             align-items: center;
             justify-content: center;
-            box-sizing: border-box;
         }
     </style>
 </head>
@@ -269,34 +225,27 @@
             <div class="cronometro-container" id="cronometro-area">
                 <span id="cronometro">00:00</span>
             </div>
-            <div class="tiebreak-display-container" id="tiebreak-display-area" style="display: none;">
-                Tiebreak: <span id="team1-tiebreak-top">0</span> - <span id="team2-tiebreak-top">0</span>
-            </div>
             <div class="categoria-container">
                 <span id="categoria-text">FEMININO D</span>
             </div>
         </div>
         <div class="team-row">
             <div class="team-names-container">
-                <div class="team-names-container-inner">
-                    <span id="team1-serving" class="serving-indicator" style="display: none;">►</span>
-                    <span id="team1-name">DIDÁ / GESIENE</span>
-                </div>
+                <span id="team1-name">DIDÁ / GESIENE</span>
+                <span id="team1-serving" class="serving-indicator" style="display: none;">►</span>
             </div>
             <div class="points-button" id="team1-points">0</div>
             <div class="sets-container" id="team1-sets">0</div>
-            <div class="tiebreak-container" id="team1-tiebreak-score"></div>
+            <div class="tiebreak-indicator" id="team1-tiebreak" style="display: none;">TB</div>
         </div>
         <div class="team-row">
             <div class="team-names-container">
-                <div class="team-names-container-inner">
-                    <span id="team2-serving" class="serving-indicator" style="display: none;">►</span>
-                    <span id="team2-name">MATHEUS / ANA PAULA</span>
-                </div>
+                <span id="team2-name">MATHEUS / ANA PAULA</span>
+                <span id="team2-serving" class="serving-indicator" style="display: none;">►</span>
             </div>
             <div class="points-button" id="team2-points">0</div>
             <div class="sets-container" id="team2-sets">0</div>
-            <div class="tiebreak-container" id="team2-tiebreak-score"></div>
+            <div class="tiebreak-indicator" id="team2-tiebreak" style="display: none;">TB</div>
         </div>
         <div class="bottom-bar">
             <strong><span id="circuito-text">CIRCUITO ARENA BEACH</span></strong>
@@ -313,25 +262,20 @@
         const team2PointsButton = document.getElementById('team2-points');
         const team1SetsContainer = document.getElementById('team1-sets');
         const team2SetsContainer = document.getElementById('team2-sets');
-        const team1TiebreakScoreElement = document.getElementById('team1-tiebreak-score');
-        const team2TiebreakScoreElement = document.getElementById('team2-tiebreak-score');
         const categoriaTextElement = document.getElementById('categoria-text');
         const circuitoTextElement = document.getElementById('circuito-text');
         const cronometroElement = document.getElementById('cronometro');
         const cronometroAreaElement = document.getElementById('cronometro-area');
-        const tiebreakDisplayAreaElement = document.getElementById('tiebreak-display-area');
-        const team1TiebreakTopElement = document.getElementById('team1-tiebreak-top');
-        const team2TiebreakTopElement = document.getElementById('team2-tiebreak-top');
         const breakPointAreaElement = document.getElementById('break-point-area');
-        let team1ServingIndicator = document.getElementById('team1-serving');
-        let team2ServingIndicator = document.getElementById('team2-serving');
+        const team1TiebreakIndicator = document.getElementById('team1-tiebreak');
+        const team2TiebreakIndicator = document.getElementById('team2-tiebreak');
+        const team1ServingIndicator = document.getElementById('team1-serving');
+        const team2ServingIndicator = document.getElementById('team2-serving');
 
         let cronometroInterval;
         let segundos = 0;
         let cronometroAtivo = false;
         let tiebreakAtivo = false;
-        let team1TiebreakScore = 0;
-        let team2TiebreakScore = 0;
 
         function formatTime(segundos) {
             const minutos = Math.floor(segundos / 60).toString().padStart(2, '0');
@@ -365,15 +309,16 @@
             switch (data.type) {
                 case 'name':
                     const names = data.value.split('/');
-                    team1NameElement.innerHTML = `<span id="team1-serving" class="serving-indicator" style="display: none;">►</span><span>${names.join('<span></span>')}</span>`;
-                    team2NameElement.innerHTML = `<span id="team2-serving" class="serving-indicator" style="display: none;">►</span><span>${names.join('<span></span>')}</span>`;
-                    team1ServingIndicator = document.getElementById('team1-serving');
-                    team2ServingIndicator = document.getElementById('team2-serving');
+                    if (data.team === 1) {
+                        team1NameElement.textContent = names.join(' / ');
+                    } else if (data.team === 2) {
+                        team2NameElement.textContent = names.join(' / ');
+                    }
                     break;
                 case 'points':
                     if (!tiebreakAtivo) {
                         if (data.team === 1) team1PointsButton.textContent = data.value;
-                        elseif (data.team === 2) team2PointsButton.textContent = data.value;
+                        else if (data.team === 2) team2PointsButton.textContent = data.value;
                     }
                     break;
                 case 'sets':
@@ -387,84 +332,34 @@
                     circuitoTextElement.textContent = data.value;
                     break;
                 case 'serving':
-                    team1ServingIndicator.style.display = data.team === 1 ? 'inline' : 'none';
-                    team2ServingIndicator.style.display = data.team === 2 ? 'inline' : 'none';
+                    team1ServingIndicator.style.display = data.team === 1 ? 'inline-block' : 'none';
+                    team2ServingIndicator.style.display = data.team === 2 ? 'inline-block' : 'none';
                     break;
                 case 'breakPoint':
                     const isBreakPoint = data.value;
                     cronometroAreaElement.style.display = isBreakPoint ? 'none' : 'flex';
-                    tiebreakDisplayAreaElement.style.display = isBreakPoint ? 'none' : 'flex';
                     breakPointAreaElement.style.display = isBreakPoint ? 'flex' : 'none';
                     break;
-                case 'tiebreakPoint':
-                    tiebreakAtivo = true;
-                    cronometroAreaElement.style.display = 'none';
-                    tiebreakDisplayAreaElement.style.display = 'flex';
-                    team1TiebreakScoreElement.style.display = 'flex';
-                    team2TiebreakScoreElement.style.display = 'flex';
-                    if (data.team === 1) {
-                        team1TiebreakScore += data.change;
-                        team1TiebreakScoreElement.textContent = team1TiebreakScore;
-                        team1TiebreakTopElement.textContent = team1TiebreakScore;
-                        team1TiebreakScoreElement.style.color = 'red';
-                    } else if (data.team === 2) {
-                        team2TiebreakScore += data.change;
-                        team2TiebreakScoreElement.textContent = team2TiebreakScore;
-                        team2TiebreakTopElement.textContent = team2TiebreakScore;
-                        team2TiebreakScoreElement.style.color = 'red';
-                    }
+                case 'tiebreak':
+                    tiebreakAtivo = data.value;
+                    team1PointsButton.style.display = data.value ? 'none' : 'flex';
+                    team1TiebreakIndicator.style.display = data.value ? 'inline-block' : 'none';
+                    team1TiebreakIndicator.textContent = data.score1 || 'TB';
+                    team2PointsButton.style.display = data.value ? 'none' : 'flex';
+                    team2TiebreakIndicator.style.display = data.value ? 'inline-block' : 'none';
+                    team2TiebreakIndicator.textContent = data.score2 || 'TB';
                     break;
                 case 'resetGamePoints':
                     team1PointsButton.textContent = 0;
                     team2PointsButton.textContent = 0;
-                    team1TiebreakScore = 0;
-                    team2TiebreakScore = 0;
-                    team1TiebreakScoreElement.textContent = '';
-                    team2TiebreakScoreElement.textContent = '';
-                    team1TiebreakTopElement.textContent = 0;
-                    team2TiebreakTopElement.textContent = 0;
-                    team1TiebreakScoreElement.style.display = 'none';
-                    team2TiebreakScoreElement.style.display = 'none';
-                    tiebreakDisplayAreaElement.style.display = 'none';
-                    cronometroAreaElement.style.display = 'flex';
-                    team1PointsButton.style.display = 'flex';
-                    team2PointsButton.style.display = 'flex';
-                    team1ServingIndicator.style.display = 'none';
-                    team2ServingIndicator.style.display = 'none';
-                    tiebreakAtivo = false;
-                    break;
-                case 'resetTiebreak': // Nova ação para zerar o tiebreak
-                    team1TiebreakScore = 0;
-                    team2TiebreakScore = 0;
-                    team1TiebreakScoreElement.textContent = '';
-                    team2TiebreakScoreElement.textContent = '';
-                    team1TiebreakTopElement.textContent = 0;
-                    team2TiebreakTopElement.textContent = 0;
-                    team1TiebreakScoreElement.style.display = 'none';
-                    team2TiebreakScoreElement.style.display = 'none';
-                    tiebreakDisplayAreaElement.style.display = 'none';
-                    cronometroAreaElement.style.display = 'flex';
-                    tiebreakAtivo = false;
                     break;
                 case 'resetScore':
                     team1PointsButton.textContent = 0;
                     team2PointsButton.textContent = 0;
                     team1SetsContainer.textContent = 0;
                     team2SetsContainer.textContent = 0;
-                    team1TiebreakScore = 0;
-                    team2TiebreakScore = 0;
-                    team1TiebreakScoreElement.textContent = '';
-                    team2TiebreakScoreElement.textContent = '';
-                    team1TiebreakTopElement.textContent = 0;
-                    team2TiebreakTopElement.textContent = 0;
-                    team1TiebreakScoreElement.style.display = 'none';
-                    team2TiebreakScoreElement.style.display = 'none';
-                    tiebreakDisplayAreaElement.style.display = 'none';
-                    cronometroAreaElement.style.display = 'flex';
-                    team1PointsButton.style.display = 'flex';
-                    team2PointsButton.style.display = 'flex';
-                    team1ServingIndicator.style.display = 'none';
-                    team2ServingIndicator.style.display = 'none';
+                    team1TiebreakIndicator.style.display = 'none';
+                    team2TiebreakIndicator.style.display = 'none';
                     tiebreakAtivo = false;
                     break;
             }
