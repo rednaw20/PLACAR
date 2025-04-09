@@ -282,7 +282,6 @@
 
         .break-point-indicator {
             grid-column: 1 / -1;
-            display: none;
             background-color: var(--cor-fundo-topo);
             color: var(--cor-texto-topo);
             padding: 8px 15px;
@@ -390,7 +389,7 @@
                     break;
                 case 'points':
                     if (!tiebreakAtivo) {
-                        if (data.team === 1) team1PointsButton.querySelector('span').textContent = data.value;
+                        if (data.team ===1) team1PointsButton.querySelector('span').textContent = data.value;
                         else if (data.team === 2) team2PointsButton.querySelector('span').textContent = data.value;
                     }
                     break;
@@ -411,8 +410,8 @@
                     break;
                 case 'breakPoint':
                     const isBreakPoint = data.value;
-                    cronometroAreaElement.style.display = isBreakPoint ? 'none' : 'flex';
                     breakPointAreaElement.style.display = isBreakPoint ? 'flex' : 'none';
+                    cronometroAreaElement.style.display = isBreakPoint ? 'none' : 'flex';
                     break;
                 case 'tiebreak':
                     tiebreakAtivo = data.value;
