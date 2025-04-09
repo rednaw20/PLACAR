@@ -134,6 +134,7 @@
             text-align: left;
             display: flex;
             align-items: center; /* Alinhar verticalmente para o indicador de saque */
+            justify-content: space-between; /* Espaço entre nome e indicador */
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -141,7 +142,17 @@
             width: 95%;
         }
 
-        .team-names-container span + span {
+        .team-names-container-inner {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+            width: 85%; /* Ajuste conforme necessário */
+        }
+
+        .team-names-container-inner span + span {
             margin-top: 2px;
             border-top: 1px solid #ccc;
             padding-top: 2px;
@@ -226,7 +237,6 @@
             font-weight: bold;
             text-align: center;
             box-sizing: border-box;
-            margin-right: 5px; /* Espaço entre a seta e o nome */
         }
 
         .break-point-indicator {
@@ -255,8 +265,10 @@
         </div>
         <div class="team-row">
             <div class="team-names-container">
-                <span id="team1-serving" class="serving-indicator">◄</span>
-                <span id="team1-name">DIDÁ / GESIENE</span>
+                <div class="team-names-container-inner">
+                    <span id="team1-name">DIDÁ / GESIENE</span>
+                </div>
+                <span id="team1-serving" class="serving-indicator" style="display: none;">►</span>
             </div>
             <div class="points-button" id="team1-points">0</div>
             <div class="sets-container" id="team1-sets">0</div>
@@ -264,8 +276,10 @@
         </div>
         <div class="team-row">
             <div class="team-names-container">
-                <span id="team2-serving" class="serving-indicator">►</span>
-                <span id="team2-name">MATHEUS / ANA PAULA</span>
+                <div class="team-names-container-inner">
+                    <span id="team2-name">MATHEUS / ANA PAULA</span>
+                </div>
+                <span id="team2-serving" class="serving-indicator" style="display: none;">►</span>
             </div>
             <div class="points-button" id="team2-points">0</div>
             <div class="sets-container" id="team2-sets">0</div>
@@ -368,7 +382,8 @@
                     break;
                 case 'tiebreakPoint':
                     tiebreakAtivo = true;
-                    team1PointsButton.style.display = 'none';
+
+team1PointsButton.style.display = 'none';
                     team2PointsButton.style.display = 'none';
                     team1TiebreakIndicator.style.display = 'inline';
                     team2TiebreakIndicator.style.display = 'inline';
@@ -382,11 +397,7 @@
                         team2TiebreakIndicator.style.color = 'red';
                     }
                     break;
-            }
-
-            if (data.action === 'startTimer') startCronometro();
-            else if (data.action === 'stopTimer') stopCronometro();
-            else if (data.action === 'resetGamePoints') {
+                case 'resetGamePoints':
                     team1PointsButton.textContent = 0;
                     team2PointsButton.textContent = 0;
                     team1TiebreakScore = 0;
@@ -397,8 +408,11 @@
                     team2TiebreakIndicator.style.display = 'none';
                     team1PointsButton.style.display = 'flex';
                     team2PointsButton.style.display = 'flex';
+                    team1ServingIndicator.style.display = 'none';
+                    team2ServingIndicator.style.display = 'none';
                     tiebreakAtivo = false;
-                } else if (data.action === 'resetScore') {
+                    break;
+                case 'resetScore':
                     team1PointsButton.textContent = 0;
                     team2PointsButton.textContent = 0;
                     team1SetsContainer.textContent = 0;
@@ -411,9 +425,15 @@
                     team2TiebreakIndicator.style.display = 'none';
                     team1PointsButton.style.display = 'flex';
                     team2PointsButton.style.display = 'flex';
+                    team1ServingIndicator.style.display = 'none';
+                    team2ServingIndicator.style.display = 'none';
                     tiebreakAtivo = false;
-                }
-            };
+                    break;
+            }
+
+            if (data.action === 'startTimer') startCronometro();
+            else if (data.action === 'stopTimer') stopCronometro();
+        };
     </script>
 </body>
 </html>
