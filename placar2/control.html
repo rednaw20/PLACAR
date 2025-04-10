@@ -1,190 +1,147 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painel de Controle - Beach Tennis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Controle do Placar</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #121212;
-      color: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f2f2;
+      color: #333;
       padding: 20px;
-    }h1 {
-  margin-bottom: 10px;
-  color: #39ff14;
-}
-
-iframe {
-  border: 2px solid #39ff14;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  width: 360px;
-  height: 260px;
-}
-
-.controls {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  width: 100%;
-  max-width: 1000px;
-}
-
-.card {
-  background-color: #1e1e1e;
-  border: 1px solid #444;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.6);
-}
-
-.card h3 {
-  margin-top: 0;
-  color: #39ff14;
-}
-
-button {
-  background-color: #39ff14;
-  color: #000c60;
-  font-weight: bold;
-  border: none;
-  padding: 10px 15px;
-  margin: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-input[type="text"] {
-  width: 100%;
-  padding: 8px;
-  border-radius: 5px;
-  border: none;
-  margin-top: 5px;
-  margin-bottom: 10px;
-}
-
-.inline-buttons button {
-  width: 45%;
-}
-
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .iframe-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    iframe {
+      border: 2px solid #000;
+      width: 320px;
+      height: 180px;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .group {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    }
+    .group h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+    .group button, .group input, .group select {
+      display: block;
+      width: 100%;
+      margin: 5px 0;
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #999;
+    }
+    .group button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .group button:hover {
+      background-color: #0056b3;
+    }
+    .bottom-section {
+      margin-top: 40px;
+    }
   </style>
 </head>
 <body>
   <h1>Painel de Controle</h1>
-  <iframe src="placar.html" title="Placar"></iframe>  <div class="controls">
-    <div class="card">
-      <h3>Pontos</h3>
-      <div>
-        <p>Time 1:</p>
-        <button onclick="setPoints(1, '0')">0</button>
-        <button onclick="setPoints(1, '15')">15</button>
-        <button onclick="setPoints(1, '30')">30</button>
-        <button onclick="setPoints(1, '40')">40</button>
-        <button onclick="setPoints(1, 'Game', true)">Game</button>
-      </div>
-      <div>
-        <p>Time 2:</p>
-        <button onclick="setPoints(2, '0')">0</button>
-        <button onclick="setPoints(2, '15')">15</button>
-        <button onclick="setPoints(2, '30')">30</button>
-        <button onclick="setPoints(2, '40')">40</button>
-        <button onclick="setPoints(2, 'Game', true)">Game</button>
-      </div>
-    </div><div class="card">
-  <h3>Sets</h3>
-  <p>Time 1:</p>
-  <div class="inline-buttons">
-    <button onclick="updateSets(1, 1)">+1</button>
-    <button onclick="updateSets(1, -1)">-1</button>
+
+  <div class="iframe-container">
+    <iframe src="placar.html"></iframe>
   </div>
-  <p>Time 2:</p>
-  <div class="inline-buttons">
-    <button onclick="updateSets(2, 1)">+1</button>
-    <button onclick="updateSets(2, -1)">-1</button>
+
+  <div class="controls">
+    <div class="group">
+      <h3>Pontos Equipe 1</h3>
+      <button onclick="enviar('ponto1', '0')">0</button>
+      <button onclick="enviar('ponto1', '15')">15</button>
+      <button onclick="enviar('ponto1', '30')">30</button>
+      <button onclick="enviar('ponto1', '40')">40</button>
+      <button onclick="enviar('game1')">Game</button>
+    </div>
+
+    <div class="group">
+      <h3>Pontos Equipe 2</h3>
+      <button onclick="enviar('ponto2', '0')">0</button>
+      <button onclick="enviar('ponto2', '15')">15</button>
+      <button onclick="enviar('ponto2', '30')">30</button>
+      <button onclick="enviar('ponto2', '40')">40</button>
+      <button onclick="enviar('game2')">Game</button>
+    </div>
+
+    <div class="group">
+      <h3>Sets</h3>
+      <button onclick="enviar('set1+', '')">+1 Equipe 1</button>
+      <button onclick="enviar('set1-', '')">-1 Equipe 1</button>
+      <button onclick="enviar('set2+', '')">+1 Equipe 2</button>
+      <button onclick="enviar('set2-', '')">-1 Equipe 2</button>
+    </div>
+
+    <div class="group">
+      <h3>Tie-Break</h3>
+      <button onclick="enviar('tiebreak1+', '')">+1 Equipe 1</button>
+      <button onclick="enviar('tiebreak1-', '')">-1 Equipe 1</button>
+      <button onclick="enviar('tiebreak2+', '')">+1 Equipe 2</button>
+      <button onclick="enviar('tiebreak2-', '')">-1 Equipe 2</button>
+    </div>
+
+    <div class="group">
+      <h3>Break Point</h3>
+      <button onclick="enviar('break1')">Break Point Equipe 1</button>
+      <button onclick="enviar('break2')">Break Point Equipe 2</button>
+      <button onclick="enviar('breakOff')">Desativar Break Point</button>
+    </div>
+
+    <div class="group">
+      <h3>Outros</h3>
+      <button onclick="enviar('reset')">Resetar Placar</button>
+    </div>
   </div>
-</div>
 
-<div class="card">
-  <h3>Serviço</h3>
-  <button onclick="setServing(1)">Saque Time 1</button>
-  <button onclick="setServing(2)">Saque Time 2</button>
-</div>
+  <div class="bottom-section group">
+    <h3>Atualizar Textos e Nomes</h3>
+    <input type="text" id="nome1" placeholder="Nome Equipe 1" />
+    <input type="text" id="nome2" placeholder="Nome Equipe 2" />
+    <input type="text" id="textoSuperior" placeholder="Texto Superior" />
+    <input type="text" id="textoInferior" placeholder="Texto Inferior" />
+    <button onclick="atualizarNomes()">Atualizar</button>
+  </div>
 
-<div class="card">
-  <h3>Break Point</h3>
-  <button onclick="toggleBreakPoint(true)">Ativar</button>
-  <button onclick="toggleBreakPoint(false)">Desativar</button>
-</div>
+  <script>
+    const canal = new BroadcastChannel("placar");
 
-<div class="card">
-  <h3>Textos</h3>
-  <label>Nome Time 1:</label>
-  <input type="text" id="nome1" placeholder="Jogador 1 / Jogador 2" />
-  <button onclick="setName(1)">Atualizar</button>
-  <label>Nome Time 2:</label>
-  <input type="text" id="nome2" placeholder="Jogador 1 / Jogador 2" />
-  <button onclick="setName(2)">Atualizar</button>
-  <label>Texto Superior:</label>
-  <input type="text" id="topText" placeholder="Categoria..." />
-  <button onclick="setTopText()">Atualizar</button>
-  <label>Texto Inferior:</label>
-  <input type="text" id="bottomText" placeholder="Circuito..." />
-  <button onclick="setBottomText()">Atualizar</button>
-</div>
-
-<div class="card">
-  <h3>Outros</h3>
-  <button onclick="startTimer()">Iniciar Cronômetro</button>
-  <button onclick="resetScore()">Resetar Placar</button>
-</div>
-
-  </div>  <script>
-    const channel = new BroadcastChannel('beachTennisScore');
-
-    function setPoints(team, value, isGame = false) {
-      channel.postMessage({ type: 'points', team, value });
-      if (isGame) updateSets(team, 1);
+    function enviar(tipo, valor = "") {
+      canal.postMessage({ tipo, valor });
     }
 
-    function updateSets(team, delta) {
-      const el = document.getElementById(`placar`).contentWindow.document.getElementById(`team${team}-sets`);
-      let valorAtual = parseInt(el.textContent || '0');
-      valorAtual = Math.max(0, valorAtual + delta);
-      channel.postMessage({ type: 'sets', team, value: valorAtual });
+    function atualizarNomes() {
+      enviar('nome1', document.getElementById('nome1').value);
+      enviar('nome2', document.getElementById('nome2').value);
+      enviar('textoSuperior', document.getElementById('textoSuperior').value);
+      enviar('textoInferior', document.getElementById('textoInferior').value);
     }
-
-    function setName(team) {
-      const nome = document.getElementById(`nome${team}`).value;
-      channel.postMessage({ type: 'name', team, value: nome });
-    }
-
-    function setTopText() {
-      const value = document.getElementById('topText').value;
-      channel.postMessage({ type: 'topText', value });
-    }
-
-    function setBottomText() {
-      const value = document.getElementById('bottomText').value;
-      channel.postMessage({ type: 'bottomText', value });
-    }
-
-    function setServing(team) {
-      channel.postMessage({ type: 'serving', team });
-    }
-
-    function toggleBreakPoint(value) {
-      channel.postMessage({ type: 'breakPoint', value });
-    }
-
-    function startTimer() {
-      channel.postMessage({ action: 'startTimer' });
-    }
-
-    function resetScore() {
-      channel.postMessage({ action: 'resetScore' });
-    }
-  </script></body>
+  </script>
+</body>
 </html>
