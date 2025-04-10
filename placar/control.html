@@ -1,20 +1,20 @@
-<!DOCTYPE html><html lang="pt-br">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle de Placar</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle - Beach Tennis</title>
   <style>
     body {
-      font-family: sans-serif;
-      background-color: #f0f0f0;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
       display: flex;
       flex-direction: column;
       align-items: center;
     }iframe {
   width: 100%;
-  height: 200px;
+  height: 300px;
   border: none;
 }
 
@@ -24,96 +24,101 @@
   padding: 10px;
 }
 
-.group {
+.field-group {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin: 10px 0;
-}
-
-button {
-  flex: 1 1 48%;
-  margin: 5px 0;
-  padding: 15px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background-color: #ddd;
-  color: #000;
-  cursor: pointer;
-}
-
-button.active {
-  background-color: #c00;
-  color: #fff;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 input[type="text"] {
-  width: 100%;
   padding: 10px;
-  margin-bottom: 10px;
-  font-size: 16px;
-  border-radius: 5px;
+  border-radius: 8px;
   border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+}
+
+button {
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 10px;
+  background-color: #444;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+button.marked {
+  background-color: #c62828;
+}
+
+button:hover {
+  background-color: #222;
 }
 
   </style>
 </head>
 <body>
-  <iframe src="placar.html"></iframe>  <div class="container">
-    <input type="text" id="duplaA" placeholder="Nome da Dupla A">
-    <input type="text" id="duplaB" placeholder="Nome da Dupla B">
-    <input type="text" id="textoSuperior" placeholder="Texto Superior">
-    <input type="text" id="textoInferior" placeholder="Texto Inferior"><div class="group">
-  <button onclick="enviar('pontoA')">+1 Ponto A</button>
-  <button onclick="enviar('pontoB')">+1 Ponto B</button>
-  <button onclick="enviar('menosA')">-1 Ponto A</button>
-  <button onclick="enviar('menosB')">-1 Ponto B</button>
-</div>
+  <iframe src="placar.html"></iframe>
+  <div class="container">
+    <div class="field-group">
+      <input type="text" id="topText" placeholder="Texto Superior" />
+      <input type="text" id="bottomText" placeholder="Texto Inferior" />
+      <input type="text" id="team1" placeholder="Nome da Dupla 1" />
+      <input type="text" id="team2" placeholder="Nome da Dupla 2" />
+    </div><div class="button-grid">
+  <button onclick="send('point1')">+1 Dupla 1</button>
+  <button onclick="send('point2')">+1 Dupla 2</button>
+  <button onclick="send('undo1')">-1 Dupla 1</button>
+  <button onclick="send('undo2')">-1 Dupla 2</button>
 
-<div class="group">
-  <button onclick="toggle(this, 'saqueA')">Saque A</button>
-  <button onclick="toggle(this, 'saqueB')">Saque B</button>
-  <button onclick="toggle(this, 'breakA')">Break Point A</button>
-  <button onclick="toggle(this, 'breakB')">Break Point B</button>
-</div>
+  <button onclick="send('set1')">+Set Dupla 1</button>
+  <button onclick="send('set2')">+Set Dupla 2</button>
+  <button onclick="send('unset1')">-Set Dupla 1</button>
+  <button onclick="send('unset2')">-Set Dupla 2</button>
 
-<div class="group">
-  <button onclick="enviar('maisSetA')">+1 Set A</button>
-  <button onclick="enviar('maisSetB')">+1 Set B</button>
-  <button onclick="enviar('menosSetA')">-1 Set A</button>
-  <button onclick="enviar('menosSetB')">-1 Set B</button>
-</div>
+  <button onclick="toggleMark(this, 'bp1')">Break Point 1</button>
+  <button onclick="toggleMark(this, 'bp2')">Break Point 2</button>
+  <button onclick="toggleMark(this, 'serve1')">Saque 1</button>
+  <button onclick="toggleMark(this, 'serve2')">Saque 2</button>
 
-<div class="group">
-  <button onclick="enviar('tiebreak')">Tiebreak</button>
-  <button onclick="enviar('reset')">Reset</button>
-</div>
-
-<div class="group">
-  <button onclick="atualizarNomes()">Atualizar Nomes/Textos</button>
+  <button onclick="send('tiebreak')">Tiebreak</button>
+  <button onclick="send('startClock')">Iniciar Cronômetro</button>
+  <button onclick="send('stopClock')">Parar Cronômetro</button>
 </div>
 
   </div>  <script>
-    const canal = new BroadcastChannel('placar');
+    const bc = new BroadcastChannel("placar_channel");
 
-    function enviar(msg) {
-      canal.postMessage(msg);
+    function send(msg) {
+      bc.postMessage({ type: msg });
     }
 
-    function toggle(botao, comando) {
-      botao.classList.toggle('active');
-      enviar(comando);
+    function toggleMark(button, command) {
+      button.classList.toggle("marked");
+      send(command);
     }
 
-    function atualizarNomes() {
-      const nomes = {
-        duplaA: document.getElementById('duplaA').value,
-        duplaB: document.getElementById('duplaB').value,
-        textoSuperior: document.getElementById('textoSuperior').value,
-        textoInferior: document.getElementById('textoInferior').value
-      };
-      canal.postMessage({ tipo: 'atualizar', dados: nomes });
-    }
+    document.getElementById("topText").addEventListener("change", (e) => {
+      bc.postMessage({ type: "topText", value: e.target.value });
+    });
+
+    document.getElementById("bottomText").addEventListener("change", (e) => {
+      bc.postMessage({ type: "bottomText", value: e.target.value });
+    });
+
+    document.getElementById("team1").addEventListener("change", (e) => {
+      bc.postMessage({ type: "team1", value: e.target.value });
+    });
+
+    document.getElementById("team2").addEventListener("change", (e) => {
+      bc.postMessage({ type: "team2", value: e.target.value });
+    });
   </script></body>
 </html>
