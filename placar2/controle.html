@@ -1,213 +1,320 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Placar - Beach Tennis</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #222;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            text-align: center;
-        }
-
-        h1 {
-            margin-top: 20px;
-            font-size: 2em;
-            color: #fff;
-        }
-
-        .control-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 20px;
-            width: 100%;
-            max-width: 600px;
-            margin-top: 20px;
-        }
-
-        .button {
-            background-color: #444;
-            color: #fff;
-            font-size: 1.6em;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .button:hover {
-            background-color: #555;
-        }
-
-        .button:active {
-            background-color: red;
-        }
-
-        iframe {
-            width: 100%;
-            max-width: 600px;
-            height: 400px;
-            border: none;
-            margin-top: 30px;
-            border-radius: 8px;
-        }
-
-        .status-message {
-            font-size: 1.2em;
-            color: #fff;
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #333;
-            border-radius: 5px;
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle do Placar - Beach Tennis</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    .section label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .section input[type="text"],
+    .section input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .section button {
+      padding: 10px 20px;
+      margin: 5px;
+      background: #007acc;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .section button:hover {
+      background: #005f99;
+    }
+    .flex-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .flex-col {
+      flex: 1;
+      min-width: 250px;
+    }
+    /* Estilo para o iframe do placar (versão reduzida) */
+    .mini-placar {
+      width: 350px;
+      height: 300px;
+      border: none;
+      margin: 20px auto;
+      display: block;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Controle do Placar - Beach Tennis</h1>
 
-    <h1>Controle de Placar</h1>
-    
-    <!-- Contêiner de controles -->
-    <div class="control-container">
-        <button id="team1-point" class="button">Ponto Team 1</button>
-        <button id="team2-point" class="button">Ponto Team 2</button>
-        <button id="reset-score" class="button">Resetar</button>
-        <button id="start-cronometro" class="button">Iniciar Cronômetro</button>
-        <button id="stop-cronometro" class="button">Parar Cronômetro</button>
-        <button id="next-set" class="button">Próximo Set</button>
-        <button id="next-game" class="button">Próximo Jogo</button>
+    <!-- Exibição do placar em miniatura -->
+    <h2>Placar (Miniatura)</h2>
+    <iframe src="placar.html" class="mini-placar"></iframe>
+
+    <!-- Atualizar Nomes dos Times -->
+    <div class="section">
+      <h2>Nomes dos Times</h2>
+      <div class="flex-row">
+        <div class="flex-col">
+          <label for="team1-name">Time 1:</label>
+          <input type="text" id="team1-name" placeholder="Ex: DIDÁ / GESIENE">
+          <button onclick="updateName(1)">Atualizar Time 1</button>
+        </div>
+        <div class="flex-col">
+          <label for="team2-name">Time 2:</label>
+          <input type="text" id="team2-name" placeholder="Ex: MATHEUS / ANA PAULA">
+          <button onclick="updateName(2)">Atualizar Time 2</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Iframe para exibir o placar -->
-    <iframe src="placar.html" id="placarIframe"></iframe>
+    <!-- Atualizar Pontuação -->
+    <div class="section">
+      <h2>Pontuação</h2>
+      <div class="flex-row">
+        <div class="flex-col">
+          <label for="team1-points">Pontos Time 1:</label>
+          <input type="number" id="team1-points" placeholder="Valor dos pontos">
+          <button onclick="sendPoints(1)">Atualizar Pontos Time 1</button>
+        </div>
+        <div class="flex-col">
+          <label for="team2-points">Pontos Time 2:</label>
+          <input type="number" id="team2-points" placeholder="Valor dos pontos">
+          <button onclick="sendPoints(2)">Atualizar Pontos Time 2</button>
+        </div>
+      </div>
+      <button onclick="resetGamePoints()">Resetar Pontos do Game</button>
+    </div>
 
-    <!-- Mensagem de status -->
-    <div class="status-message" id="statusMessage">Placar está sendo controlado...</div>
+    <!-- Atualizar Sets -->
+    <div class="section">
+      <h2>Sets</h2>
+      <div class="flex-row">
+        <div class="flex-col">
+          <label for="team1-set-change">Set Time 1 (incremento):</label>
+          <input type="number" id="team1-set-change" placeholder="Ex: 1 para somar, -1 para subtrair">
+          <button onclick="updateSets(1)">Atualizar Sets Time 1</button>
+        </div>
+        <div class="flex-col">
+          <label for="team2-set-change">Set Time 2 (incremento):</label>
+          <input type="number" id="team2-set-change" placeholder="Ex: 1 para somar, -1 para subtrair">
+          <button onclick="updateSets(2)">Atualizar Sets Time 2</button>
+        </div>
+      </div>
+      <button onclick="resetSets()">Resetar Sets</button>
+    </div>
 
-    <script>
-        // Abrir o canal de comunicação BroadcastChannel
-        const channel = new BroadcastChannel('beachTennisScore');
-        
-        // Selecionar os botões e a área de status
-        const team1PointButton = document.getElementById('team1-point');
-        const team2PointButton = document.getElementById('team2-point');
-        const resetScoreButton = document.getElementById('reset-score');
-        const startCronometroButton = document.getElementById('start-cronometro');
-        const stopCronometroButton = document.getElementById('stop-cronometro');
-        const nextSetButton = document.getElementById('next-set');
-        const nextGameButton = document.getElementById('next-game');
-        const statusMessage = document.getElementById('statusMessage');
+    <!-- Atualizar Textos do Placar -->
+    <div class="section">
+      <h2>Textos do Placar</h2>
+      <div class="flex-row">
+        <div class="flex-col">
+          <label for="top-text">Texto Superior (Categoria):</label>
+          <input type="text" id="top-text" placeholder="Ex: FEMININO D">
+          <button onclick="updateTopText()">Atualizar Categoria</button>
+        </div>
+        <div class="flex-col">
+          <label for="bottom-text">Texto Inferior (Circuito):</label>
+          <input type="text" id="bottom-text" placeholder="Ex: CIRCUITO ARENA BEACH">
+          <button onclick="updateBottomText()">Atualizar Circuito</button>
+        </div>
+      </div>
+    </div>
 
-        // Variáveis para controle do jogo
-        let team1Score = 0;
-        let team2Score = 0;
-        let setCount = 1;
-        let team1Sets = 0;
-        let team2Sets = 0;
-        let gameInProgress = false;
-        let maxPointsPerSet = 21;
+    <!-- Indicador de Saque -->
+    <div class="section">
+      <h2>Indicador de Saque</h2>
+      <div class="flex-row">
+        <div class="flex-col">
+          <button onclick="updateServing(1)">Time 1 Sacando</button>
+        </div>
+        <div class="flex-col">
+          <button onclick="updateServing(2)">Time 2 Sacando</button>
+        </div>
+        <div class="flex-col">
+          <button onclick="clearServing()">Limpar Saque</button>
+        </div>
+      </div>
+    </div>
 
-        // Função para atualizar o estado do botão e a mensagem de status
-        function updateButtonState(button, message) {
-            // Mudar a cor do botão para vermelho
-            button.style.backgroundColor = 'red';
-            button.style.color = '#fff';
+    <!-- Controle do Cronômetro -->
+    <div class="section">
+      <h2>Cronômetro</h2>
+      <div class="flex-row">
+        <div class="flex-col">
+          <button onclick="startTimer()">Iniciar Cronômetro</button>
+        </div>
+        <div class="flex-col">
+          <button onclick="stopTimer()">Parar Cronômetro</button>
+        </div>
+        <div class="flex-col">
+          <button onclick="resetTimer()">Resetar Cronômetro</button>
+        </div>
+      </div>
+    </div>
 
-            // Atualizar a mensagem de status
-            statusMessage.textContent = message;
+    <!-- Controle de Tiebreak -->
+    <div class="section">
+      <h2>Tiebreak</h2>
+      <div class="flex-row">
+        <div class="flex-col">
+          <label for="team1-tiebreak">Tiebreak Time 1 (score):</label>
+          <input type="text" id="team1-tiebreak" placeholder="Ex: TB ou valor">
+          <button onclick="updateTiebreak(1)">Atualizar Tiebreak Time 1</button>
+        </div>
+        <div class="flex-col">
+          <label for="team2-tiebreak">Tiebreak Time 2 (score):</label>
+          <input type="text" id="team2-tiebreak" placeholder="Ex: TB ou valor">
+          <button onclick="updateTiebreak(2)">Atualizar Tiebreak Time 2</button>
+        </div>
+      </div>
+    </div>
 
-            // Após 1 segundo, restaurar a cor original
-            setTimeout(function() {
-                button.style.backgroundColor = '#444';
-                button.style.color = '#fff';
-            }, 1000);
-        }
+    <!-- Break Point -->
+    <div class="section">
+      <h2>Break Point</h2>
+      <div class="flex-row">
+        <button onclick="toggleBreakPoint(true)">Ativar Break Point</button>
+        <button onclick="toggleBreakPoint(false)">Desativar Break Point</button>
+      </div>
+    </div>
 
-        // Enviar pontos para a equipe 1
-        team1PointButton.addEventListener('click', function() {
-            team1Score++;
-            channel.postMessage({ type: 'points', team: 1, score: team1Score });
-            updateButtonState(team1PointButton, `Ponto para Team 1 - Pontuação: ${team1Score}`);
-        });
+    <!-- Reset Geral -->
+    <div class="section">
+      <h2>Reset Geral</h2>
+      <button onclick="resetScore()">Resetar Placar Completo</button>
+    </div>
+  </div>
 
-        // Enviar pontos para a equipe 2
-        team2PointButton.addEventListener('click', function() {
-            team2Score++;
-            channel.postMessage({ type: 'points', team: 2, score: team2Score });
-            updateButtonState(team2PointButton, `Ponto para Team 2 - Pontuação: ${team2Score}`);
-        });
+  <script>
+    // Cria o canal para comunicação com o placar.html
+    const channel = new BroadcastChannel('beachTennisScore');
 
-        // Resetar o placar
-        resetScoreButton.addEventListener('click', function() {
-            team1Score = 0;
-            team2Score = 0;
-            channel.postMessage({ type: 'resetScore' });
-            updateButtonState(resetScoreButton, 'Placar resetado');
-        });
+    function updateName(team) {
+      const input = document.getElementById('team' + team + '-name');
+      const name = input.value.trim();
+      if(name !== '') {
+        channel.postMessage({ type: 'name', team: team, value: name });
+        alert('Nome atualizado para Time ' + team);
+      }
+    }
 
-        // Iniciar o cronômetro
-        startCronometroButton.addEventListener('click', function() {
-            channel.postMessage({ action: 'startTimer' });
-            updateButtonState(startCronometroButton, 'Cronômetro iniciado');
-        });
+    function sendPoints(team) {
+      const input = document.getElementById('team' + team + '-points');
+      const points = input.value.trim();
+      if(points !== '') {
+        channel.postMessage({ type: 'points', team: team, value: points });
+        alert('Pontos atualizados para Time ' + team);
+      }
+    }
 
-        // Parar o cronômetro
-        stopCronometroButton.addEventListener('click', function() {
-            channel.postMessage({ action: 'stopTimer' });
-            updateButtonState(stopCronometroButton, 'Cronômetro parado');
-        });
+    function resetGamePoints() {
+      channel.postMessage({ action: 'resetGamePoints' });
+      alert('Pontos do game resetados.');
+    }
 
-        // Passar para o próximo set
-        nextSetButton.addEventListener('click', function() {
-            if (team1Score >= maxPointsPerSet || team2Score >= maxPointsPerSet) {
-                if (team1Score > team2Score) {
-                    team1Sets++;
-                    channel.postMessage({ type: 'setWin', team: 1 });
-                } else {
-                    team2Sets++;
-                    channel.postMessage({ type: 'setWin', team: 2 });
-                }
+    function updateSets(team) {
+      const input = document.getElementById('team' + team + '-set-change');
+      const change = parseInt(input.value);
+      if(!isNaN(change)) {
+        channel.postMessage({ type: 'sets', team: team, change: change });
+        alert('Sets atualizados para Time ' + team);
+      }
+    }
 
-                setCount++;
-                team1Score = 0;
-                team2Score = 0;
+    function resetSets() {
+      channel.postMessage({ action: 'resetScore' });
+      alert('Sets e pontos resetados.');
+    }
 
-                channel.postMessage({ type: 'nextSet', set: setCount });
-                updateButtonState(nextSetButton, `Passando para o Set ${setCount}`);
-            }
-        });
+    function updateTopText() {
+      const input = document.getElementById('top-text');
+      const text = input.value.trim();
+      if(text !== '') {
+        channel.postMessage({ type: 'topText', value: text });
+        alert('Texto superior atualizado.');
+      }
+    }
 
-        // Passar para o próximo jogo
-        nextGameButton.addEventListener('click', function() {
-            if (team1Sets > team2Sets) {
-                channel.postMessage({ type: 'gameWin', team: 1 });
-            } else {
-                channel.postMessage({ type: 'gameWin', team: 2 });
-            }
+    function updateBottomText() {
+      const input = document.getElementById('bottom-text');
+      const text = input.value.trim();
+      if(text !== '') {
+        channel.postMessage({ type: 'bottomText', value: text });
+        alert('Texto inferior atualizado.');
+      }
+    }
 
-            // Resetar jogo
-            team1Sets = 0;
-            team2Sets = 0;
-            team1Score = 0;
-            team2Score = 0;
-            setCount = 1;
+    function updateServing(team) {
+      channel.postMessage({ type: 'serving', team: team });
+      alert('Indicador de saque atualizado para Time ' + team);
+    }
 
-            channel.postMessage({ type: 'resetGame' });
-            updateButtonState(nextGameButton, 'Próximo Jogo');
-        });
-    </script>
+    function clearServing() {
+      channel.postMessage({ type: 'serving', team: 0 });
+      alert('Indicador de saque limpo.');
+    }
 
+    function startTimer() {
+      channel.postMessage({ action: 'startTimer' });
+      alert('Cronômetro iniciado.');
+    }
+
+    function stopTimer() {
+      channel.postMessage({ action: 'stopTimer' });
+      alert('Cronômetro parado.');
+    }
+
+    function resetTimer() {
+      channel.postMessage({ action: 'resetTimer' });
+      alert('Cronômetro resetado.');
+    }
+
+    function updateTiebreak(team) {
+      const input = document.getElementById('team' + team + '-tiebreak');
+      const value = input.value.trim();
+      const activate = value !== '';
+      channel.postMessage({ type: 'tiebreak', team: team, value: activate, score: value });
+      alert('Tiebreak atualizado para Time ' + team);
+    }
+
+    function toggleBreakPoint(state) {
+      channel.postMessage({ type: 'breakPoint', value: state });
+      alert('Break Point ' + (state ? 'ativado' : 'desativado') + '.');
+    }
+
+    function resetScore() {
+      channel.postMessage({ action: 'resetScore' });
+      alert('Placar completo resetado.');
+    }
+  </script>
 </body>
 </html>
