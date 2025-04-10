@@ -1,0 +1,189 @@
+:root {
+    --primary-color: #333;
+    --secondary-color: #666;
+    --active-color: #dc3545; /* Bootstrap's danger color */
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --border-color: #dee2e6;
+    --transition-speed: 0.3s;
+}
+
+body {
+    background-color: #f0f0f0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-bottom: 100px;
+}
+
+/* Scoreboard Preview */
+.scoreboard-preview-container {
+    width: 100%;
+    background-color: var(--dark-color);
+    padding: 10px 0;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+#scoreboard-iframe {
+    width: 100%;
+    max-width: 700px;
+    height: 300px;
+    border: 2px solid var(--border-color);
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Control Panel */
+.control-panel {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.section-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin: 15px 0;
+}
+
+h4 {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+h5 {
+    color: var(--secondary-color);
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+/* Buttons */
+.btn {
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: all var(--transition-speed) ease;
+}
+
+.btn-lg {
+    font-size: 1.1rem;
+    padding: 12px 18px;
+}
+
+.btn-group .btn {
+    border-width: 2px;
+}
+
+.point-btn, .serve-button {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.point-btn.active {
+    background-color: var(--active-color);
+    color: white;
+    border-color: var(--active-color);
+}
+
+.serve-button.active {
+    background-color: var(--active-color);
+    color: white;
+    border-color: var(--active-color);
+}
+
+#break-point-btn.active {
+    background-color: var(--active-color);
+    color: white;
+}
+
+/* Displays */
+.set-display, .tiebreak-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--light-color);
+}
+
+.tiebreak-display {
+    color: var(--active-color);
+}
+
+/* Forms */
+.form-control {
+    font-size: 1rem;
+    padding: 10px 15px;
+    height: 50px;
+    border: 2px solid var(--border-color);
+}
+
+.form-control:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.25rem rgba(102, 102, 102, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: var(--active-color);
+    border-color: var(--active-color);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    #scoreboard-iframe {
+        height: 200px;
+    }
+    
+    .btn-lg {
+        font-size: 1rem;
+        padding: 10px 15px;
+    }
+    
+    .set-display, .tiebreak-display {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .control-panel {
+        padding: 0 10px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    h4 {
+        font-size: 1.2rem;
+    }
+    
+    h5 {
+        font-size: 1rem;
+    }
+    
+    .point-btn, .serve-button, .form-control {
+        height: 45px;
+    }
+    
+    .btn-group .btn {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+}

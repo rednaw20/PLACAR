@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placar 2 Beach Tennis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* --- PARAMETRIZAÇÃO E CORES DO PLACAR PERSONALIZADO --- */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap'); /* Fonte arredondada para o placar */
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap'); /* Fonte para nomes */
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap'); /* Fonte alternativa para títulos */
+
+        :root {
+            /* Variáveis de cores */
+            --cor-fundo: #222;
+            --cor-texto: #eee;
+            --cor-container: #333;
+            --cor-texto-topo: #39ff14; /* Cor do texto do cronômetro */
+            --cor-fundo-topo: #000c60; /* Fundo do cronômetro */
+            --cor-fundo-categoria: #39ff14; /* Fundo da categoria */
+            --cor-texto-categoria: #000c60; /* Cor do texto da categoria */
+            --cor-texto-circuito: #000c60;
+            --cor-nome-fundo: #fff;
+            --cor-nome-texto: #000c60;
+            --cor-marcador1-fundo: #000c60; /* Fundo dos primeiros marcadores (pontos) */
+            --cor-marcador1-texto: #39ff14; /* Cor da fonte dos primeiros marcadores (pontos) */
+            --cor-marcador2-fundo: #fff; /* Fundo dos segundos marcadores (sets) */
+            --cor-marcador2-texto: #000c60; /* Cor da fonte dos segundos marcadores (sets) */
+            --cor-fundo-inferior: #3498db; /* Fundo azul mais bonito inferior */
+            --cor-texto-inferior: #ffffff; /* Cor da fonte inferior */
+            --cor-linha-divisoria: #555; /* Cor da linha divisória mais escura */
+            --cor-saque: #ff6600; /* Cor laranja para indicador de saque */
+            --cor-break-point: #ff0000; /* Vermelho para break point */
+            
+            /* Tamanhos de fonte */
+            --tamanho-fonte-nome: 2.3em;
+            --tamanho-fonte-numeros: 2.6em; /* Para pontos - tamanho reduzido */
+            --tamanho-fonte-sets: 2.6em; /* Para sets - tamanho reduzido */
+            --tamanho-fonte-cronometro: 1.8em; /* Tamanho do cronômetro (reduzido) */
+            --tamanho-fonte-categoria: 1.56em; /* Tamanho da categoria - aumentado em 30% */
+            --tamanho-fonte-circuito: 1.2em; /* Para o circuito */
+            
+            /* Dimensões e espaçamentos */
+            --largura-placar: 100%;
+            --max-largura-placar: 540px; /* Aumentado em 20% (de 450px) para ficar adequado para OBS */
+            --padding-placar: 10px;
+            --padding-linhas: 12px 15px;
+            /* Proporções para layout de grid */
+            --espacamento-colunas: 7fr 3fr; /* Layout dividido em 2 colunas na primeira linha (70/30) */
+            --espacamento-equipes: minmax(0, 7fr) minmax(70px, 1.5fr) minmax(70px, 1.5fr); /* Nome flexível com min-width para pontos e sets */
+            
+            /* Efeitos visuais */
+            --sombra-externa: 0 0 30px rgba(0, 0, 0, 0.7);
+            --sombra-interna: inset 0 0 15px rgba(0, 0, 0, 0.3);
+            --border-radius: 0px; /* Sem bordas arredondadas */
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: transparent; /* Fundo transparente para OBS */
+            color: var(--cor-texto);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Alinhado à esquerda */
+            justify-content: flex-start; /* Alinhado ao topo */
+            min-height: 100vh;
+            width: 100%;
+            height: 100%;
+        }
+
+        .scoreboard-container {
+            background-color: var(--cor-container);
+            color: var(--cor-texto);
+            border-radius: var(--border-radius);
+            box-shadow: var(--sombra-externa);
+            overflow: hidden;
+            width: 540px; /* 450px + 20% = 540px */
+            height: 230px;
+            max-width: 540px; /* 450px + 20% = 540px */
+            max-height: 230px;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-rows: 50px 65px 65px 50px; /* Altura fixa para cada linha */
+            grid-template-columns: 1fr;
+            border: 1px solid #333333;
+            box-sizing: border-box;
+        }
+
+        .top-bar {
+            display: grid;
+            grid-template-columns: var(--espacamento-equipes); /* Usar o mesmo grid das equipes */
+            border-bottom: 1px solid #555;
+            margin-bottom: 0;
+        }
+
+        .cronometro-container {
+            background-color: #000c60; /* Cor do fundo do cronômetro restaurada */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="rgba(0,12,96,0.95)"/><path d="M0 50 L100 50" stroke="rgba(255,255,255,0.2)" stroke-width="1"/><path d="M50 0 L50 100" stroke="rgba(255,255,255,0.2)" stroke-width="1"/></svg>');
+            background-size: 50px 50px;
+            color: var(--cor-texto-topo);
+            padding: 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            grid-column: 1; /* Primeira coluna */
+            border-radius: 0;
+            margin: 0;
+            height: 50px;
+        }
+
+        .categoria-container {
+            background-color: var(--cor-fundo-categoria);
+            color: var(--cor-texto-categoria);
+            padding: 0;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            grid-column: 2 / span 2; /* Segunda e terceira colunas */
+            border-radius: 0;
+            margin: 0;
+            height: 50px;
+        }
+
+        #cronometro {
+            font-size: var(--tamanho-fonte-cronometro);
+        }
+
+        #categoria-text {
+            font-size: 20px; /* Tamanho fixo reduzido */
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold; /* Restaurado o negrito como solicitado */
+            letter-spacing: -0.5px; /* Mantido o espaçamento reduzido entre letras */
+        }
+
+        .team-row {
+            display: grid;
+            grid-template-columns: var(--espacamento-equipes); /* 3 colunas nas linhas 2 e 3 */
+            align-items: center; /* Centraliza verticalmente */
+            justify-content: center;
+            transition: background-color 0.3s ease;
+            background-color: var(--cor-container);
+            grid-column: 1 / -1;
+            grid-gap: 0;
+            position: relative;
+            border: none;
+            height: 65px;
+            max-height: 65px; /* Força altura máxima fixa */
+            min-height: 65px; /* Força altura mínima fixa */
+            border-left: 1px solid #333;
+            border-right: 1px solid #333;
+            overflow: hidden; /* Previne que o conteúdo passe dos limites */
+            box-sizing: border-box; /* Garante que padding não afeta tamanho */
+        }
+
+        .team-row:nth-child(1) {
+            border-bottom: 2px solid var(--cor-linha-divisoria);
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .team-names-container {
+            background-color: var(--cor-nome-fundo);
+            color: var(--cor-nome-texto);
+            padding: 0;
+            border-radius: 0;
+            font-size: var(--tamanho-fonte-nome);
+            text-align: left;
+            display: table;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            position: relative;
+        }
+        
+        #team1-name, #team2-name {
+            display: table-cell;
+            vertical-align: middle;
+            font-family: 'Oswald', sans-serif;
+            font-weight: bold; /* Restaurado o negrito como solicitado */
+            font-size: 28px; /* Tamanho reduzido (era cerca de 32px antes) */
+            letter-spacing: -0.5px; /* Espaçamento negativo para caber mais caracteres */
+            text-transform: uppercase;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding-left: 25px; /* Aumentado para dar mais espaço para o indicador de saque */
+            padding-right: 5px; /* Adicionado para evitar que o texto toque a borda direita */
+            box-sizing: border-box; /* Garantir que padding esteja dentro do elemento */
+        }
+
+        .points-button {
+            background-color: var(--cor-marcador1-fundo);
+            color: var(--cor-marcador1-texto);
+            font-family: 'Montserrat', sans-serif;
+            font-size: var(--tamanho-fonte-numeros);
+            text-align: center;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease-in-out;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center; /* Centraliza verticalmente */
+            justify-content: center;
+            border: none;
+            border-radius: 0px;
+            margin: 0;
+            padding: 0; /* Removido padding vertical */
+            box-shadow: var(--sombra-interna);
+            position: relative;
+            overflow: hidden;
+            font-weight: bold;
+            letter-spacing: 2px;
+            border-right: 1px solid var(--cor-linha-divisoria);
+            box-sizing: border-box;
+            line-height: 1; /* Reduz altura da linha */
+        }
+        
+        /* Animação ao mudar a pontuação - apenas números sem afetar fundo */
+        .pulse-animation {
+            animation: pulseScore 0.5s ease-in-out;
+            display: inline-block;
+        }
+        
+        @keyframes pulseScore {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); text-shadow: 0 0 10px rgba(255, 255, 255, 0.7); }
+            100% { transform: scale(1); }
+        }
+
+        .sets-container {
+            background-color: var(--cor-marcador2-fundo);
+            color: var(--cor-marcador2-texto);
+            font-family: 'Montserrat', sans-serif;
+            font-size: var(--tamanho-fonte-sets);
+            text-align: center;
+            display: flex;
+            align-items: center; /* Centraliza verticalmente */
+            justify-content: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            border-radius: 0px;
+            margin: 0;
+            padding: 0; /* Removido padding vertical */
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+            box-shadow: var(--sombra-interna);
+            letter-spacing: 2px;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            line-height: 1; /* Reduz altura da linha */
+        }
+        
+
+
+        .bottom-bar {
+            background-color: var(--cor-fundo-inferior);
+            color: var(--cor-texto-inferior);
+            padding: 0 20px;
+            text-align: left;
+            font-size: var(--tamanho-fonte-circuito);
+            border-top: 1px solid #555;
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            height: 50px;
+        }
+
+        .bottom-bar strong {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .tiebreak-indicator {
+            color: red;
+            font-weight: bold;
+            font-size: var(--tamanho-fonte-numeros);
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .serving-indicator {
+            color: #000088; /* Azul escuro como solicitado */
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.7));
+            position: absolute;
+            left: 8px; /* Posicionado no início do nome */
+            z-index: 10;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 12px solid #000088; /* Invertido para apontar para a direita */
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .break-point-indicator {
+            display: none;
+            background-color: var(--cor-break-point);
+            color: white;
+            padding: 5px;
+            text-align: center;
+            font-size: 1em;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0;
+            margin: 0 auto;
+            font-weight: bold;
+            position: relative;
+            width: 100%;
+            height: auto;
+            z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse 1.2s infinite;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        @keyframes pulse {
+            0% { background-color: var(--cor-break-point); }
+            50% { background-color: #ff3300; }
+            100% { background-color: var(--cor-break-point); }
+        }
+        
+        /* Responsividade para dispositivos móveis */
+        @media (max-width: 600px) {
+            :root {
+                --tamanho-fonte-nome: 1.2em;
+                --tamanho-fonte-numeros: 2em;
+                --tamanho-fonte-sets: 2em;
+                --tamanho-fonte-cronometro: 1.5em;
+                --tamanho-fonte-categoria: 1.2em;
+                --padding-placar: 10px;
+            }
+            
+            .team-names-container {
+                padding: 5px;
+                padding-left: 30px; /* Manter espaço para o saque mesmo em telas menores */
+            }
+            
+            .serving-indicator {
+                font-size: 1.5em;
+            }
+            
+            .cronometro-container, .categoria-container {
+                padding: 8px 12px;
+            }
+            
+            .bottom-bar {
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scoreboard-container">
+        <div class="top-bar">
+            <div class="cronometro-container" id="cronometro-area">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 15px; width: 100%;">
+                    <span id="cronometro">00:00</span>
+                    <span id="break-point-area" style="display: none; color: red; font-weight: bold; font-size: 1em;">
+                        BREAK POINT
+                    </span>
+                    <span id="tiebreak-area" style="display: none; color: red; font-weight: bold; font-size: 1em;">
+                        TIE-BREAK
+                    </span>
+                </div>
+            </div>
+            <div class="categoria-container">
+                <span id="categoria-text">CATEGORIA</span>
+            </div>
+        </div>
+        <div class="team-row">
+            <div class="team-names-container">
+                <div class="serving-indicator" id="team1-serving" style="display: none;"></div>
+                <span id="team1-name">TIME A</span>
+            </div>
+            <div class="points-button" id="team1-points">
+                <span class="score-text">0</span>
+            </div>
+            <div class="sets-container" id="team1-sets">
+                <span class="score-text">0</span>
+            </div>
+        </div>
+        <div class="team-row">
+            <div class="team-names-container">
+                <div class="serving-indicator" id="team2-serving" style="display: none;"></div>
+                <span id="team2-name">TIME B</span>
+            </div>
+            <div class="points-button" id="team2-points">
+                <span class="score-text">0</span>
+            </div>
+            <div class="sets-container" id="team2-sets">
+                <span class="score-text">0</span>
+            </div>
+        </div>
+        <div class="bottom-bar">
+            <strong><span id="circuito-text">CIRCUITO</span></strong>
+        </div>
+    </div>
+
+    <script>
+        const team1NameElement = document.getElementById('team1-name');
+        const team2NameElement = document.getElementById('team2-name');
+        const team1PointsButton = document.getElementById('team1-points');
+        const team2PointsButton = document.getElementById('team2-points');
+        const team1SetsContainer = document.getElementById('team1-sets');
+        const team2SetsContainer = document.getElementById('team2-sets');
+        
+        // Garantir que os pontos iniciais são exibidos
+        team1PointsButton.querySelector('.score-text').textContent = '0';
+        team2PointsButton.querySelector('.score-text').textContent = '0';
+        const categoriaTextElement = document.getElementById('categoria-text');
+        const circuitoTextElement = document.getElementById('circuito-text');
+        const cronometroElement = document.getElementById('cronometro');
+        const cronometroAreaElement = document.getElementById('cronometro-area');
+        const breakPointAreaElement = document.getElementById('break-point-area');
+        const team1TiebreakIndicator = document.getElementById('team1-tiebreak');
+        const team2TiebreakIndicator = document.getElementById('team2-tiebreak');
+        const team1ServingIndicator = document.getElementById('team1-serving');
+        const team2ServingIndicator = document.getElementById('team2-serving');
+
+        let cronometroInterval;
+        let segundos = 0;
+        let cronometroAtivo = false;
+        let tiebreakAtivo = false;
+        // Objeto para armazenar os últimos valores de pontos antes do tiebreak
+        let ultimosPontos = {
+            team1: '0',
+            team2: '0'
+        };
+
+        function formatTime(segundos) {
+            const minutos = Math.floor(segundos / 60).toString().padStart(2, '0');
+            const secs = (segundos % 60).toString().padStart(2, '0');
+            return `${minutos}:${secs}`;
+        }
+
+        function startCronometro() {
+            if (!cronometroAtivo) {
+                cronometroAtivo = true;
+                cronometroInterval = setInterval(() => {
+                    segundos++;
+                    cronometroElement.textContent = formatTime(segundos);
+                }, 1000);
+            }
+        }
+
+        function stopCronometro() {
+            if (cronometroAtivo) {
+                clearInterval(cronometroInterval);
+                cronometroAtivo = false;
+            }
+        }
+
+        function resetCronometro() {
+            clearInterval(cronometroInterval);
+            cronometroAtivo = false;
+            segundos = 0;
+            cronometroElement.textContent = '00:00';
+        }
+
+        const tiebreakAreaElement = document.getElementById('tiebreak-area');
+
+        // Guarda os nomes originais das equipes para evitar truncamento indesejado
+        let originalTeam1Name = "TIME A";
+        let originalTeam2Name = "TIME B";
+        
+        // Função para ajustar o tamanho da fonte automaticamente
+        function adjustFontSize(element, maxSize, minSize) {
+            const container = element.parentElement;
+            // Deixa 10px de margem para segurança
+            const containerWidth = container.clientWidth - 30;
+            
+            // Verificar se é um nome de equipe e armazenar o valor original
+            if (element.id === 'team1-name') {
+                if (element.textContent.trim() !== "TIME A") {
+                    originalTeam1Name = element.textContent;
+                }
+                // Restaurar o texto original caso tenha sido truncado antes
+                element.textContent = originalTeam1Name;
+            } else if (element.id === 'team2-name') {
+                if (element.textContent.trim() !== "TIME B") {
+                    originalTeam2Name = element.textContent;
+                }
+                // Restaurar o texto original caso tenha sido truncado antes
+                element.textContent = originalTeam2Name;
+            }
+            
+            // Reset para o tamanho máximo primeiro
+            element.style.fontSize = maxSize + 'px';
+            
+            // Salvar o texto atual
+            const currentText = element.textContent;
+            
+            // Não permitir que a fonte fique muito pequena (ajustado para mínimo 18px)
+            const minReadableSize = Math.max(minSize, 18); 
+            
+            // Reduzir o tamanho da fonte até o tamanho mínimo legível
+            while (element.scrollWidth > containerWidth && parseFloat(element.style.fontSize) > minReadableSize) {
+                const currentSize = parseFloat(element.style.fontSize);
+                element.style.fontSize = (currentSize - 1) + 'px';
+            }
+            
+            // Se mesmo com a fonte no tamanho mínimo legível ainda estiver transbordando,
+            // e for um nome de equipe, limitar para 30 caracteres (solicitação do usuário)
+            if (element.scrollWidth > containerWidth) {
+                if (element.id === 'team1-name' || element.id === 'team2-name') {
+                    if (currentText.length > 30) {
+                        element.textContent = currentText.substring(0, 30);
+                    }
+                } else if (element.id === 'categoria-text' || element.id === 'circuito-text') {
+                    // Para outros elementos, podemos truncar com "..." se necessário
+                    let textLength = currentText.length;
+                    while (element.scrollWidth > containerWidth && textLength > 0) {
+                        textLength--;
+                        element.textContent = currentText.substring(0, textLength) + '...';
+                    }
+                }
+            }
+        }
+
+        // Initialize BroadcastChannel for communication
+        const channel = new BroadcastChannel('beachTennisScore');
+
+        channel.onmessage = (event) => {
+            const data = event.data;
+            console.log("Mensagem recebida no placar:", data);
+
+            switch (data.type) {
+                case 'name':
+                    if (data.team === 1) {
+                        // Limitar a 30 caracteres conforme solicitado
+                        team1NameElement.textContent = data.value.toUpperCase().substring(0, 30);
+                        // Definir tamanho fixo sem ajuste automático
+                        team1NameElement.style.fontSize = '28px';
+                    } else if (data.team === 2) {
+                        // Limitar a 30 caracteres conforme solicitado
+                        team2NameElement.textContent = data.value.toUpperCase().substring(0, 30);
+                        // Definir tamanho fixo sem ajuste automático
+                        team2NameElement.style.fontSize = '28px';
+                    }
+                    break;
+                case 'points':
+                    if (data.team === 1) {
+                        // Encontrar o indicador de saque existente ou criar um novo
+                        let servingIndicator = team1PointsButton.querySelector('.serving-indicator');
+                        if (!servingIndicator) {
+                            servingIndicator = document.createElement('div');
+                            servingIndicator.className = 'serving-indicator';
+                            servingIndicator.style.display = 'none';
+                        }
+                        
+                        // Encontrar o score text existente ou criar um novo
+                        let scoreText = team1PointsButton.querySelector('.score-text');
+                        if (!scoreText) {
+                            scoreText = document.createElement('span');
+                            scoreText.className = 'score-text';
+                            team1PointsButton.appendChild(scoreText);
+                        }
+                        
+                        // Atualizar o texto apenas se não estiver em tiebreak
+                        if (!tiebreakAtivo) {
+                            scoreText.textContent = data.value;
+                            ultimosPontos.team1 = data.value;
+                        }
+                        
+                        // Garantir que ambos os elementos estejam presentes
+                        if (!team1PointsButton.contains(servingIndicator)) {
+                            team1PointsButton.insertBefore(servingIndicator, team1PointsButton.firstChild);
+                        }
+                        
+                        // Adicionar animação apenas ao texto
+                        scoreText.classList.add('pulse-animation');
+                        setTimeout(() => {
+                            scoreText.classList.remove('pulse-animation');
+                        }, 500);
+                    } else if (data.team === 2) {
+                        // Encontrar o indicador de saque existente ou criar um novo
+                        let servingIndicator = team2PointsButton.querySelector('.serving-indicator');
+                        if (!servingIndicator) {
+                            servingIndicator = document.createElement('div');
+                            servingIndicator.className = 'serving-indicator';
+                            servingIndicator.style.display = 'none';
+                        }
+                        
+                        // Encontrar o score text existente ou criar um novo
+                        let scoreText = team2PointsButton.querySelector('.score-text');
+                        if (!scoreText) {
+                            scoreText = document.createElement('span');
+                            scoreText.className = 'score-text';
+                            team2PointsButton.appendChild(scoreText);
+                        }
+                        
+                        // Atualizar o texto e armazenar para uso futuro
+                        if (!tiebreakAtivo) {
+                            scoreText.textContent = data.value;
+                            ultimosPontos.team2 = data.value;
+                        }
+                        
+                        // Garantir que ambos os elementos estejam presentes
+                        if (!team2PointsButton.contains(servingIndicator)) {
+                            team2PointsButton.insertBefore(servingIndicator, team2PointsButton.firstChild);
+                        }
+                        
+                        // Adicionar animação apenas ao texto
+                        scoreText.classList.add('pulse-animation');
+                        setTimeout(() => {
+                            scoreText.classList.remove('pulse-animation');
+                        }, 500);
+                    }
+                    break;
+                case 'sets':
+                    if (data.team === 1) {
+                        // Encontrar o score text existente ou criar um novo
+                        let setScoreText = team1SetsContainer.querySelector('.score-text');
+                        if (!setScoreText) {
+                            setScoreText = document.createElement('span');
+                            setScoreText.className = 'score-text';
+                            team1SetsContainer.appendChild(setScoreText);
+                        }
+                        
+                        // Atualizar o texto apenas se não estiver em tiebreak
+                        if (!tiebreakAtivo) {
+                            setScoreText.textContent = data.value;
+                        }
+                        
+                        // Adicionar animação apenas ao texto
+                        setScoreText.classList.add('pulse-animation');
+                        setTimeout(() => {
+                            setScoreText.classList.remove('pulse-animation');
+                        }, 500);
+                    } else if (data.team === 2) {
+                        // Encontrar o score text existente ou criar um novo
+                        let setScoreText = team2SetsContainer.querySelector('.score-text');
+                        if (!setScoreText) {
+                            setScoreText = document.createElement('span');
+                            setScoreText.className = 'score-text';
+                            team2SetsContainer.appendChild(setScoreText);
+                        }
+                        
+                        // Atualizar o texto apenas se não estiver em tiebreak
+                        if (!tiebreakAtivo) {
+                            setScoreText.textContent = data.value;
+                        }
+                        
+                        // Adicionar animação apenas ao texto
+                        setScoreText.classList.add('pulse-animation');
+                        setTimeout(() => {
+                            setScoreText.classList.remove('pulse-animation');
+                        }, 500);
+                    }
+                    break;
+                case 'category':
+                    // Limitar a 15 caracteres conforme solicitado
+                    categoriaTextElement.textContent = data.value.toUpperCase().substring(0, 15); // Converter para CAIXA ALTA
+                    // Ajustar fonte diretamente, sem usar adjustFontSize para evitar truncamento
+                    categoriaTextElement.style.fontSize = '20px'; // Tamanho reduzido fixo
+                    break;
+                case 'circuit':
+                    // Limitar a 50 caracteres
+                    circuitoTextElement.textContent = data.value.toUpperCase().substring(0, 50); // Converter para CAIXA ALTA
+                    adjustFontSize(circuitoTextElement, 20, 8);
+                    break;
+                case 'tiebreak':
+                    tiebreakAtivo = data.active;
+                    // Atualizar displays para o modo tiebreak
+                    if (data.active) {
+                        // Mostrar o valor do tiebreak nos pontos, e os pontos permanecem zerados
+                        let scoreText1 = team1PointsButton.querySelector('.score-text');
+                        if (scoreText1) {
+                            ultimosPontos.team1 = scoreText1.textContent; // Guardar o valor atual
+                            scoreText1.textContent = data.teamA;
+                            scoreText1.style.color = 'red'; // Marcar em vermelho para indicar tiebreak
+                        }
+                        
+                        let scoreText2 = team2PointsButton.querySelector('.score-text');
+                        if (scoreText2) {
+                            ultimosPontos.team2 = scoreText2.textContent; // Guardar o valor atual
+                            scoreText2.textContent = data.teamB;
+                            scoreText2.style.color = 'red'; // Marcar em vermelho para indicar tiebreak
+                        }
+                        
+                        // Manter o valor dos sets durante o tiebreak, apenas salvar para referência futura
+                        const setsText1 = team1SetsContainer.querySelector('.score-text');
+                        const setsText2 = team2SetsContainer.querySelector('.score-text');
+                        
+                        // Guardar o valor atual dos sets apenas para referência (não alterar a exibição)
+                        if (setsText1 && !setsText1.getAttribute('data-original-set')) {
+                            setsText1.setAttribute('data-original-set', setsText1.textContent);
+                        }
+                        
+                        if (setsText2 && !setsText2.getAttribute('data-original-set')) {
+                            setsText2.setAttribute('data-original-set', setsText2.textContent);
+                        }
+                        
+                        // Mostrar indicador de TIE-BREAK
+                        cronometroElement.style.width = '45%';
+                        tiebreakAreaElement.style.width = '45%';
+                        breakPointAreaElement.style.display = 'none';
+                        tiebreakAreaElement.style.display = 'inline';
+                    } else {
+                        // Retornar a cor original dos pontos e restaurar os últimos valores salvos
+                        let scoreText1 = team1PointsButton.querySelector('.score-text');
+                        let scoreText2 = team2PointsButton.querySelector('.score-text');
+                        if (scoreText1) {
+                            scoreText1.style.color = '';
+                            scoreText1.textContent = ultimosPontos.team1 || '0';
+                        }
+                        if (scoreText2) {
+                            scoreText2.style.color = '';
+                            scoreText2.textContent = ultimosPontos.team2 || '0';
+                        }
+                        
+                        // Restaurar os valores originais dos sets
+                        const setsText1 = team1SetsContainer.querySelector('.score-text');
+                        const setsText2 = team2SetsContainer.querySelector('.score-text');
+                        if (setsText1) {
+                            setsText1.style.color = '';
+                            // Restaurar o valor original do set, se existir
+                            const originalSet1 = setsText1.getAttribute('data-original-set');
+                            if (originalSet1) setsText1.textContent = originalSet1;
+                            setsText1.removeAttribute('data-original-set');
+                        }
+                        if (setsText2) {
+                            setsText2.style.color = '';
+                            // Restaurar o valor original do set, se existir
+                            const originalSet2 = setsText2.getAttribute('data-original-set');
+                            if (originalSet2) setsText2.textContent = originalSet2;
+                            setsText2.removeAttribute('data-original-set');
+                        }
+                        
+                        // Esconder indicador de TIE-BREAK
+                        cronometroElement.style.width = '100%';
+                        tiebreakAreaElement.style.display = 'none';
+                    }
+                    break;
+                case 'serve':
+                    team1ServingIndicator.style.display = data.teamA ? 'block' : 'none';
+                    team2ServingIndicator.style.display = data.teamB ? 'block' : 'none';
+                    break;
+                case 'timer':
+                    if (data.action === 'start') {
+                        startCronometro();
+                    } else if (data.action === 'stop') {
+                        stopCronometro();
+                    } else if (data.action === 'reset') {
+                        resetCronometro();
+                    }
+                    break;
+                case 'breakPoint':
+                    if (data.active) {
+                        breakPointAreaElement.style.display = 'inline';
+                        cronometroElement.style.width = '45%';
+                        breakPointAreaElement.style.width = '45%';
+                    } else {
+                        breakPointAreaElement.style.display = 'none';
+                        cronometroElement.style.width = '100%';
+                    }
+                    break;
+                case 'resetMatch':
+                    // Guardar os indicadores de saque
+                    const servingIndicator1 = team1PointsButton.querySelector('.serving-indicator');
+                    const servingIndicator2 = team2PointsButton.querySelector('.serving-indicator');
+                    
+                    // Reset scoreboard to default values
+                    team1PointsButton.innerHTML = '';
+                    team1PointsButton.appendChild(servingIndicator1);
+                    const resetScoreText1 = document.createElement('span');
+                    resetScoreText1.className = 'score-text';
+                    resetScoreText1.textContent = '0';
+                    team1PointsButton.appendChild(resetScoreText1);
+                    
+                    team2PointsButton.innerHTML = '';
+                    team2PointsButton.appendChild(servingIndicator2);
+                    const resetScoreText2 = document.createElement('span');
+                    resetScoreText2.className = 'score-text';
+                    resetScoreText2.textContent = '0';
+                    team2PointsButton.appendChild(resetScoreText2);
+                    
+                    // Atualiza sets para 0
+                    team1SetsContainer.innerHTML = '';
+                    const resetSetText1 = document.createElement('span');
+                    resetSetText1.className = 'score-text';
+                    resetSetText1.textContent = '0';
+                    team1SetsContainer.appendChild(resetSetText1);
+                    
+                    team2SetsContainer.innerHTML = '';
+                    const resetSetText2 = document.createElement('span');
+                    resetSetText2.className = 'score-text';
+                    resetSetText2.textContent = '0';
+                    team2SetsContainer.appendChild(resetSetText2);
+                    
+                    // Reset as cores dos sets
+                    team1SetsContainer.style.color = '';
+                    team2SetsContainer.style.color = '';
+                    
+                    // Esconde indicadores
+                    team1ServingIndicator.style.display = 'none';
+                    team2ServingIndicator.style.display = 'none';
+                    breakPointAreaElement.style.display = 'none';
+                    cronometroAreaElement.style.display = 'flex';
+                    resetCronometro();
+                    tiebreakAtivo = false;
+                    
+                    // Redefinir variáveis de nomes originais
+                    originalTeam1Name = "TIME A";
+                    originalTeam2Name = "TIME B";
+                    
+                    // Definir nomes padrão - sem espaços extras no início
+                    team1NameElement.textContent = originalTeam1Name;
+                    team2NameElement.textContent = originalTeam2Name;
+                    break;
+            }
+        };
+    </script>
+</body>
+</html>

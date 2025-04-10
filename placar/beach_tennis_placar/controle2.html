@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Remoto 2 - Placar Beach Tennis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #333;
+            --secondary-color: #666;
+            --active-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --border-color: #dee2e6;
+            --transition-speed: 0.3s;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #222; /* Fundo cinza escuro para economizar bateria */
+            color: #eee; /* Texto claro para contrastar com o fundo escuro */
+            padding-bottom: 80px;
+        }
+        
+        /* Iframe container at the top */
+        .scoreboard-preview {
+            width: 100%;
+            background-color: var(--dark-color);
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        
+        #scoreboard-iframe {
+            width: 90%;
+            max-width: 680px;
+            height: 240px;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: block;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            #scoreboard-iframe {
+                height: 200px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            #scoreboard-iframe {
+                width: 95%;
+                height: 180px;
+            }
+        }
+        
+        /* Control sections */
+        .control-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        .section {
+            background-color: #333; /* Fundo escuro para os painéis */
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            color: #eee; /* Texto claro */
+        }
+        
+        h1, h2, h3 {
+            color: #fff; /* Texto branco para melhor contraste */
+            font-weight: 700;
+        }
+        
+        /* Team names and titles */
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group-text {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            height: 50px;
+            font-size: 1.1rem;
+        }
+        
+        /* Points buttons */
+        .btn-points, .btn-serve {
+            font-size: 1.6rem;
+            font-weight: 600;
+            padding: 15px 10px;
+            margin: 5px;
+            width: 70px;
+            height: 70px;
+            transition: all 0.3s ease;
+            background-color: #444; /* Cor escura inicial */
+            color: #fff;
+            border-color: #666;
+        }
+        
+        .btn-control {
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 12px 15px;
+            margin: 5px;
+            min-height: 60px;
+            background-color: #444; /* Cor escura inicial */
+            color: #fff;
+            border-color: #666;
+        }
+        
+        /* Estilo para o botão de tiebreak */
+        .form-check-input {
+            width: 3em;
+            height: 1.5em;
+            transition: all 0.3s ease;
+        }
+        
+        .form-check-label {
+            color: #eee;
+            font-size: 1.2rem;
+            margin-left: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .active-tiebreak {
+            color: #dc3545 !important;
+            font-weight: bold;
+        }
+        
+        .btn-lg {
+            font-size: 1.2rem;
+            padding: 15px 20px;
+        }
+        
+        .btn.active {
+            background-color: var(--active-color);
+            color: white;
+            border-color: var(--active-color);
+        }
+        
+        .score-display {
+            background-color: var(--light-color);
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 5px 15px;
+            text-align: center;
+            min-width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 5px;
+        }
+        
+        .points-container, .set-container, .tiebreak-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .team-label {
+            font-weight: 600;
+            color: #eee; /* Texto claro */
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .serve-icon {
+            font-size: 1.5rem;
+            padding-left: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .serve-icon.active {
+            color: var(--active-color);
+        }
+        
+        /* Media queries for better mobile experience */
+        @media (max-width: 768px) {
+            #scoreboard-iframe {
+                width: 90%;
+                height: 150px;
+            }
+            
+            .btn-points, .btn-serve, .btn-control {
+                font-size: 1.2rem;
+                width: 55px;
+                height: 55px;
+                padding: 10px 5px;
+            }
+            
+            .score-display {
+                font-size: 1.2rem;
+                width: 55px;
+                height: 55px;
+            }
+            
+            .section {
+                padding: 12px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .btn-points, .btn-serve, .btn-control {
+                font-size: 1.1rem;
+                width: 50px;
+                height: 50px;
+                padding: 8px 5px;
+                margin: 3px;
+            }
+            
+            .score-display {
+                font-size: 1.1rem;
+                width: 50px;
+                height: 50px;
+                margin: 3px;
+            }
+            
+            .section {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scoreboard Preview -->
+    <div class="scoreboard-preview">
+        <iframe id="scoreboard-iframe" src="scoreboard2.html" frameborder="0"></iframe>
+    </div>
+    
+    <!-- Control Panel -->
+    <div class="control-container">
+        <h1 class="text-center mb-4">Controle de Placar 2 - Beach Tennis</h1>
+        
+        <!-- Points Section -->
+        <div class="section">
+            <h2>Pontuação</h2>
+            
+            <div class="row">
+                <!-- Team A Points -->
+                <div class="col-12 mb-3">
+                    <div class="team-label">Time A <i id="team-a-serve-icon" class="fas fa-volleyball-ball serve-icon"></i></div>
+                    <div class="points-container">
+                        <button class="btn btn-outline-secondary btn-points" data-team="1" data-points="0">0</button>
+                        <button class="btn btn-outline-secondary btn-points" data-team="1" data-points="15">15</button>
+                        <button class="btn btn-outline-secondary btn-points" data-team="1" data-points="30">30</button>
+                        <button class="btn btn-outline-secondary btn-points" data-team="1" data-points="40">40</button>
+                        <button class="btn btn-outline-secondary btn-serve" id="serve-btn-team-a">
+                            <i class="fas fa-volleyball-ball"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Team B Points -->
+                <div class="col-12">
+                    <div class="team-label">Time B <i id="team-b-serve-icon" class="fas fa-volleyball-ball serve-icon"></i></div>
+                    <div class="points-container">
+                        <button class="btn btn-outline-secondary btn-points" data-team="2" data-points="0">0</button>
+                        <button class="btn btn-outline-secondary btn-points" data-team="2" data-points="15">15</button>
+                        <button class="btn btn-outline-secondary btn-points" data-team="2" data-points="30">30</button>
+                        <button class="btn btn-outline-secondary btn-points" data-team="2" data-points="40">40</button>
+                        <button class="btn btn-outline-secondary btn-serve" id="serve-btn-team-b">
+                            <i class="fas fa-volleyball-ball"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Set Controls -->
+        <div class="section">
+            <h2>Sets</h2>
+            <div class="row">
+                <!-- Team A Sets -->
+                <div class="col-md-6 mb-3">
+                    <div class="team-label">Time A</div>
+                    <div class="set-container">
+                        <button id="team-a-set-minus" class="btn btn-outline-secondary btn-control">-1</button>
+                        <div id="team-a-set-display" class="score-display">0</div>
+                        <button id="team-a-set-plus" class="btn btn-outline-secondary btn-control">+1</button>
+                    </div>
+                </div>
+                
+                <!-- Team B Sets -->
+                <div class="col-md-6">
+                    <div class="team-label">Time B</div>
+                    <div class="set-container">
+                        <button id="team-b-set-minus" class="btn btn-outline-secondary btn-control">-1</button>
+                        <div id="team-b-set-display" class="score-display">0</div>
+                        <button id="team-b-set-plus" class="btn btn-outline-secondary btn-control">+1</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tiebreak Controls -->
+        <div class="section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>Tiebreak</h2>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="tiebreak-toggle">
+                    <label class="form-check-label" for="tiebreak-toggle">Ativar</label>
+                </div>
+            </div>
+            
+            <div id="tiebreak-controls" style="display: none;">
+                <div class="row">
+                    <!-- Team A Tiebreak -->
+                    <div class="col-md-6 mb-3">
+                        <div class="team-label">Time A</div>
+                        <div class="tiebreak-container">
+                            <button id="team-a-tiebreak-minus" class="btn btn-outline-secondary btn-control">-1</button>
+                            <div id="team-a-tiebreak-display" class="score-display">0</div>
+                            <button id="team-a-tiebreak-plus" class="btn btn-outline-secondary btn-control">+1</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Team B Tiebreak -->
+                    <div class="col-md-6">
+                        <div class="team-label">Time B</div>
+                        <div class="tiebreak-container">
+                            <button id="team-b-tiebreak-minus" class="btn btn-outline-secondary btn-control">-1</button>
+                            <div id="team-b-tiebreak-display" class="score-display">0</div>
+                            <button id="team-b-tiebreak-plus" class="btn btn-outline-secondary btn-control">+1</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timer and Break Point Controls -->
+        <div class="section">
+            <div class="row">
+                <!-- Timer Controls -->
+                <div class="col-md-6 mb-3">
+                    <h2>Cronômetro</h2>
+                    <div class="d-flex justify-content-between">
+                        <button id="timer-start" class="btn btn-outline-success btn-control flex-grow-1 me-2">Iniciar</button>
+                        <button id="timer-stop" class="btn btn-outline-danger btn-control flex-grow-1 me-2">Parar</button>
+                        <button id="timer-reset" class="btn btn-outline-secondary btn-control flex-grow-1">Zerar</button>
+                    </div>
+                </div>
+                
+                <!-- Break Point -->
+                <div class="col-md-6">
+                    <h2>Break Point</h2>
+                    <button id="break-point-btn" class="btn btn-outline-danger btn-control w-100">BREAK POINT</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reset Match -->
+        <div class="section">
+            <button id="reset-match-btn" class="btn btn-outline-warning btn-lg w-100">Reiniciar Partida</button>
+        </div>
+        
+        <!-- Team Names Section (movido para o final) -->
+        <div class="section">
+            <h2>Times</h2>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Time A</span>
+                <input type="text" id="team-a-name" class="form-control" placeholder="Nome do Time A">
+                <button class="btn btn-outline-secondary serve-button" id="serve-team-a" type="button">
+                    <i class="fas fa-volleyball-ball"></i>
+                </button>
+            </div>
+            <div class="input-group">
+                <span class="input-group-text">Time B</span>
+                <input type="text" id="team-b-name" class="form-control" placeholder="Nome do Time B">
+                <button class="btn btn-outline-secondary serve-button" id="serve-team-b" type="button">
+                    <i class="fas fa-volleyball-ball"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Title Section (movido para o final) -->
+        <div class="section">
+            <h2>Títulos</h2>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Categoria</span>
+                <input type="text" id="category-text" class="form-control" placeholder="Ex: FEMININO D">
+            </div>
+            <div class="input-group">
+                <span class="input-group-text">Circuito</span>
+                <input type="text" id="circuit-text" class="form-control" placeholder="Ex: CIRCUITO ARENA BEACH">
+            </div>
+        </div>
+
+        <!-- Configuração de Fonte e Escala -->
+        <div class="section">
+            <h2>Ajustes de Fonte e Escala</h2>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="scale-factor" class="form-label">Escala Geral</label>
+                    <div class="input-group">
+                        <input type="range" class="form-range form-control" id="scale-factor" min="0.8" max="1.2" step="0.05" value="1.0">
+                        <span class="input-group-text" id="scale-factor-value">1.0</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <button id="apply-scale" class="btn btn-primary mt-4">Aplicar Escala</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="team-names-size" class="form-label">Nomes das Equipes</label>
+                    <div class="input-group">
+                        <input type="range" class="form-range form-control" id="team-names-size" min="1.0" max="3.0" step="0.1" value="2.3">
+                        <span class="input-group-text" id="team-names-size-value">2.3</span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="points-size" class="form-label">Pontos</label>
+                    <div class="input-group">
+                        <input type="range" class="form-range form-control" id="points-size" min="1.0" max="4.0" step="0.1" value="3.0">
+                        <span class="input-group-text" id="points-size-value">3.0</span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="sets-size" class="form-label">Sets</label>
+                    <div class="input-group">
+                        <input type="range" class="form-range form-control" id="sets-size" min="1.0" max="4.0" step="0.1" value="3.0">
+                        <span class="input-group-text" id="sets-size-value">3.0</span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="timer-size" class="form-label">Cronômetro</label>
+                    <div class="input-group">
+                        <input type="range" class="form-range form-control" id="timer-size" min="1.0" max="3.0" step="0.1" value="1.8">
+                        <span class="input-group-text" id="timer-size-value">1.8</span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="category-size" class="form-label">Categoria</label>
+                    <div class="input-group">
+                        <input type="range" class="form-range form-control" id="category-size" min="0.8" max="2.0" step="0.1" value="1.2">
+                        <span class="input-group-text" id="category-size-value">1.2</span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="circuit-size" class="form-label">Circuito</label>
+                    <div class="input-group">
+                        <input type="range" class="form-range form-control" id="circuit-size" min="0.8" max="2.0" step="0.1" value="1.2">
+                        <span class="input-group-text" id="circuit-size-value">1.2</span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button id="apply-font-sizes" class="btn btn-primary w-100">Aplicar Tamanhos de Fonte</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize BroadcastChannel for communication with scoreboard
+        const channel = new BroadcastChannel('beachTennisScore');
+        
+        // DOM Elements
+        const teamANameInput = document.getElementById('team-a-name');
+        const teamBNameInput = document.getElementById('team-b-name');
+        const categoryTextInput = document.getElementById('category-text');
+        const circuitTextInput = document.getElementById('circuit-text');
+        const pointButtons = document.querySelectorAll('.btn-points');
+        const teamASetMinus = document.getElementById('team-a-set-minus');
+        const teamASetPlus = document.getElementById('team-a-set-plus');
+        const teamBSetMinus = document.getElementById('team-b-set-minus');
+        const teamBSetPlus = document.getElementById('team-b-set-plus');
+        const teamASetDisplay = document.getElementById('team-a-set-display');
+        const teamBSetDisplay = document.getElementById('team-b-set-display');
+        const tiebreakToggle = document.getElementById('tiebreak-toggle');
+        const tiebreakControls = document.getElementById('tiebreak-controls');
+        const teamATiebreakMinus = document.getElementById('team-a-tiebreak-minus');
+        const teamATiebreakPlus = document.getElementById('team-a-tiebreak-plus');
+        const teamBTiebreakMinus = document.getElementById('team-b-tiebreak-minus');
+        const teamBTiebreakPlus = document.getElementById('team-b-tiebreak-plus');
+        const teamATiebreakDisplay = document.getElementById('team-a-tiebreak-display');
+        const teamBTiebreakDisplay = document.getElementById('team-b-tiebreak-display');
+        const serveTeamA = document.getElementById('serve-team-a');
+        const serveTeamB = document.getElementById('serve-team-b');
+        const teamAServeIcon = document.getElementById('team-a-serve-icon');
+        const teamBServeIcon = document.getElementById('team-b-serve-icon');
+        const timerStart = document.getElementById('timer-start');
+        const timerStop = document.getElementById('timer-stop');
+        const timerReset = document.getElementById('timer-reset');
+        const breakPointBtn = document.getElementById('break-point-btn');
+        const resetMatchBtn = document.getElementById('reset-match-btn');
+        
+        // State
+        let state = {
+            teamAName: 'Time A',
+            teamBName: 'Time B',
+            categoryText: 'CATEGORIA',
+            circuitText: 'CIRCUITO',
+            teamAPoints: '0',
+            teamBPoints: '0',
+            teamASets: 0,
+            teamBSets: 0,
+            teamATiebreak: 0,
+            teamBTiebreak: 0,
+            isTeamAServing: false,
+            isTeamBServing: false,
+            isTiebreakActive: false,
+            isBreakPointActive: false,
+            timerStatus: 'reset' // 'running', 'stopped', 'reset'
+        };
+        
+        // Initialize the control panel
+        function init() {
+            // Set initial values
+            teamANameInput.value = state.teamAName;
+            teamBNameInput.value = state.teamBName;
+            categoryTextInput.value = state.categoryText;
+            circuitTextInput.value = state.circuitText;
+            
+            // Ativar os botões de pontuação inicial (0)
+            document.querySelectorAll('.btn-points[data-points="0"]').forEach(btn => {
+                btn.classList.add('active');
+            });
+            
+            // Send initial values to scoreboard
+            updateScoreboard(); // Garantir que os valores iniciais são enviados
+            updateScoreboard();
+        }
+        
+        // Update the scoreboard via BroadcastChannel
+        function updateScoreboard() {
+            // Update team names (enviando em maiúsculas)
+            channel.postMessage({
+                type: 'name',
+                team: 1,
+                value: state.teamAName.toUpperCase()
+            });
+            
+            channel.postMessage({
+                type: 'name',
+                team: 2,
+                value: state.teamBName.toUpperCase()
+            });
+            
+            // Update category and circuit
+            channel.postMessage({
+                type: 'category',
+                value: state.categoryText
+            });
+            
+            channel.postMessage({
+                type: 'circuit',
+                value: state.circuitText
+            });
+            
+            // Update points
+            channel.postMessage({
+                type: 'points',
+                team: 1,
+                value: state.teamAPoints
+            });
+            
+            channel.postMessage({
+                type: 'points',
+                team: 2,
+                value: state.teamBPoints
+            });
+            
+            // Update sets
+            channel.postMessage({
+                type: 'sets',
+                team: 1,
+                value: state.teamASets
+            });
+            
+            channel.postMessage({
+                type: 'sets',
+                team: 2,
+                value: state.teamBSets
+            });
+            
+            // Update tiebreak
+            channel.postMessage({
+                type: 'tiebreak',
+                active: state.isTiebreakActive,
+                teamA: state.teamATiebreak,
+                teamB: state.teamBTiebreak
+            });
+            
+            // Update serve
+            channel.postMessage({
+                type: 'serve',
+                teamA: state.isTeamAServing,
+                teamB: state.isTeamBServing
+            });
+            
+            // Update break point
+            channel.postMessage({
+                type: 'breakPoint',
+                active: state.isBreakPointActive
+            });
+        }
+        
+        // Event listeners
+        function setupEventListeners() {
+            // Team Names
+            teamANameInput.addEventListener('input', function() {
+                state.teamAName = this.value;
+                updateScoreboard();
+            });
+            
+            teamBNameInput.addEventListener('input', function() {
+                state.teamBName = this.value;
+                updateScoreboard();
+            });
+            
+            // Category and Circuit
+            categoryTextInput.addEventListener('input', function() {
+                state.categoryText = this.value;
+                updateScoreboard();
+            });
+            
+            circuitTextInput.addEventListener('input', function() {
+                state.circuitText = this.value;
+                updateScoreboard();
+            });
+            
+            // Points
+            pointButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const team = this.dataset.team;
+                    const points = this.dataset.points;
+                    
+                    // Update state
+                    if (team === '1') {
+                        state.teamAPoints = points;
+                        // Update active button status
+                        document.querySelectorAll('.btn-points[data-team="1"]').forEach(btn => 
+                            btn.classList.remove('active'));
+                        this.classList.add('active');
+                    } else {
+                        state.teamBPoints = points;
+                        // Update active button status
+                        document.querySelectorAll('.btn-points[data-team="2"]').forEach(btn => 
+                            btn.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                    
+                    updateScoreboard();
+                });
+            });
+            
+            // Sets
+            teamASetPlus.addEventListener('click', function() {
+                state.teamASets++;
+                teamASetDisplay.textContent = state.teamASets;
+                // Reset points when set increases
+                state.teamAPoints = '0';
+                state.teamBPoints = '0';
+                document.querySelectorAll('.btn-points').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.btn-points[data-points="0"]').forEach(btn => btn.classList.add('active'));
+                updateScoreboard();
+            });
+            
+            teamASetMinus.addEventListener('click', function() {
+                if (state.teamASets > 0) {
+                    state.teamASets--;
+                    teamASetDisplay.textContent = state.teamASets;
+                    updateScoreboard();
+                }
+            });
+            
+            teamBSetPlus.addEventListener('click', function() {
+                state.teamBSets++;
+                teamBSetDisplay.textContent = state.teamBSets;
+                // Reset points when set increases
+                state.teamAPoints = '0';
+                state.teamBPoints = '0';
+                document.querySelectorAll('.btn-points').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.btn-points[data-points="0"]').forEach(btn => btn.classList.add('active'));
+                updateScoreboard();
+            });
+            
+            teamBSetMinus.addEventListener('click', function() {
+                if (state.teamBSets > 0) {
+                    state.teamBSets--;
+                    teamBSetDisplay.textContent = state.teamBSets;
+                    updateScoreboard();
+                }
+            });
+            
+            // Tiebreak
+            tiebreakToggle.addEventListener('change', function() {
+                state.isTiebreakActive = this.checked;
+                tiebreakControls.style.display = state.isTiebreakActive ? 'flex' : 'none';
+                
+                // Atualizar visual do botão de tiebreak
+                if (state.isTiebreakActive) {
+                    document.querySelector('.form-check').classList.add('active-tiebreak');
+                    tiebreakToggle.classList.add('active-tiebreak');
+                    document.querySelector('label[for="tiebreak-toggle"]').classList.add('active-tiebreak');
+                } else {
+                    document.querySelector('.form-check').classList.remove('active-tiebreak');
+                    tiebreakToggle.classList.remove('active-tiebreak');
+                    document.querySelector('label[for="tiebreak-toggle"]').classList.remove('active-tiebreak');
+                }
+                
+                updateScoreboard();
+            });
+            
+            teamATiebreakPlus.addEventListener('click', function() {
+                state.teamATiebreak++;
+                teamATiebreakDisplay.textContent = state.teamATiebreak;
+                updateScoreboard();
+            });
+            
+            teamATiebreakMinus.addEventListener('click', function() {
+                if (state.teamATiebreak > 0) {
+                    state.teamATiebreak--;
+                    teamATiebreakDisplay.textContent = state.teamATiebreak;
+                    updateScoreboard();
+                }
+            });
+            
+            teamBTiebreakPlus.addEventListener('click', function() {
+                state.teamBTiebreak++;
+                teamBTiebreakDisplay.textContent = state.teamBTiebreak;
+                updateScoreboard();
+            });
+            
+            teamBTiebreakMinus.addEventListener('click', function() {
+                if (state.teamBTiebreak > 0) {
+                    state.teamBTiebreak--;
+                    teamBTiebreakDisplay.textContent = state.teamBTiebreak;
+                    updateScoreboard();
+                }
+            });
+            
+            // Referências aos novos botões de saque na área de pontuação
+            const serveBtnTeamA = document.getElementById('serve-btn-team-a');
+            const serveBtnTeamB = document.getElementById('serve-btn-team-b');
+            
+            // Serve - botões na área de nomes
+            serveTeamA.addEventListener('click', function() {
+                state.isTeamAServing = !state.isTeamAServing;
+                this.classList.toggle('active', state.isTeamAServing);
+                teamAServeIcon.classList.toggle('active', state.isTeamAServing);
+                
+                // If team A is serving, team B cannot be serving
+                if (state.isTeamAServing) {
+                    state.isTeamBServing = false;
+                    serveTeamB.classList.remove('active');
+                    teamBServeIcon.classList.remove('active');
+                    
+                    // Sincronizar com botões na área de pontuação
+                    if (serveBtnTeamA) serveBtnTeamA.classList.add('active');
+                    if (serveBtnTeamB) serveBtnTeamB.classList.remove('active');
+                } else {
+                    if (serveBtnTeamA) serveBtnTeamA.classList.remove('active');
+                }
+                
+                updateScoreboard();
+            });
+            
+            serveTeamB.addEventListener('click', function() {
+                state.isTeamBServing = !state.isTeamBServing;
+                this.classList.toggle('active', state.isTeamBServing);
+                teamBServeIcon.classList.toggle('active', state.isTeamBServing);
+                
+                // If team B is serving, team A cannot be serving
+                if (state.isTeamBServing) {
+                    state.isTeamAServing = false;
+                    serveTeamA.classList.remove('active');
+                    teamAServeIcon.classList.remove('active');
+                    
+                    // Sincronizar com botões na área de pontuação
+                    if (serveBtnTeamB) serveBtnTeamB.classList.add('active');
+                    if (serveBtnTeamA) serveBtnTeamA.classList.remove('active');
+                } else {
+                    if (serveBtnTeamB) serveBtnTeamB.classList.remove('active');
+                }
+                
+                updateScoreboard();
+            });
+            
+            // Botões de saque na área de pontuação
+            if (serveBtnTeamA) {
+                serveBtnTeamA.addEventListener('click', function() {
+                    state.isTeamAServing = !state.isTeamAServing;
+                    this.classList.toggle('active', state.isTeamAServing);
+                    teamAServeIcon.classList.toggle('active', state.isTeamAServing);
+                    serveTeamA.classList.toggle('active', state.isTeamAServing);
+                    
+                    // If team A is serving, team B cannot be serving
+                    if (state.isTeamAServing) {
+                        state.isTeamBServing = false;
+                        serveBtnTeamB.classList.remove('active');
+                        serveTeamB.classList.remove('active');
+                        teamBServeIcon.classList.remove('active');
+                    }
+                    
+                    updateScoreboard();
+                });
+            }
+            
+            if (serveBtnTeamB) {
+                serveBtnTeamB.addEventListener('click', function() {
+                    state.isTeamBServing = !state.isTeamBServing;
+                    this.classList.toggle('active', state.isTeamBServing);
+                    teamBServeIcon.classList.toggle('active', state.isTeamBServing);
+                    serveTeamB.classList.toggle('active', state.isTeamBServing);
+                    
+                    // If team B is serving, team A cannot be serving
+                    if (state.isTeamBServing) {
+                        state.isTeamAServing = false;
+                        serveBtnTeamA.classList.remove('active');
+                        serveTeamA.classList.remove('active');
+                        teamAServeIcon.classList.remove('active');
+                    }
+                    
+                    updateScoreboard();
+                });
+            }
+            
+            // Timer
+            timerStart.addEventListener('click', function() {
+                state.timerStatus = 'running';
+                channel.postMessage({
+                    type: 'timer',
+                    action: 'start'
+                });
+            });
+            
+            timerStop.addEventListener('click', function() {
+                state.timerStatus = 'stopped';
+                channel.postMessage({
+                    type: 'timer',
+                    action: 'stop'
+                });
+            });
+            
+            timerReset.addEventListener('click', function() {
+                state.timerStatus = 'reset';
+                channel.postMessage({
+                    type: 'timer',
+                    action: 'reset'
+                });
+            });
+            
+            // Break Point
+            breakPointBtn.addEventListener('click', function() {
+                state.isBreakPointActive = !state.isBreakPointActive;
+                this.classList.toggle('active', state.isBreakPointActive);
+                updateScoreboard();
+            });
+            
+            // Reset Match
+            resetMatchBtn.addEventListener('click', function() {
+                if (confirm('Tem certeza que deseja reiniciar a partida? Todos os dados serão perdidos.')) {
+                    // Reset state
+                    state = {
+                        teamAName: teamANameInput.value,
+                        teamBName: teamBNameInput.value,
+                        categoryText: categoryTextInput.value,
+                        circuitText: circuitTextInput.value,
+                        teamAPoints: '0',
+                        teamBPoints: '0',
+                        teamASets: 0,
+                        teamBSets: 0,
+                        teamATiebreak: 0,
+                        teamBTiebreak: 0,
+                        isTeamAServing: false,
+                        isTeamBServing: false,
+                        isTiebreakActive: false,
+                        isBreakPointActive: false,
+                        timerStatus: 'reset'
+                    };
+                    
+                    // Reset UI
+                    document.querySelectorAll('.btn-points').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.btn-points[data-points="0"]').forEach(btn => btn.classList.add('active'));
+                    teamASetDisplay.textContent = '0';
+                    teamBSetDisplay.textContent = '0';
+                    teamATiebreakDisplay.textContent = '0';
+                    teamBTiebreakDisplay.textContent = '0';
+                    tiebreakToggle.checked = false;
+                    tiebreakControls.style.display = 'none';
+                    serveTeamA.classList.remove('active');
+                    serveTeamB.classList.remove('active');
+                    teamAServeIcon.classList.remove('active');
+                    teamBServeIcon.classList.remove('active');
+                    
+                    // Limpar estado dos botões de saque na área de pontuação
+                    if (serveBtnTeamA) serveBtnTeamA.classList.remove('active');
+                    if (serveBtnTeamB) serveBtnTeamB.classList.remove('active');
+                    breakPointBtn.classList.remove('active');
+                    
+                    // Send reset command to scoreboard
+                    channel.postMessage({
+                        type: 'resetMatch'
+                    });
+                    
+                    // Update scoreboard with reset values
+                    updateScoreboard();
+                }
+            });
+        }
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+            setupEventListeners();
+            
+            // Set initial active state for 0 points buttons
+            document.querySelectorAll('.btn-points[data-points="0"]').forEach(btn => 
+                btn.classList.add('active'));
+                
+            // Inicialização dos controles de fonte e escala
+            const scaleFactor = document.getElementById('scale-factor');
+            const scaleFactorValue = document.getElementById('scale-factor-value');
+            const teamNamesSize = document.getElementById('team-names-size');
+            const teamNamesSizeValue = document.getElementById('team-names-size-value');
+            const pointsSize = document.getElementById('points-size');
+            const pointsSizeValue = document.getElementById('points-size-value');
+            const setsSize = document.getElementById('sets-size');
+            const setsSizeValue = document.getElementById('sets-size-value');
+            const timerSize = document.getElementById('timer-size');
+            const timerSizeValue = document.getElementById('timer-size-value');
+            const categorySize = document.getElementById('category-size');
+            const categorySizeValue = document.getElementById('category-size-value');
+            const circuitSize = document.getElementById('circuit-size');
+            const circuitSizeValue = document.getElementById('circuit-size-value');
+            const applyFontSizes = document.getElementById('apply-font-sizes');
+            const applyScale = document.getElementById('apply-scale');
+            
+            // Atualizar valores exibidos ao lado dos sliders
+            scaleFactor.addEventListener('input', function() {
+                scaleFactorValue.textContent = this.value;
+            });
+            
+            teamNamesSize.addEventListener('input', function() {
+                teamNamesSizeValue.textContent = this.value;
+            });
+            
+            pointsSize.addEventListener('input', function() {
+                pointsSizeValue.textContent = this.value;
+            });
+            
+            setsSize.addEventListener('input', function() {
+                setsSizeValue.textContent = this.value;
+            });
+            
+            timerSize.addEventListener('input', function() {
+                timerSizeValue.textContent = this.value;
+            });
+            
+            categorySize.addEventListener('input', function() {
+                categorySizeValue.textContent = this.value;
+            });
+            
+            circuitSize.addEventListener('input', function() {
+                circuitSizeValue.textContent = this.value;
+            });
+            
+            // Aplicar escala geral
+            applyScale.addEventListener('click', function() {
+                const scale = parseFloat(scaleFactor.value);
+                channel.postMessage({
+                    type: 'scale',
+                    value: scale
+                });
+                
+                alert('Escala aplicada: ' + scale);
+            });
+            
+            // Aplicar tamanhos de fonte individuais
+            applyFontSizes.addEventListener('click', function() {
+                channel.postMessage({
+                    type: 'font-sizes',
+                    team: parseFloat(teamNamesSize.value),
+                    points: parseFloat(pointsSize.value),
+                    sets: parseFloat(setsSize.value),
+                    timer: parseFloat(timerSize.value),
+                    category: parseFloat(categorySize.value),
+                    circuit: parseFloat(circuitSize.value)
+                });
+                
+                alert('Tamanhos de fonte aplicados!');
+            });
+        });
+    </script>
+</body>
+</html>
