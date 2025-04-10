@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle - Beach Tennis</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }.painel-container {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 100%;
+        padding: 2rem;
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    h1 {
+        text-align: center;
+        color: #003366;
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    input[type="text"], select {
+        padding: 0.7rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1rem;
+    }
+
+    .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    button {
+        background-color: #003366;
+        color: white;
+        border: none;
+        padding: 0.7rem 1.2rem;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #00509e;
+    }
+</style>
+
+</head>
+<body>
+    <div class="painel-container">
+        <h1>Controle do Placar</h1><div class="input-group">
+        <label for="dupla1">Nome da Dupla 1</label>
+        <input type="text" id="dupla1" placeholder="Jogador 1 / Jogador 2">
+    </div>
+    <div class="input-group">
+        <label for="dupla2">Nome da Dupla 2</label>
+        <input type="text" id="dupla2" placeholder="Jogador 1 / Jogador 2">
+    </div>
+
+    <div class="input-group">
+        <label for="categoria">Categoria</label>
+        <input type="text" id="categoria" placeholder="Ex: Masculino A">
+    </div>
+    <div class="input-group">
+        <label for="circuito">Nome do Circuito</label>
+        <input type="text" id="circuito" placeholder="Ex: Arena Beach Cup">
+    </div>
+
+    <div class="button-row">
+        <button onclick="enviarNomes()">Atualizar Nomes</button>
+        <button onclick="toggleBreakPoint()">Break Point</button>
+        <button onclick="iniciarCronometro()">Iniciar Cronômetro</button>
+        <button onclick="pararCronometro()">Parar Cronômetro</button>
+        <button onclick="resetarPontos()">Resetar Pontos</button>
+        <button onclick="resetarTudo()">Resetar Tudo</button>
+    </div>
+</div>
+
+<script>
+    const channel = new BroadcastChannel('beachTennisScore');
+
+    function enviarNomes() {
+        const dupla1 = document.getElementById('dupla1').value;
+        const dupla2 = document.getElementById('dupla2').value;
+        const categoria = document.getElementById('categoria').value;
+        const circuito = document.getElementById('circuito').value;
+
+        channel.postMessage({ type: 'name', team: 1, value: dupla1 });
+        channel.postMessage({ type: 'name', team: 2, value: dupla2 });
+        channel.postMessage({ type: 'topText', value: categoria });
+        channel.postMessage({ type: 'bottomText', value: circuito });
+    }
+
+    let emBreakPoint = false;
+    function toggleBreakPoint() {
+        emBreakPoint = !emBreakPoint;
+        channel.postMessage({ type: 'breakPoint', value: emBreakPoint });
+    }
+
+    function iniciarCronometro() {
+        channel.postMessage({ action: 'startTimer' });
+    }
+
+    function pararCronometro() {
+        channel.postMessage({ action: 'stopTimer' });
+    }
+
+    function resetarPontos() {
+        channel.postMessage({ action: 'resetGamePoints' });
+    }
+
+    function resetarTudo() {
+        channel.postMessage({ action: 'resetScore' });
+    }
+</script>
+
+</body>
+</html>
