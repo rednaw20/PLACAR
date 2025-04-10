@@ -1,0 +1,160 @@
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle Placar Beach Tennis</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+    }
+    h1 {
+      text-align: center;
+      color: #000;
+    }
+    .container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .group {
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .group label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    button {
+      flex: 1 1 45%;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #444;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #000;
+    }
+    .toggle.active {
+      background-color: #c00 !important;
+      color: #fff;
+    }
+    iframe {
+      width: 100%;
+      max-width: 700px;
+      height: 400px;
+      margin-top: 20px;
+      border: 2px solid #999;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Painel de Controle</h1>
+  <div class="container">
+    <div class="group">
+      <label>Nome Dupla 1:</label>
+      <input type="text" id="team1-name" placeholder="Jogador 1 / Jogador 2"><label>Nome Dupla 2:</label>
+  <input type="text" id="team2-name" placeholder="Jogador 1 / Jogador 2">
+
+  <label>Texto Superior (Categoria):</label>
+  <input type="text" id="top-text" placeholder="Categoria">
+
+  <label>Texto Inferior (Circuito):</label>
+  <input type="text" id="bottom-text" placeholder="Circuito">
+</div>
+
+<div class="group buttons">
+  <button onclick="enviar('points', 1, '0')">0 Dupla 1</button>
+  <button onclick="enviar('points', 2, '0')">0 Dupla 2</button>
+  <button onclick="enviar('points', 1, '15')">15 Dupla 1</button>
+  <button onclick="enviar('points', 2, '15')">15 Dupla 2</button>
+  <button onclick="enviar('points', 1, '30')">30 Dupla 1</button>
+  <button onclick="enviar('points', 2, '30')">30 Dupla 2</button>
+  <button onclick="enviar('points', 1, '40')">40 Dupla 1</button>
+  <button onclick="enviar('points', 2, '40')">40 Dupla 2</button>
+</div>
+
+<div class="group buttons">
+  <button onclick="enviar('sets', 1, 1)">+1 Set Dupla 1</button>
+  <button onclick="enviar('sets', 2, 1)">+1 Set Dupla 2</button>
+  <button onclick="enviar('sets', 1, -1)">-1 Set Dupla 1</button>
+  <button onclick="enviar('sets', 2, -1)">-1 Set Dupla 2</button>
+</div>
+
+<div class="group buttons">
+  <button class="toggle" onclick="toggle(this, 'serving', 1)">Saque Dupla 1</button>
+  <button class="toggle" onclick="toggle(this, 'serving', 2)">Saque Dupla 2</button>
+  <button class="toggle" onclick="toggle(this, 'breakPoint')">Break Point</button>
+</div>
+
+<div class="group buttons">
+  <button class="toggle" onclick="toggle(this, 'tiebreak', 1)">Tiebreak 1</button>
+  <button class="toggle" onclick="toggle(this, 'tiebreak', 2)">Tiebreak 2</button>
+</div>
+
+<div class="group buttons">
+  <button onclick="broadcast({ action: 'startTimer' })">Iniciar Cronômetro</button>
+  <button onclick="broadcast({ action: 'stopTimer' })">Resetar Cronômetro</button>
+  <button onclick="broadcast({ action: 'resetGamePoints' })">Zerar Pontos</button>
+  <button onclick="broadcast({ action: 'resetScore' })">Zerar Tudo</button>
+</div>
+
+  </div>  <iframe src="placar.html" title="Placar" id="placar-frame"></iframe>  <script>
+    const channel = new BroadcastChannel("beachTennisScore");
+
+    function enviar(type, team, value) {
+      channel.postMessage({ type, team, value });
+    }
+
+    function broadcast(data) {
+      channel.postMessage(data);
+    }
+
+    function toggle(button, type, team = null) {
+      const active = button.classList.toggle('active');
+      if (type === 'tiebreak') {
+        channel.postMessage({ type: 'tiebreak', team, value: active });
+      } else if (type === 'serving') {
+        channel.postMessage({ type: 'serving', team });
+        document.querySelectorAll('.toggle').forEach(btn => {
+          if (btn.textContent.includes('Saque') && btn !== button) btn.classList.remove('active');
+        });
+      } else if (type === 'breakPoint') {
+        channel.postMessage({ type: 'breakPoint', value: active });
+      }
+    }
+
+    document.getElementById("team1-name").addEventListener("change", (e) => enviar('name', 1, e.target.value));
+    document.getElementById("team2-name").addEventListener("change", (e) => enviar('name', 2, e.target.value));
+    document.getElementById("top-text").addEventListener("change", (e) => enviar('topText', null, e.target.value));
+    document.getElementById("bottom-text").addEventListener("change", (e) => enviar('bottomText', null, e.target.value));
+  </script></body>
+</html>
