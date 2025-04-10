@@ -124,6 +124,18 @@
             text-align: left;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+
+        /* Pseudo-elemento para indicação de saque – seta adicionada antes do nome */
+        .team-names-container.serving::before {
+            content: "➤ ";
+            color: green;
+            font-size: var(--tamanho-fonte-nome);
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
         }
 
         .team-names-container span + span {
@@ -133,6 +145,7 @@
             width: 90%;
         }
 
+        /* Pontos sem borda arredondada */
         .points-button {
             background-color: var(--cor-marcador1-fundo);
             color: var(--cor-marcador1-texto);
@@ -148,7 +161,7 @@
             align-items: center;
             justify-content: center;
             border: none;
-            border-radius: 5px;
+            border-radius: 0;
             margin: 2px;
         }
 
@@ -188,19 +201,12 @@
         }
 
         .tiebreak-indicator {
-            color: red;
-            font-weight: bold;
-            font-size: var(--tamanho-fonte-numeros);
-            text-align: center;
-            align-items: center;
-            justify-content: center;
+            /* Esta classe não será utilizada para exibir texto, apenas deixada para compatibilidade */
+            display: none;
         }
 
         .serving-indicator {
-            font-size: 1.2em;
-            color: green;
-            font-weight: bold;
-            text-align: center;
+            display: none;
         }
 
         .break-point-indicator {
@@ -227,8 +233,8 @@
             </div>
         </div>
         <div class="team-row">
-            <div class="team-names-container">
-                <span id="team1-name">DIDÁ / GESIENE</span>
+            <div class="team-names-container" id="team1-name">
+                <span>DIDÁ / GESIENE</span>
             </div>
             <div class="points-button" id="team1-points">0</div>
             <div class="sets-container" id="team1-sets">0</div>
@@ -236,8 +242,8 @@
             <div class="serving-indicator" id="team1-serving" style="display: none;">Sacando</div>
         </div>
         <div class="team-row">
-            <div class="team-names-container">
-                <span id="team2-name">MATHEUS / ANA PAULA</span>
+            <div class="team-names-container" id="team2-name">
+                <span>MATHEUS / ANA PAULA</span>
             </div>
             <div class="points-button" id="team2-points">0</div>
             <div class="sets-container" id="team2-sets">0</div>
@@ -329,8 +335,16 @@
                     circuitoTextElement.textContent = data.value;
                     break;
                 case 'serving':
-                    team1ServingIndicator.style.display = data.team === 1 ? 'block' : 'none';
-                    team2ServingIndicator.style.display = data.team === 2 ? 'block' : 'none';
+                    if (data.team === 1) {
+                        team1NameElement.classList.add("serving");
+                        team2NameElement.classList.remove("serving");
+                    } else if (data.team === 2) {
+                        team2NameElement.classList.add("serving");
+                        team1NameElement.classList.remove("serving");
+                    } else {
+                        team1NameElement.classList.remove("serving");
+                        team2NameElement.classList.remove("serving");
+                    }
                     break;
                 case 'breakPoint':
                     const isBreakPoint = data.value;
@@ -338,14 +352,13 @@
                     breakPointAreaElement.style.display = isBreakPoint ? 'flex' : 'none';
                     break;
                 case 'tiebreak':
+                    // Em tiebreak, apenas altera a cor do texto dos pontos para vermelho
                     if (data.team === 1) {
-                        team1PointsButton.style.display = data.value ? 'none' : 'flex';
-                        team1TiebreakIndicator.style.display = data.value ? 'flex' : 'none';
-                        team1TiebreakIndicator.textContent = data.value ? (data.score || 'TB') : '';
+                        team1PointsButton.style.color = data.value ? "red" : "var(--cor-marcador1-texto)";
+                        if(data.score) team1PointsButton.textContent = data.score;
                     } else if (data.team === 2) {
-                        team2PointsButton.style.display = data.value ? 'none' : 'flex';
-                        team2TiebreakIndicator.style.display = data.value ? 'flex' : 'none';
-                        team2TiebreakIndicator.textContent = data.value ? (data.score || 'TB') : '';
+                        team2PointsButton.style.color = data.value ? "red" : "var(--cor-marcador1-texto)";
+                        if(data.score) team2PointsButton.textContent = data.score;
                     }
                     break;
             }
