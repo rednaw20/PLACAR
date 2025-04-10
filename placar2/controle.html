@@ -43,7 +43,7 @@
       border-radius: 4px;
       font-size: 1em;
     }
-    /* Botões padrão e estado ativo */
+    /* Botões padrão */
     .btn {
       padding: 8px 16px;
       margin: 3px 2px;
@@ -84,11 +84,11 @@
       flex: 1;
       min-width: 120px;
     }
-    /* Estilo para o iframe do placar (versão reduzida) */
+    /* Mini-placar: área de visualização reduzida */
     .mini-placar {
-      width: 25%;
-      min-width: 200px;
-      height: 200px;
+      width: 20%;
+      min-width: 150px;
+      height: 150px;
       border: none;
       margin: 10px auto;
       display: block;
@@ -101,7 +101,7 @@
       }
       .mini-placar {
         width: 90%;
-        height: 150px;
+        height: 120px;
       }
       .btn {
         padding: 8px;
@@ -118,7 +118,24 @@
     <h2>Placar (Monitoramento)</h2>
     <iframe src="placar.html" class="mini-placar"></iframe>
 
-    <!-- Seção de comandos agrupados -->
+    <!-- Nomes das Duplas -->
+    <div class="section">
+      <h2>Nomes das Duplas</h2>
+      <div class="flex-row">
+        <div class="flex-col">
+          <label for="dupla1">Dupla 1:</label>
+          <input type="text" id="dupla1" placeholder="Ex: DIDÁ / GESIENE">
+          <button class="btn" onclick="updateDupla(1)">Atualizar Dupla 1</button>
+        </div>
+        <div class="flex-col">
+          <label for="dupla2">Dupla 2:</label>
+          <input type="text" id="dupla2" placeholder="Ex: MATHEUS / ANA PAULA">
+          <button class="btn" onclick="updateDupla(2)">Atualizar Dupla 2</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comandos de Pontuação -->
     <div class="section">
       <h2>Pontuação</h2>
       <div class="flex-row">
@@ -135,6 +152,7 @@
       </div>
     </div>
 
+    <!-- Comandos de Sets -->
     <div class="section">
       <h2>Sets</h2>
       <div class="flex-row">
@@ -151,6 +169,7 @@
       </div>
     </div>
 
+    <!-- Comandos de Tiebreak -->
     <div class="section">
       <h2>Tiebreak</h2>
       <div class="flex-row">
@@ -167,6 +186,7 @@
       </div>
     </div>
 
+    <!-- Comandos do Cronômetro e Break Point -->
     <div class="section">
       <h2>Cronômetro / Break Point</h2>
       <div class="flex-row">
@@ -188,6 +208,7 @@
       </div>
     </div>
 
+    <!-- Comandos de Saque -->
     <div class="section">
       <h2>Saque</h2>
       <div class="flex-row">
@@ -203,7 +224,7 @@
       </div>
     </div>
 
-    <!-- Seção de reset geral -->
+    <!-- Reset Geral -->
     <div class="section">
       <h2>Reset Geral</h2>
       <div class="flex-row">
@@ -211,7 +232,7 @@
       </div>
     </div>
 
-    <!-- Seção de atualização de textos (movida para o final) -->
+    <!-- Atualização de Textos (posição final) -->
     <div class="section">
       <h2>Textos do Placar</h2>
       <div class="flex-row">
@@ -242,8 +263,8 @@
       setTimeout(() => { btn.classList.remove('active'); }, 300);
     }
 
-    function updateName(team) {
-      const input = document.getElementById('team' + team + '-name');
+    function updateDupla(team) {
+      const input = document.getElementById('dupla' + team);
       const name = input.value.trim();
       if(name !== '') {
         channel.postMessage({ type: 'name', team: team, value: name });
@@ -301,6 +322,8 @@
       channel.postMessage({ action: 'resetTimer' });
     }
 
+    // Para o Break Point: envia mensagem para que o placar substitua o cronômetro pela indicação.
+    // Ao desativar, o placar deverá restaurar o cronômetro sem resetar o tempo.
     function toggleBreakPoint(state) {
       channel.postMessage({ type: 'breakPoint', value: state });
     }
