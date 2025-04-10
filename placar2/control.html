@@ -1,143 +1,197 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel de Controle</title>
+  <title>Controle Placar Beach Tennis</title>
   <style>
     body {
       background-color: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
+      color: #eee;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
       padding: 20px;
     }
-    .iframe-preview {
-      border: 3px solid #39ff14;
-      margin-bottom: 20px;
-      width: 100%;
+
+    .container {
       max-width: 800px;
-      height: 200px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
+
+    iframe {
+      width: 100%;
+      height: 250px;
+      border: 2px solid #39ff14;
+      border-radius: 10px;
+    }
+
     .controls {
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
-      margin-bottom: 20px;
+      gap: 10px;
+      justify-content: center;
     }
-    button {
-      padding: 10px 20px;
-      background-color: #39ff14;
-      color: #000;
-      border: none;
-      cursor: pointer;
+
+    .controls button, .input-group input {
+      padding: 10px;
       font-size: 1em;
+      border: none;
       border-radius: 5px;
     }
-    .section {
-      margin-bottom: 30px;
+
+    button {
+      background-color: #39ff14;
+      color: #000c60;
+      font-weight: bold;
+      cursor: pointer;
     }
-    label, input {
-      display: block;
-      margin-top: 5px;
+
+    button:hover {
+      opacity: 0.9;
     }
-    input {
-      padding: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      width: 100%;
-      max-width: 300px;
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+      gap: 5px;
+    }
+
+    .section-title {
+      margin-top: 30px;
+      text-align: center;
+      color: #39ff14;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .inputs-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
     }
   </style>
 </head>
 <body>
-  <h1>Painel de Controle - Beach Tennis</h1>  <iframe src="placar.html" class="iframe-preview"></iframe>  <div class="controls">
-    <div class="section">
-      <h3>Pontos</h3>
-      <button onclick="setPoints(1, 0)">0 Dupla 1</button>
-      <button onclick="setPoints(1, 15)">15 Dupla 1</button>
-      <button onclick="setPoints(1, 30)">30 Dupla 1</button>
-      <button onclick="setPoints(1, 40)">40 Dupla 1</button>
-      <br><br>
-      <button onclick="setPoints(2, 0)">0 Dupla 2</button>
-      <button onclick="setPoints(2, 15)">15 Dupla 2</button>
-      <button onclick="setPoints(2, 30)">30 Dupla 2</button>
-      <button onclick="setPoints(2, 40)">40 Dupla 2</button>
-    </div><div class="section">
-  <h3>Sets</h3>
-  <button onclick="changeSet(1, 1)">+1 Set Dupla 1</button>
-  <button onclick="changeSet(1, -1)">-1 Set Dupla 1</button>
-  <button onclick="changeSet(2, 1)">+1 Set Dupla 2</button>
-  <button onclick="changeSet(2, -1)">-1 Set Dupla 2</button>
-</div>
+  <div class="container">
+    <iframe src="placar.html"></iframe>
 
-<div class="section">
-  <h3>Serviço</h3>
-  <button onclick="setServing(1)">Saque Dupla 1</button>
-  <button onclick="setServing(2)">Saque Dupla 2</button>
-</div>
+    <div class="controls">
+      <!-- Pontuação -->
+      <button onclick="setPoints(1, 0)">0 T1</button>
+      <button onclick="setPoints(1, 15)">15 T1</button>
+      <button onclick="setPoints(1, 30)">30 T1</button>
+      <button onclick="setPoints(1, 40)">40 T1</button>
 
-<div class="section">
-  <h3>Break Point</h3>
-  <button onclick="toggleBreak(true)">Ativar</button>
-  <button onclick="toggleBreak(false)">Desativar</button>
-</div>
+      <button onclick="setPoints(2, 0)">0 T2</button>
+      <button onclick="setPoints(2, 15)">15 T2</button>
+      <button onclick="setPoints(2, 30)">30 T2</button>
+      <button onclick="setPoints(2, 40)">40 T2</button>
+    </div>
 
-<div class="section">
-  <h3>Cronômetro</h3>
-  <button onclick="sendAction('startTimer')">Iniciar</button>
-  <button onclick="sendAction('stopTimer')">Parar</button>
-</div>
+    <div class="controls">
+      <!-- Sets -->
+      <button onclick="changeSet(1, 1)">+1 Set T1</button>
+      <button onclick="changeSet(1, -1)">-1 Set T1</button>
+      <button onclick="changeSet(2, 1)">+1 Set T2</button>
+      <button onclick="changeSet(2, -1)">-1 Set T2</button>
+    </div>
 
-<div class="section">
-  <h3>Reset</h3>
-  <button onclick="sendAction('resetGamePoints')">Resetar Pontos</button>
-  <button onclick="sendAction('resetScore')">Resetar Tudo</button>
-</div>
+    <div class="controls">
+      <!-- Comandos adicionais -->
+      <button onclick="setBreakPoint(true)">Break Point ON</button>
+      <button onclick="setBreakPoint(false)">Break Point OFF</button>
 
-  </div>  <div class="section">
-    <h3>Atualizar Nomes / Textos</h3>
-    <label>Dupla 1:</label>
-    <input type="text" id="nome1" placeholder="Ex: João / Maria">
-    <button onclick="updateName(1)">Atualizar Dupla 1</button><label>Dupla 2:</label>
-<input type="text" id="nome2" placeholder="Ex: Pedro / Ana">
-<button onclick="updateName(2)">Atualizar Dupla 2</button>
+      <button onclick="setServing(1)">Saque T1</button>
+      <button onclick="setServing(2)">Saque T2</button>
 
-<label>Texto Superior:</label>
-<input type="text" id="topText" placeholder="Ex: FINAL MASCULINO">
-<button onclick="updateTopText()">Atualizar Superior</button>
+      <button onclick="startTimer()">Iniciar Cronômetro</button>
+      <button onclick="stopTimer()">Parar Cronômetro</button>
 
-<label>Texto Inferior:</label>
-<input type="text" id="bottomText" placeholder="Ex: CIRCUITO ARENA BEACH">
-<button onclick="updateBottomText()">Atualizar Inferior</button>
+      <button onclick="resetGamePoints()">Reset Game</button>
+      <button onclick="resetScore()">Reset Placar</button>
+    </div>
 
-  </div>  <script>
-    const canal = new BroadcastChannel('beachTennisScore');
+    <div class="section-title">Atualizar Textos e Nomes</div>
+    <div class="inputs-container">
+      <div class="input-group">
+        <label>Nome Dupla 1</label>
+        <input id="dupla1" placeholder="Ex: João / Maria">
+        <button onclick="sendName(1)">Atualizar</button>
+      </div>
+
+      <div class="input-group">
+        <label>Nome Dupla 2</label>
+        <input id="dupla2" placeholder="Ex: Pedro / Ana">
+        <button onclick="sendName(2)">Atualizar</button>
+      </div>
+
+      <div class="input-group">
+        <label>Texto Superior</label>
+        <input id="topText" placeholder="Ex: MASCULINO B">
+        <button onclick="updateTopText()">Atualizar</button>
+      </div>
+
+      <div class="input-group">
+        <label>Texto Inferior</label>
+        <input id="bottomText" placeholder="Ex: CIRCUITO ARENA BEACH">
+        <button onclick="updateBottomText()">Atualizar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const channel = new BroadcastChannel('beachTennisScore');
 
     function setPoints(team, value) {
-      canal.postMessage({ type: 'points', team, value });
+      channel.postMessage({ type: 'points', team, value });
     }
+
     function changeSet(team, change) {
-      canal.postMessage({ type: 'sets', team, change });
+      channel.postMessage({ type: 'sets', team, change });
     }
-    function setServing(team) {
-      canal.postMessage({ type: 'serving', team });
+
+    function sendName(team) {
+      const value = document.getElementById(`dupla${team}`).value;
+      if (value) channel.postMessage({ type: 'name', team, value });
     }
-    function toggleBreak(value) {
-      canal.postMessage({ type: 'breakPoint', value });
-    }
-    function sendAction(action) {
-      canal.postMessage({ action });
-    }
-    function updateName(team) {
-      const input = document.getElementById(`nome${team}`).value;
-      canal.postMessage({ type: 'name', team, value: input });
-    }
+
     function updateTopText() {
       const value = document.getElementById('topText').value;
-      canal.postMessage({ type: 'topText', value });
+      channel.postMessage({ type: 'topText', value });
     }
+
     function updateBottomText() {
       const value = document.getElementById('bottomText').value;
-      canal.postMessage({ type: 'bottomText', value });
+      channel.postMessage({ type: 'bottomText', value });
     }
-  </script></body>
+
+    function setServing(team) {
+      channel.postMessage({ type: 'serving', team });
+    }
+
+    function setBreakPoint(value) {
+      channel.postMessage({ type: 'breakPoint', value });
+    }
+
+    function startTimer() {
+      channel.postMessage({ action: 'startTimer' });
+    }
+
+    function stopTimer() {
+      channel.postMessage({ action: 'stopTimer' });
+    }
+
+    function resetGamePoints() {
+      channel.postMessage({ action: 'resetGamePoints' });
+    }
+
+    function resetScore() {
+      channel.postMessage({ action: 'resetScore' });
+    }
+  </script>
+</body>
 </html>
