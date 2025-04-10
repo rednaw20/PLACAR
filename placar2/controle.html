@@ -10,48 +10,51 @@
       font-family: Arial, sans-serif;
       background: #f4f4f4;
       margin: 0;
-      padding: 20px;
+      padding: 10px;
       color: #333;
     }
     h1, h2 {
       text-align: center;
+      margin-top: 10px;
     }
     .container {
       max-width: 900px;
       margin: 0 auto;
       background: #fff;
-      padding: 20px;
+      padding: 15px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     .section {
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
     .section label {
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
+      font-size: 0.9em;
     }
     .section input[type="text"],
     .section input[type="number"] {
       width: 100%;
       padding: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 1em;
     }
     /* Botões padrão e estado ativo */
     .btn {
-      padding: 10px 20px;
-      margin: 5px;
+      padding: 8px 16px;
+      margin: 3px 2px;
       background: #007acc;
       color: #fff;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 1em;
+      font-size: 0.9em;
       transition: background-color 0.3s;
+      flex: 1;
     }
     .btn:active,
     .btn.active {
@@ -73,21 +76,21 @@
     }
     .flex-row {
       display: flex;
-      gap: 10px;
+      gap: 5px;
       flex-wrap: wrap;
       justify-content: center;
     }
     .flex-col {
       flex: 1;
-      min-width: 250px;
+      min-width: 120px;
     }
     /* Estilo para o iframe do placar (versão reduzida) */
     .mini-placar {
-      width: 40%;
-      min-width: 300px;
-      height: 300px;
+      width: 25%;
+      min-width: 200px;
+      height: 200px;
       border: none;
-      margin: 20px auto;
+      margin: 10px auto;
       display: block;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
@@ -98,11 +101,11 @@
       }
       .mini-placar {
         width: 90%;
-        height: 250px;
+        height: 150px;
       }
       .btn {
-        padding: 10px;
-        font-size: 0.9em;
+        padding: 8px;
+        font-size: 0.8em;
       }
     }
   </style>
@@ -115,24 +118,7 @@
     <h2>Placar (Monitoramento)</h2>
     <iframe src="placar.html" class="mini-placar"></iframe>
 
-    <!-- Nomes dos Times -->
-    <div class="section">
-      <h2>Nomes dos Times</h2>
-      <div class="flex-row">
-        <div class="flex-col">
-          <label for="team1-name">Time 1:</label>
-          <input type="text" id="team1-name" placeholder="Ex: DIDÁ / GESIENE">
-          <button class="btn" onclick="updateName(1)">Atualizar Time 1</button>
-        </div>
-        <div class="flex-col">
-          <label for="team2-name">Time 2:</label>
-          <input type="text" id="team2-name" placeholder="Ex: MATHEUS / ANA PAULA">
-          <button class="btn" onclick="updateName(2)">Atualizar Time 2</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Controle de Pontuação (Pontos) -->
+    <!-- Seção de comandos agrupados -->
     <div class="section">
       <h2>Pontuação</h2>
       <div class="flex-row">
@@ -149,7 +135,6 @@
       </div>
     </div>
 
-    <!-- Controle de Sets -->
     <div class="section">
       <h2>Sets</h2>
       <div class="flex-row">
@@ -166,7 +151,6 @@
       </div>
     </div>
 
-    <!-- Controle de Tiebreak -->
     <div class="section">
       <h2>Tiebreak</h2>
       <div class="flex-row">
@@ -183,26 +167,29 @@
       </div>
     </div>
 
-    <!-- Textos do Placar -->
     <div class="section">
-      <h2>Textos do Placar</h2>
+      <h2>Cronômetro / Break Point</h2>
       <div class="flex-row">
         <div class="flex-col">
-          <label for="top-text">Texto Superior (Categoria):</label>
-          <input type="text" id="top-text" placeholder="Ex: FEMININO D">
-          <button class="btn" onclick="updateTopText()">Atualizar Categoria</button>
+          <button class="btn" onclick="startTimer()">Iniciar</button>
         </div>
         <div class="flex-col">
-          <label for="bottom-text">Texto Inferior (Circuito):</label>
-          <input type="text" id="bottom-text" placeholder="Ex: CIRCUITO ARENA BEACH">
-          <button class="btn" onclick="updateBottomText()">Atualizar Circuito</button>
+          <button class="btn" onclick="stopTimer()">Parar</button>
+        </div>
+        <div class="flex-col">
+          <button class="btn" onclick="resetTimer()">Resetar</button>
+        </div>
+        <div class="flex-col">
+          <button class="btn" onclick="toggleBreakPoint(true)">BP Ativar</button>
+        </div>
+        <div class="flex-col">
+          <button class="btn" onclick="toggleBreakPoint(false)">BP Desativar</button>
         </div>
       </div>
     </div>
 
-    <!-- Indicador de Saque -->
     <div class="section">
-      <h2>Indicador de Saque</h2>
+      <h2>Saque</h2>
       <div class="flex-row">
         <div class="flex-col">
           <button class="btn" onclick="updateServing(1)">Time 1 Sacando</button>
@@ -216,43 +203,40 @@
       </div>
     </div>
 
-    <!-- Cronômetro -->
-    <div class="section">
-      <h2>Cronômetro</h2>
-      <div class="flex-row">
-        <div class="flex-col">
-          <button class="btn" onclick="startTimer()">Iniciar</button>
-        </div>
-        <div class="flex-col">
-          <button class="btn" onclick="stopTimer()">Parar</button>
-        </div>
-        <div class="flex-col">
-          <button class="btn" onclick="resetTimer()">Resetar</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Break Point -->
-    <div class="section">
-      <h2>Break Point</h2>
-      <div class="flex-row">
-        <button class="btn" onclick="toggleBreakPoint(true)">Ativar Break Point</button>
-        <button class="btn" onclick="toggleBreakPoint(false)">Desativar Break Point</button>
-      </div>
-    </div>
-
-    <!-- Reset Geral -->
+    <!-- Seção de reset geral -->
     <div class="section">
       <h2>Reset Geral</h2>
-      <button class="btn" onclick="resetScore()">Resetar Placar Completo</button>
+      <div class="flex-row">
+        <button class="btn" style="width:100%;" onclick="resetScore()">Resetar Placar Completo</button>
+      </div>
     </div>
+
+    <!-- Seção de atualização de textos (movida para o final) -->
+    <div class="section">
+      <h2>Textos do Placar</h2>
+      <div class="flex-row">
+        <div class="flex-col">
+          <label for="top-text">Texto Superior (Categoria):</label>
+          <input type="text" id="top-text" placeholder="Ex: FEMININO D">
+        </div>
+        <div class="flex-col">
+          <label for="bottom-text">Texto Inferior (Circuito):</label>
+          <input type="text" id="bottom-text" placeholder="Ex: CIRCUITO ARENA BEACH">
+        </div>
+      </div>
+      <div class="flex-row">
+        <button class="btn" style="width:48%;" onclick="updateTopText()">Atualizar Categoria</button>
+        <button class="btn" style="width:48%;" onclick="updateBottomText()">Atualizar Circuito</button>
+      </div>
+    </div>
+
   </div>
 
   <script>
     // Cria o canal para comunicação com placar.html
     const channel = new BroadcastChannel('beachTennisScore');
 
-    // Função para aplicar efeito de botão ativo (classe active por 300ms)
+    // Efeito visual breve para o botão (classe "active" por 300ms)
     function flashButton(btn) {
       btn.classList.add('active');
       setTimeout(() => { btn.classList.remove('active'); }, 300);
@@ -263,30 +247,22 @@
       const name = input.value.trim();
       if(name !== '') {
         channel.postMessage({ type: 'name', team: team, value: name });
-        alert('Nome atualizado para Time ' + team);
       }
     }
 
-    // Ajuste de pontos: envio de incremento ou decremento
     function adjustPoints(team, delta, btn) {
       flashButton(btn);
-      // Envia mensagem com delta para pontos – a lógica no placar deverá tratar o ajuste
       channel.postMessage({ type: 'adjustPoints', team: team, delta: delta });
-      alert('Pontos ajustados para Time ' + team + ' (' + (delta > 0 ? '+' : '') + delta + ')');
     }
 
-    // Ajuste de sets (+1 ou -1)
     function adjustSets(team, delta, btn) {
       flashButton(btn);
       channel.postMessage({ type: 'sets', team: team, change: delta });
-      alert('Sets ajustados para Time ' + team + ' (' + (delta > 0 ? '+' : '') + delta + ')');
     }
 
-    // Ajuste de tiebreak (+1 ou -1)
     function adjustTiebreak(team, delta, btn) {
       flashButton(btn);
       channel.postMessage({ type: 'tiebreak', team: team, change: delta });
-      alert('Tiebreak ajustado para Time ' + team + ' (' + (delta > 0 ? '+' : '') + delta + ')');
     }
 
     function updateTopText() {
@@ -294,7 +270,6 @@
       const text = input.value.trim();
       if(text !== '') {
         channel.postMessage({ type: 'topText', value: text });
-        alert('Texto superior atualizado.');
       }
     }
 
@@ -303,43 +278,35 @@
       const text = input.value.trim();
       if(text !== '') {
         channel.postMessage({ type: 'bottomText', value: text });
-        alert('Texto inferior atualizado.');
       }
     }
 
     function updateServing(team) {
       channel.postMessage({ type: 'serving', team: team });
-      alert('Indicador de saque atualizado para Time ' + team);
     }
 
     function clearServing() {
       channel.postMessage({ type: 'serving', team: 0 });
-      alert('Indicador de saque limpo.');
     }
 
     function startTimer() {
       channel.postMessage({ action: 'startTimer' });
-      alert('Cronômetro iniciado.');
     }
 
     function stopTimer() {
       channel.postMessage({ action: 'stopTimer' });
-      alert('Cronômetro parado.');
     }
 
     function resetTimer() {
       channel.postMessage({ action: 'resetTimer' });
-      alert('Cronômetro resetado.');
     }
 
     function toggleBreakPoint(state) {
       channel.postMessage({ type: 'breakPoint', value: state });
-      alert('Break Point ' + (state ? 'ativado' : 'desativado') + '.');
     }
 
     function resetScore() {
       channel.postMessage({ action: 'resetScore' });
-      alert('Placar completo resetado.');
     }
   </script>
 </body>
