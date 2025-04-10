@@ -277,7 +277,7 @@
         function formatTime(segundos) {
             const minutos = Math.floor(segundos / 60).toString().padStart(2, '0');
             const secs = (segundos % 60).toString().padStart(2, '0');
-            return `<span class="math-inline">\{minutos\}\:</span>{secs}`;
+            return `${minutos}:${secs}`;
         }
 
         function startCronometro() {
@@ -356,4 +356,12 @@
                 team1PointsButton.textContent = 0;
                 team2PointsButton.textContent = 0;
             } else if (data.action === 'resetScore') {
-                team1PointsButton.
+                team1PointsButton.textContent = 0;
+                team2PointsButton.textContent = 0;
+                team1SetsContainer.textContent = 0;
+                team2SetsContainer.textContent = 0;
+            }
+        }
+    </script>
+</body>
+</html>
